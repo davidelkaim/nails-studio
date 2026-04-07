@@ -1,1 +1,437 @@
-SALUT TOI
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ קביעת תור — סטודיו ניילס</title>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--deep:#6b3050;--rose:#e896b0;--blush:#f7e0ea;--cream:#fdf6f0;--gold:#c9906a;--ink:#281820;--border:#e6cfda;--soft:#faf0f5;--white:#fff;--green:#3d9e6e;--red:#c0392b;--muted:#9a7088}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--ink);direction:rtl;min-height:100vh}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--deep) 0%,#9b4a72 100%);padding:40px 24px 50px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'✨';position:absolute;font-size:8rem;opacity:.06;top:-20px;left:-20px}
+.hero::after{content:'💅';position:absolute;font-size:6rem;opacity:.06;bottom:-10px;right:-10px}
+.hero h1{font-size:2rem;font-weight:800;color:var(--blush);margin-bottom:8px}
+.hero h1 span{color:var(--rose)}
+.hero p{color:#c9a8bc;font-size:.9rem;font-weight:300}
+
+.container{max-width:680px;margin:0 auto;padding:0 16px 40px}
+
+/* STEPS */
+.steps{display:flex;justify-content:center;gap:0;margin:-20px auto 24px;max-width:360px;background:var(--white);border-radius:50px;border:1px solid var(--border);overflow:hidden;box-shadow:0 2px 12px rgba(107,48,80,.1)}
+.step-btn{flex:1;padding:10px 4px;text-align:center;font-size:.72rem;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;transition:all .2s;font-family:'Heebo',sans-serif}
+.step-btn.active{background:var(--deep);color:var(--blush);border-radius:50px}
+
+/* SECTIONS */
+.section{display:none}.section.active{display:block}
+
+/* CARD */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px 20px;margin-bottom:16px;box-shadow:0 2px 10px rgba(107,48,80,.07)}
+.card h2{font-size:1rem;font-weight:700;color:var(--deep);margin-bottom:16px}
+
+/* PRICING */
+.price-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.price-row:last-child{border-bottom:none}
+.price-name{font-size:.9rem;font-weight:500}
+.price-val{font-size:1rem;font-weight:700;color:var(--deep)}
+
+/* CALENDAR */
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-nav-row h3{font-size:.98rem;font-weight:700;color:var(--deep)}
+.cnav{background:none;border:1.5px solid var(--border);color:var(--deep);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}.cnav:hover{background:var(--blush)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-dname{text-align:center;font-size:.65rem;font-weight:700;color:var(--muted);padding:3px 0}
+.cal-d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:.84rem;font-weight:600;cursor:pointer;transition:all .2s;border:1.5px solid transparent;color:var(--ink)}
+.cal-d:hover{background:var(--blush);border-color:var(--rose)}
+.cal-d.today{border-color:var(--rose);color:var(--deep)}
+.cal-d.selected{background:var(--deep);color:var(--blush);border-color:var(--deep)}
+.cal-d.disabled{color:#ddd;cursor:default;pointer-events:none}
+.cal-d.other{color:#ccc}
+.cal-d.past{color:#ccc;cursor:default;pointer-events:none}
+
+/* SLOTS */
+.slots-title{font-size:.82rem;font-weight:700;color:var(--deep);margin:14px 0 8px;text-transform:uppercase;letter-spacing:.06em}
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:7px}
+.slot{border:1.5px solid var(--border);border-radius:9px;padding:9px 4px;text-align:center;cursor:pointer;transition:all .2s;font-size:.84rem;font-weight:600;color:var(--ink)}
+.slot:hover{border-color:var(--rose);background:var(--soft)}
+.slot.selected{background:var(--deep);color:var(--blush);border-color:var(--deep)}
+.slot.booked{background:#f5f0f3;color:#ccc;cursor:not-allowed;border-color:transparent;text-decoration:line-through}
+.no-slots{text-align:center;padding:18px;color:var(--muted);font-size:.85rem}
+
+/* FORM */
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.fg.req label::after{content:' *';color:var(--rose)}
+label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--deep)}
+input,select,textarea{font-family:'Heebo',sans-serif;font-size:.92rem;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;background:var(--soft);color:var(--ink);direction:rtl;text-align:right;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,150,176,.15);background:var(--white)}
+input.err{border-color:var(--red)!important}
+
+/* SUMMARY BOX */
+.summary{background:var(--soft);border:1.5px solid var(--border);border-radius:12px;padding:16px;margin-bottom:16px}
+.sum-row{display:flex;justify-content:space-between;font-size:.86rem;padding:4px 0}
+.sum-row strong{color:var(--deep)}
+
+/* BUTTONS */
+.btn{font-family:'Heebo',sans-serif;font-size:.9rem;font-weight:600;cursor:pointer;border:none;border-radius:50px;padding:12px 28px;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:7px;width:100%;justify-content:center}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:none}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--deep);color:var(--blush)}.btn-primary:hover{background:#5a2844}
+.btn-ghost{background:var(--soft);color:var(--deep);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--blush)}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SUCCESS */
+.success-screen{text-align:center;padding:40px 20px}
+.success-icon{font-size:4rem;margin-bottom:14px}
+.success-screen h2{font-size:1.4rem;font-weight:800;color:var(--deep);margin-bottom:8px}
+.success-screen p{color:var(--muted);font-size:.9rem;line-height:1.6}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:100;gap:14px}
+.loading-bar{width:160px;height:3px;background:var(--border);border-radius:20px;overflow:hidden}
+.loading-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--deep));border-radius:20px;animation:ld 1.5s ease infinite}
+@keyframes ld{0%{width:10%;margin-right:90%}50%{width:60%;margin-right:0}100%{width:10%;margin-right:90%}}
+
+.note{font-size:.76rem;color:var(--muted);text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="loading-screen" id="loading-screen">
+  <div style="font-size:1.8rem;font-weight:800;color:var(--deep)">✨ סטודיו <span style="color:var(--rose)">ניילס</span></div>
+  <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+</div>
+
+<div id="main" style="display:none">
+
+<div class="hero">
+  <h1>✨ סטודיו <span>ניילס</span></h1>
+  <p>קביעת תור מהירה ועצמאית 💅</p>
+</div>
+
+<div class="container">
+  <div class="steps">
+    <button class="step-btn active" id="step1-btn">① תאריך</button>
+    <button class="step-btn" id="step2-btn">② פרטים</button>
+    <button class="step-btn" id="step3-btn">③ אישור</button>
+  </div>
+
+  <!-- ── SECTION 1: PRICING + CALENDAR ── -->
+  <div class="section active" id="sec1">
+
+    <!-- Pricing -->
+    <div class="card" id="pricing-card">
+      <h2>💅 תעריפים</h2>
+      <div id="prices-display"><p style="color:var(--muted);font-size:.85rem">טוען תעריפים…</p></div>
+    </div>
+
+    <!-- Calendar -->
+    <div class="card">
+      <h2>📅 בחרי תאריך</h2>
+      <div class="cal-nav-row">
+        <button class="cnav" onclick="calPrev()">‹</button>
+        <h3 id="cal-title"></h3>
+        <button class="cnav" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+
+      <div id="slots-wrap" style="display:none">
+        <div class="slots-title">⏰ בחרי שעה</div>
+        <div class="slots-grid" id="slots-grid"></div>
+      </div>
+
+      <div id="no-day-selected" class="no-slots">בחרי תאריך להצגת שעות פנויות ↑</div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-next1" onclick="goToStep2()" disabled style="opacity:.4">המשך לפרטים ←</button>
+  </div>
+
+  <!-- ── SECTION 2: DETAILS FORM ── -->
+  <div class="section" id="sec2">
+    <div class="card">
+      <h2>👤 הפרטים שלך</h2>
+      <div class="fg req"><label>שם מלא</label><input type="text" id="b-name" placeholder="שרה כהן"/></div>
+      <div class="fg req"><label>טלפון</label><input type="tel" id="b-phone" placeholder="0501234567"/></div>
+      <div class="fg"><label>אימייל</label><input type="email" id="b-email" placeholder="sarah@email.com"/></div>
+      <div class="fg req">
+        <label>שירות מבוקש</label>
+        <select id="b-service">
+          <option value="">— בחרי שירות —</option>
+          <option>מניקור ג׳ל</option><option>מניקור קלאסי</option>
+          <option>פדיקור ג׳ל</option><option>פדיקור קלאסי</option>
+          <option>ציפורניים אקרילי — סט מלא</option><option>ציפורניים אקרילי — תיקון</option>
+          <option>עיצוב ציפורניים (נייל ארט)</option><option>החלפת לק ג׳ל</option>
+          <option>תיקון ציפורן</option><option>הסרה</option>
+          <option>אחר</option>
+        </select>
+      </div>
+      <div class="fg"><label>הערות (אופציונלי)</label><textarea id="b-notes" placeholder="בקשות מיוחדות, צבע מועדף…" rows="3"></textarea></div>
+      <span id="form-err" style="font-size:.78rem;color:var(--red);font-weight:600;display:block;margin-bottom:10px"></span>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" onclick="goToStep1()" style="flex:1">← חזרה</button>
+      <button class="btn btn-primary" onclick="goToStep3()" style="flex:2">המשך לאישור ←</button>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: CONFIRM ── -->
+  <div class="section" id="sec3">
+    <div class="card">
+      <h2>✅ אישור הפרטים</h2>
+      <div class="summary" id="summary"></div>
+      <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.5">התור יישלח לאישור. תקבלי הודעה לאחר שהתור יאושר.</p>
+      <button class="btn btn-primary" id="btn-confirm" onclick="confirmBooking()">📅 שלחי בקשת תור</button>
+      <p class="note">ניתן לבטל עד 24 שעות לפני התור</p>
+    </div>
+    <button class="btn btn-ghost" onclick="goToStep2()" style="margin-top:-8px">← חזרה לפרטים</button>
+  </div>
+
+  <!-- ── SUCCESS ── -->
+  <div class="section" id="sec-success">
+    <div class="success-screen">
+      <div class="success-icon">🎉</div>
+      <h2>הבקשה נשלחה!</h2>
+      <p>תורך התקבל ויאושר בקרוב.<br>נצרי לאישור לפני הגעה.</p>
+      <br>
+      <button class="btn btn-primary" onclick="resetBooking()" style="max-width:260px;margin:0 auto">קביעת תור נוסף</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, where, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const FB={apiKey:"AIzaSyAWkVT_GereCz0yRV15zbpGKUzQFEJmpck",authDomain:"nails-studio-9085d.firebaseapp.com",projectId:"nails-studio-9085d",storageBucket:"nails-studio-9085d.firebasestorage.app",messagingSenderId:"742223896533",appId:"1:742223896533:web:0e39da166545e51979e75c"};
+const fbApp=initializeApp(FB);
+const db=getFirestore(fbApp);
+
+let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
+let prices=[];
+let bookedSlots={}; // date -> [times]
+let calDate=new Date();
+let selectedDate=null, selectedTime=null;
+
+const HE_DAYS=['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+const HE_MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+// Load settings & prices
+async function init(){
+  try{
+    const sSnap=await getDoc(doc(db,'config','settings'));
+    if(sSnap.exists())settings={...settings,...sSnap.data()};
+    const pSnap=await getDoc(doc(db,'config','prices'));
+    if(pSnap.exists())prices=pSnap.data().list||[];
+    await loadBookedSlots();
+    renderPrices();
+    renderCal();
+  }catch(e){console.error(e);}
+  document.getElementById('loading-screen').style.display='none';
+  document.getElementById('main').style.display='block';
+}
+init();
+
+async function loadBookedSlots(){
+  // Load all confirmed/pending bookings to block slots
+  const snap=await getDocs(collection(db,'bookings'));
+  bookedSlots={};
+  snap.forEach(d=>{
+    const b=d.data();
+    if(b.status!=='cancelled'&&b.date&&b.time){
+      if(!bookedSlots[b.date])bookedSlots[b.date]=[];
+      bookedSlots[b.date].push(b.time);
+    }
+  });
+}
+
+function renderPrices(){
+  const el=document.getElementById('prices-display');
+  if(!prices.length){el.innerHTML='<p style="color:var(--muted);font-size:.85rem">תעריפים יעודכנו בקרוב</p>';return;}
+  el.innerHTML=prices.map(p=>`<div class="price-row"><span class="price-name">${esc(p.service)}</span><span class="price-val">₪${esc(p.price)}</span></div>`).join('');
+}
+
+// CALENDAR
+window.calPrev=()=>{calDate.setMonth(calDate.getMonth()-1);renderCal();};
+window.calNext=()=>{calDate.setMonth(calDate.getMonth()+1);renderCal();};
+
+function renderCal(){
+  const y=calDate.getFullYear(),m=calDate.getMonth();
+  document.getElementById('cal-title').textContent=HE_MONTHS[m]+' '+y;
+  const grid=document.getElementById('cal-grid');
+  let html=HE_DAYS.map(d=>`<div class="cal-dname">${d}</div>`).join('');
+  const first=new Date(y,m,1);
+  const startDow=first.getDay();
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=new Date();today.setHours(0,0,0,0);
+
+  for(let i=0;i<startDow;i++) html+=`<div class="cal-d other disabled"></div>`;
+
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(y,m,d);
+    const isPast=date<today;
+    const isToday=date.getTime()===today.getTime();
+    const wd=date.getDay();
+    const isWork=(settings.workDays||[0,1,2,3,4]).includes(wd);
+    const dateStr=fmtStr(date);
+    const isSel=dateStr===selectedDate;
+
+    let cls='cal-d';
+    if(isPast)cls+=' past';
+    else if(!isWork)cls+=' disabled';
+    if(isToday)cls+=' today';
+    if(isSel)cls+=' selected';
+
+    html+=`<div class="${cls}" onclick="selectDate('${dateStr}')">${d}</div>`;
+  }
+  grid.innerHTML=html;
+}
+
+window.selectDate=async(dateStr)=>{
+  selectedDate=dateStr;
+  selectedTime=null;
+  renderCal();
+  await loadBookedSlots();
+  renderSlots(dateStr);
+  updateBtn1();
+};
+
+function renderSlots(dateStr){
+  const wrap=document.getElementById('slots-wrap');
+  const nds=document.getElementById('no-day-selected');
+  const grid=document.getElementById('slots-grid');
+  wrap.style.display='block';
+  nds.style.display='none';
+
+  const slots=generateSlots(settings.workStart||'09:00',settings.workEnd||'19:00',settings.slotDuration||90);
+  const booked=bookedSlots[dateStr]||[];
+
+  if(!slots.length){grid.innerHTML='<div class="no-slots">אין שעות לתאריך זה</div>';return;}
+
+  grid.innerHTML=slots.map(t=>{
+    const isBooked=booked.includes(t);
+    const isSel=t===selectedTime;
+    return`<div class="slot ${isBooked?'booked':''} ${isSel&&!isBooked?'selected':''}" onclick="${isBooked?'':'selectSlot(\''+t+'\')'}">${t}</div>`;
+  }).join('');
+}
+
+window.selectSlot=(time)=>{
+  selectedTime=time;
+  renderSlots(selectedDate);
+  updateBtn1();
+};
+
+function generateSlots(start,end,durationMin){
+  const slots=[];
+  let[sh,sm]=start.split(':').map(Number);
+  const[eh,em]=end.split(':').map(Number);
+  const endMins=eh*60+em;
+  let cur=sh*60+sm;
+  while(cur+durationMin<=endMins){
+    slots.push(String(Math.floor(cur/60)).padStart(2,'0')+':'+String(cur%60).padStart(2,'0'));
+    cur+=durationMin;
+  }
+  return slots;
+}
+
+function updateBtn1(){
+  const btn=document.getElementById('btn-next1');
+  const ok=selectedDate&&selectedTime;
+  btn.disabled=!ok;
+  btn.style.opacity=ok?'1':'0.4';
+}
+
+// STEPS
+window.goToStep1=()=>setSection('sec1',0);
+window.goToStep2=()=>{
+  if(!selectedDate||!selectedTime){showSection('sec1');return;}
+  setSection('sec2',1);
+};
+window.goToStep3=()=>{
+  const name=document.getElementById('b-name').value.trim();
+  const phone=document.getElementById('b-phone').value.trim();
+  const service=document.getElementById('b-service').value;
+  const errEl=document.getElementById('form-err');
+  if(!name){errEl.textContent='⚠️ נדרש שם';return;}
+  if(!phone){errEl.textContent='⚠️ נדרש טלפון';return;}
+  if(!service){errEl.textContent='⚠️ נדרש שירות';return;}
+  errEl.textContent='';
+
+  // Build summary
+  document.getElementById('summary').innerHTML=`
+    <div class="sum-row"><span>📅 תאריך</span><strong>${fmtDate(selectedDate)}</strong></div>
+    <div class="sum-row"><span>⏰ שעה</span><strong>${selectedTime}</strong></div>
+    <div class="sum-row"><span>💅 שירות</span><strong>${esc(service)}</strong></div>
+    <div class="sum-row"><span>👤 שם</span><strong>${esc(name)}</strong></div>
+    <div class="sum-row"><span>📱 טלפון</span><strong dir="ltr">${esc(phone)}</strong></div>
+  `;
+  setSection('sec3',2);
+};
+
+window.confirmBooking=async()=>{
+  const btn=document.getElementById('btn-confirm');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> שולחת…';
+
+  const name=document.getElementById('b-name').value.trim();
+  const phone=document.getElementById('b-phone').value.trim();
+  const email=document.getElementById('b-email').value.trim();
+  const service=document.getElementById('b-service').value;
+  const notes=document.getElementById('b-notes').value.trim();
+
+  try{
+    await addDoc(collection(db,'bookings'),{
+      clientName:name,clientPhone:phone,clientEmail:email,
+      date:selectedDate,time:selectedTime,service,notes,
+      status:'pending',createdAt:new Date().toISOString()
+    });
+
+    // Try EmailJS notification
+    const ejsCfg=JSON.parse(localStorage.getItem('ejs_config')||'{}');
+    if(ejsCfg.serviceId&&ejsCfg.templateId&&ejsCfg.publicKey&&window.emailjs){
+      try{
+        window.emailjs.init({publicKey:ejsCfg.publicKey});
+        await window.emailjs.send(ejsCfg.serviceId,ejsCfg.templateId,{
+          to_email:'davidelkaim@gmail.com',
+          client_name:name,client_phone:phone,
+          date:fmtDate(selectedDate),time:selectedTime,service,notes
+        });
+      }catch(emailErr){console.log('Email notification failed:',emailErr);}
+    }
+
+    setSection('sec-success',-1);
+  }catch(e){
+    alert('שגיאה בשליחה, נסי שוב');console.error(e);
+  }
+  btn.disabled=false;btn.innerHTML='📅 שלחי בקשת תור';
+};
+
+window.resetBooking=()=>{
+  selectedDate=null;selectedTime=null;
+  document.getElementById('b-name').value='';
+  document.getElementById('b-phone').value='';
+  document.getElementById('b-email').value='';
+  document.getElementById('b-service').value='';
+  document.getElementById('b-notes').value='';
+  document.getElementById('slots-wrap').style.display='none';
+  document.getElementById('no-day-selected').style.display='block';
+  updateBtn1();
+  renderCal();
+  setSection('sec1',0);
+};
+
+function setSection(id,stepIdx){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.step-btn').forEach((b,i)=>b.classList.toggle('active',i===stepIdx));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function fmtStr(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+</script>
+</body>
+</html>
