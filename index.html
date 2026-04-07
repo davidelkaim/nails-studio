@@ -3,130 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>✨ סטודיו ניילס</title>
+<title>✨ סטודיו ניילס — ניהול</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--deep:#6b3050;--rose:#e896b0;--blush:#f7e0ea;--cream:#fdf6f0;--gold:#c9906a;--ink:#281820;--border:#e6cfda;--soft:#faf0f5;--white:#ffffff;--green:#3d9e6e;--red:#c0392b;--muted:#9a7088;--shadow:rgba(107,48,80,.10)}
+:root{
+  --deep:#6b3050;--rose:#e896b0;--blush:#f7e0ea;--cream:#fdf6f0;
+  --gold:#c9906a;--ink:#281820;--border:#e6cfda;--soft:#faf0f5;
+  --white:#fff;--green:#3d9e6e;--red:#c0392b;--muted:#9a7088;
+  --blue:#3a7abf;--shadow:rgba(107,48,80,.09);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--ink);direction:rtl;min-height:100vh}
-.topbar{background:var(--deep);padding:0 28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;position:sticky;top:0;z-index:200}
-.brand{color:var(--blush);font-size:1.25rem;font-weight:800;padding:15px 0}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--deep);padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;position:sticky;top:0;z-index:300;gap:0}
+.brand{color:var(--blush);font-size:1.2rem;font-weight:800;padding:14px 0;white-space:nowrap}
 .brand span{color:var(--rose)}
-.nav{display:flex}
-.nav-btn{background:none;border:none;color:#c9a8bc;font-family:'Heebo',sans-serif;font-size:.86rem;font-weight:600;padding:17px 14px;cursor:pointer;border-bottom:3px solid transparent;transition:color .2s,border-color .2s;white-space:nowrap}
-.nav-btn:hover{color:var(--blush)}
-.nav-btn.active{color:var(--rose);border-bottom-color:var(--rose)}
-.sync-pill{display:flex;align-items:center;gap:6px;font-size:.76rem;color:#c9a8bc}
+.nav{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav::-webkit-scrollbar{display:none}
+.nb{background:none;border:none;color:#c9a8bc;font-family:'Heebo',sans-serif;font-size:.82rem;font-weight:600;padding:16px 12px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
+.nb:hover{color:var(--blush)}
+.nb.active{color:var(--rose);border-bottom-color:var(--rose)}
+.nb .badge-n{background:var(--rose);color:var(--white);border-radius:20px;font-size:.65rem;padding:1px 6px;margin-right:4px;font-weight:700}
+.sync-pill{display:flex;align-items:center;gap:5px;font-size:.74rem;color:#c9a8bc;white-space:nowrap}
 .dot{width:7px;height:7px;border-radius:50%;background:#555;transition:background .3s}
 .dot.ok{background:#3d9e6e}.dot.err{background:var(--red)}.dot.loading{background:var(--gold);animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-.page{display:none;max-width:1080px;margin:0 auto;padding:24px 18px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── PAGES ── */
+.page{display:none;max-width:1080px;margin:0 auto;padding:22px 16px}
 .page.active{display:block}
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:24px 26px;margin-bottom:20px;box-shadow:0 2px 12px var(--shadow)}
-.card-title{font-size:1rem;font-weight:700;color:var(--deep);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
-.form-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:14px}
-.fg{display:flex;flex-direction:column;gap:5px}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:18px;box-shadow:0 2px 12px var(--shadow)}
+.card-title{font-size:.98rem;font-weight:700;color:var(--deep);margin-bottom:16px;padding-bottom:11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card-title-left{display:flex;align-items:center;gap:8px}
+
+/* ── FORM ── */
+.fg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px}
+.fg{display:flex;flex-direction:column;gap:4px}
 .fg.full{grid-column:1/-1}
 .fg.req label::after{content:' *';color:var(--rose)}
-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--deep)}
-input,select,textarea{font-family:'Heebo',sans-serif;font-size:.92rem;padding:9px 11px;border:1.5px solid var(--border);border-radius:9px;background:var(--soft);color:var(--ink);direction:rtl;text-align:right;outline:none;transition:border-color .2s,box-shadow .2s}
-input:focus,select:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,150,176,.18);background:var(--white)}
+label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--deep)}
+input,select,textarea{font-family:'Heebo',sans-serif;font-size:.91rem;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;background:var(--soft);color:var(--ink);direction:rtl;text-align:right;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,150,176,.15);background:var(--white)}
 input.err{border-color:var(--red)!important}
-textarea{resize:vertical;min-height:62px}
-.ac-wrap{position:relative}
-.ac-list{position:absolute;top:calc(100% + 3px);right:0;left:0;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px var(--shadow);z-index:300;max-height:190px;overflow-y:auto;display:none}
-.ac-item{padding:9px 13px;cursor:pointer;font-size:.88rem;display:flex;justify-content:space-between;align-items:center}
-.ac-item:hover{background:var(--soft)}
-.ac-ph{font-size:.76rem;color:var(--muted);direction:ltr}
-.btn{font-family:'Heebo',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;border:none;border-radius:50px;padding:10px 24px;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:6px}
-.btn:hover{transform:translateY(-1px)}
-.btn:active{transform:translateY(0)}
-.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.btn-primary{background:var(--deep);color:var(--blush)}
-.btn-primary:hover{background:#5a2844}
-.btn-gold{background:var(--gold);color:var(--white)}
-.btn-gold:hover{background:#b5805a}
-.btn-ghost{background:var(--soft);color:var(--deep);border:1.5px solid var(--border)}
-.btn-ghost:hover{background:var(--blush)}
-.btn-sm{padding:6px 14px;font-size:.78rem}
-.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+textarea{resize:vertical;min-height:60px}
+
+/* ── BUTTONS ── */
+.btn{font-family:'Heebo',sans-serif;font-size:.86rem;font-weight:600;cursor:pointer;border:none;border-radius:50px;padding:9px 22px;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-1px)}.btn:active{transform:none}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--deep);color:var(--blush)}.btn-primary:hover{background:#5a2844}
+.btn-gold{background:var(--gold);color:var(--white)}.btn-gold:hover{background:#b5805a}
+.btn-ghost{background:var(--soft);color:var(--deep);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--blush)}
+.btn-green{background:var(--green);color:var(--white)}.btn-green:hover{background:#2d7a54}
+.btn-red{background:#fde8e8;color:var(--red);border:1px solid #f5c6c6}.btn-red:hover{background:#fdd}
+.btn-sm{padding:5px 13px;font-size:.76rem}
+.btn-blue{background:var(--blue);color:var(--white)}.btn-blue:hover{background:#2d6aaa}
+.spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--deep);color:var(--blush);padding:10px 22px;border-radius:50px;font-size:.87rem;font-weight:500;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;white-space:nowrap}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.tbl-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:13px}
-.sw{position:relative}
-.sw input{padding-right:32px;width:190px}
-.si{position:absolute;right:9px;top:50%;transform:translateY(-50%);color:var(--rose);pointer-events:none;font-size:.9rem}
+
+/* ── TABLE ── */
+.tbl-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px;margin-bottom:12px}
+.sw{position:relative}.sw input{padding-right:30px;width:185px}
+.si{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--rose);pointer-events:none;font-size:.88rem}
 .tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
-table{width:100%;border-collapse:collapse;font-size:.85rem}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
 thead{background:var(--deep);color:var(--blush)}
-thead th{padding:10px 12px;text-align:right;font-weight:600;font-size:.72rem;letter-spacing:.05em;white-space:nowrap}
+thead th{padding:9px 11px;text-align:right;font-weight:600;font-size:.7rem;letter-spacing:.05em;white-space:nowrap}
 tbody tr{border-bottom:1px solid var(--border);transition:background .15s}
 tbody tr:last-child{border-bottom:none}
 tbody tr:hover{background:var(--soft)}
-td{padding:9px 12px;vertical-align:middle}
+td{padding:8px 11px;vertical-align:middle}
 td.amt{font-weight:700;color:var(--green)}
-.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.71rem;font-weight:600;background:var(--blush);color:var(--deep);white-space:nowrap}
-.badge.cash{background:#d4edda;color:#1e6b3a}
-.badge.card{background:#d0e4f7;color:#1a4a7a}
-.badge.bit{background:#e8f7d0;color:#2a5a10}
-.badge.paybox{background:#f0d0f7;color:#5a1a7a}
+td.amt.neg{color:var(--red)}
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:.7rem;font-weight:600;background:var(--blush);color:var(--deep);white-space:nowrap}
+.badge.cash{background:#d4edda;color:#1e6b3a}.badge.card{background:#d0e4f7;color:#1a4a7a}
+.badge.bit{background:#e8f7d0;color:#2a5a10}.badge.paybox{background:#f0d0f7;color:#5a1a7a}
 .badge.transfer{background:#fde8c8;color:#7a4a1a}
-.rl{color:var(--deep);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
-.rl:hover{color:var(--rose)}
-.bd{background:none;border:none;cursor:pointer;color:#cbb;font-size:.9rem;padding:2px 6px;border-radius:5px;transition:color .15s,background .15s}
-.bd:hover{color:var(--red);background:#fde8e8}
-.empty{text-align:center;padding:40px 20px;color:var(--muted)}
-.empty .ei{font-size:2rem;margin-bottom:7px}
-.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-bottom:20px}
-.kbox{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center;box-shadow:0 1px 6px var(--shadow)}
-.kbox .kv{font-size:1.5rem;font-weight:800;color:var(--deep);line-height:1.1}
-.kbox .kl{font-size:.73rem;color:var(--muted);margin-top:4px;font-weight:500}
-.kbox.acc{background:var(--deep);border-color:var(--deep)}
-.kbox.acc .kv{color:var(--rose)}
-.kbox.acc .kl{color:#c9a8bc}
-.period-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
-.pb{background:var(--soft);border:1.5px solid var(--border);color:var(--deep);font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:50px;cursor:pointer;transition:background .2s}
+.badge.pending{background:#fff3cd;color:#856404}
+.badge.confirmed{background:#d4edda;color:#1e6b3a}
+.badge.cancelled{background:#fde8e8;color:var(--red)}
+.rl{color:var(--deep);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}.rl:hover{color:var(--rose)}
+.bd{background:none;border:none;cursor:pointer;color:#cbb;font-size:.88rem;padding:2px 6px;border-radius:5px;transition:color .15s,background .15s}.bd:hover{color:var(--red);background:#fde8e8}
+.empty{text-align:center;padding:38px 20px;color:var(--muted)}.empty .ei{font-size:1.8rem;margin-bottom:7px}
+
+/* ── AUTOCOMPLETE ── */
+.ac-wrap{position:relative}
+.ac-list{position:absolute;top:calc(100% + 3px);right:0;left:0;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px var(--shadow);z-index:400;max-height:180px;overflow-y:auto;display:none}
+.ac-item{padding:8px 13px;cursor:pointer;font-size:.87rem;display:flex;justify-content:space-between;align-items:center}.ac-item:hover{background:var(--soft)}
+.ac-ph{font-size:.74rem;color:var(--muted);direction:ltr}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--deep);color:var(--blush);padding:9px 20px;border-radius:50px;font-size:.86rem;font-weight:500;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── STATS ── */
+.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px;margin-bottom:18px}
+.kbox{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px;text-align:center;box-shadow:0 1px 6px var(--shadow)}
+.kbox .kv{font-size:1.45rem;font-weight:800;color:var(--deep);line-height:1.1}
+.kbox .kl{font-size:.7rem;color:var(--muted);margin-top:4px;font-weight:500}
+.kbox.acc{background:var(--deep);border-color:var(--deep)}.kbox.acc .kv{color:var(--rose)}.kbox.acc .kl{color:#c9a8bc}
+.kbox.red{background:#fff0f0;border-color:#f5c6c6}.kbox.red .kv{color:var(--red)}
+.kbox.gre{background:#f0fff4;border-color:#b8e0c8}.kbox.gre .kv{color:var(--green)}
+.period-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.pb{background:var(--soft);border:1.5px solid var(--border);color:var(--deep);font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:600;padding:5px 13px;border-radius:50px;cursor:pointer;transition:background .2s}
 .pb.active{background:var(--deep);color:var(--blush);border-color:var(--deep)}
-.cr{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.cr input{width:135px;font-size:.84rem}
-.section-lbl{font-size:.8rem;font-weight:700;color:var(--deep);margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cr{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.cr input{width:130px;font-size:.83rem}
+.section-lbl{font-size:.77rem;font-weight:700;color:var(--deep);margin-bottom:9px;text-transform:uppercase;letter-spacing:.06em}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:640px){.two-col{grid-template-columns:1fr}}
-.chart-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
-.chart-lbl{font-size:.76rem;color:var(--ink);width:120px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chart-track{flex:1;background:var(--soft);border-radius:20px;height:16px;overflow:hidden}
-.chart-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--deep));border-radius:20px;transition:width .5s ease;min-width:2px}
-.chart-val{font-size:.76rem;font-weight:700;color:var(--deep);white-space:nowrap;width:55px;text-align:left;flex-shrink:0}
-.mbg{display:none;position:fixed;inset:0;background:rgba(40,24,32,.55);z-index:500;backdrop-filter:blur(3px);align-items:flex-start;justify-content:center;padding:28px 14px;overflow-y:auto}
+.chart-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.chart-lbl{font-size:.74rem;color:var(--ink);width:115px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chart-track{flex:1;background:var(--soft);border-radius:20px;height:15px;overflow:hidden}
+.chart-fill{height:100%;border-radius:20px;transition:width .5s ease;min-width:2px}
+.chart-fill.income{background:linear-gradient(90deg,var(--rose),var(--deep))}
+.chart-fill.expense{background:linear-gradient(90deg,#f5a623,var(--red))}
+.chart-val{font-size:.74rem;font-weight:700;color:var(--deep);white-space:nowrap;width:52px;text-align:left;flex-shrink:0}
+
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cal-header h3{font-size:1rem;font-weight:700;color:var(--deep)}
+.cal-nav{background:none;border:1.5px solid var(--border);color:var(--deep);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}.cal-nav:hover{background:var(--blush)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-day-name{text-align:center;font-size:.68rem;font-weight:700;color:var(--muted);padding:4px 0;text-transform:uppercase}
+.cal-day{min-height:70px;border:1.5px solid var(--border);border-radius:9px;padding:5px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;background:var(--white)}
+.cal-day:hover{border-color:var(--rose);background:var(--soft)}
+.cal-day.today{border-color:var(--rose);background:var(--blush)}
+.cal-day.other-month{background:#f8f4f6;opacity:.5}
+.cal-day.past{opacity:.4;cursor:default;pointer-events:none}
+.cal-day.disabled{background:#f5f0f3;opacity:.5;cursor:not-allowed;pointer-events:none}
+.cal-day .day-num{font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:3px}
+.cal-day.today .day-num{color:var(--deep)}
+.appt-dot{font-size:.68rem;background:var(--rose);color:var(--white);border-radius:4px;padding:1px 4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appt-dot.confirmed{background:var(--green)}
+.appt-dot.pending{background:var(--gold)}
+
+/* ── SLOTS ── */
+.slots-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;margin-top:10px}
+.slot{border:1.5px solid var(--border);border-radius:9px;padding:8px;text-align:center;cursor:pointer;transition:all .2s;font-size:.82rem;font-weight:600}
+.slot:hover{border-color:var(--rose);background:var(--soft)}
+.slot.available{border-color:var(--green);color:var(--green);background:#f0fff4}
+.slot.booked{border-color:var(--red);color:var(--red);background:#fff0f0;cursor:default}
+.slot.blocked{background:#f5f0f3;color:var(--muted);cursor:not-allowed}
+
+/* ── MODAL ── */
+.mbg{display:none;position:fixed;inset:0;background:rgba(40,24,32,.55);z-index:500;backdrop-filter:blur(3px);align-items:flex-start;justify-content:center;padding:24px 14px;overflow-y:auto}
 .mbg.open{display:flex}
-.modal{background:var(--white);border-radius:18px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 20px 60px rgba(40,24,32,.25)}
-.mh{background:var(--deep);padding:22px 26px;color:var(--blush);display:flex;justify-content:space-between;align-items:flex-start}
-.mh h2{font-size:1.2rem;font-weight:800}
-.mh .sub{color:#c9a8bc;font-size:.8rem;margin-top:3px;direction:ltr}
-.mc-btn{background:rgba(255,255,255,.15);border:none;color:var(--blush);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:.95rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.mc-btn:hover{background:rgba(255,255,255,.3)}
-.mb{padding:22px 26px}
-.cust-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.modal{background:var(--white);border-radius:16px;width:100%;max-width:640px;overflow:hidden;box-shadow:0 20px 60px rgba(40,24,32,.25)}
+.mh{background:var(--deep);padding:20px 24px;color:var(--blush);display:flex;justify-content:space-between;align-items:flex-start}
+.mh h2{font-size:1.1rem;font-weight:800}
+.mh .sub{color:#c9a8bc;font-size:.78rem;margin-top:3px}
+.mc-btn{background:rgba(255,255,255,.15);border:none;color:var(--blush);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}.mc-btn:hover{background:rgba(255,255,255,.3)}
+.mb{padding:20px 24px}
+.cust-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
 @media(max-width:480px){.cust-stats{grid-template-columns:repeat(2,1fr)}}
-.cs{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
-.cs .v{font-size:1.3rem;font-weight:800;color:var(--deep)}
-.cs .l{font-size:.7rem;color:var(--muted);margin-top:3px;font-weight:500}
-.vlist{max-height:270px;overflow-y:auto}
-.vrow{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.cs{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:11px;text-align:center}
+.cs .v{font-size:1.2rem;font-weight:800;color:var(--deep)}.cs .l{font-size:.68rem;color:var(--muted);margin-top:3px;font-weight:500}
+.vlist{max-height:250px;overflow-y:auto}
+.vrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap}
 .vrow:last-child{border-bottom:none}
-.vl .vd{font-size:.77rem;color:var(--muted)}
-.vl .vs{font-weight:600;margin-top:1px;font-size:.88rem}
-.vl .vn{font-size:.75rem;color:var(--muted);font-style:italic}
-.vr-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
-.loading-screen{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:16px}
-.loading-screen .logo{font-size:2rem;font-weight:800;color:var(--deep)}
+.vl .vd{font-size:.74rem;color:var(--muted)}.vl .vs{font-weight:600;font-size:.86rem}.vl .vn{font-size:.72rem;color:var(--muted);font-style:italic}
+.vr-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
+
+/* ── RDV CARD ── */
+.rdv-card{border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;transition:border-color .2s}
+.rdv-card:hover{border-color:var(--rose)}
+.rdv-card.pending{border-right:4px solid var(--gold)}
+.rdv-card.confirmed{border-right:4px solid var(--green)}
+.rdv-card.cancelled{border-right:4px solid var(--red);opacity:.6}
+.rdv-info .rdv-name{font-weight:700;font-size:.95rem}
+.rdv-info .rdv-details{font-size:.78rem;color:var(--muted);margin-top:3px}
+.rdv-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center;flex-shrink:0}
+
+/* ── P&L ── */
+.pnl-banner{border-radius:12px;padding:20px;text-align:center;margin-bottom:18px}
+.pnl-banner.profit{background:linear-gradient(135deg,#e8f5ee,#d4edda)}
+.pnl-banner.loss{background:linear-gradient(135deg,#fff0f0,#fde8e8)}
+.pnl-banner .pnl-val{font-size:2.2rem;font-weight:800;color:var(--deep)}
+.pnl-banner.loss .pnl-val{color:var(--red)}
+.pnl-banner .pnl-lbl{font-size:.82rem;color:var(--muted);margin-top:5px}
+
+/* LOADING */
+.loading-screen{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:14px}
+.loading-screen .logo{font-size:1.9rem;font-weight:800;color:var(--deep)}
 .loading-screen .logo span{color:var(--rose)}
-.loading-screen p{color:var(--muted);font-size:.9rem}
-.loading-bar{width:200px;height:3px;background:var(--border);border-radius:20px;overflow:hidden}
+.loading-bar{width:180px;height:3px;background:var(--border);border-radius:20px;overflow:hidden}
 .loading-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--deep));border-radius:20px;animation:load 1.5s ease infinite}
 @keyframes load{0%{width:10%;margin-right:90%}50%{width:60%;margin-right:0}100%{width:10%;margin-right:90%}}
-@media(max-width:560px){.mbg{padding:0;align-items:flex-end}.modal{border-radius:18px 18px 0 0}}
+
+/* AVAILABILITY TOGGLE */
+.day-toggles{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.day-tog{padding:7px 14px;border-radius:50px;border:1.5px solid var(--border);font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);background:var(--soft)}
+.day-tog.on{background:var(--deep);color:var(--blush);border-color:var(--deep)}
+
+@media(max-width:560px){.mbg{padding:0;align-items:flex-end}.modal{border-radius:16px 16px 0 0}.cal-grid{gap:2px}.cal-day{min-height:55px}}
 </style>
 </head>
 <body>
@@ -134,122 +205,252 @@ td.amt{font-weight:700;color:var(--green)}
 <div class="loading-screen" id="loading-screen">
   <div class="logo">✨ סטודיו <span>ניילס</span></div>
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
-  <p>מתחברת למסד הנתונים…</p>
+  <p style="color:var(--muted);font-size:.88rem">מתחברת…</p>
 </div>
 
-<div id="app-wrap" style="display:none">
-  <div class="topbar">
-    <div class="brand">✨ סטודיו <span>ניילס</span></div>
-    <div class="nav">
-      <button class="nav-btn active" onclick="showPage('add',this)">＋ תור חדש</button>
-      <button class="nav-btn" onclick="showPage('clients',this)">👥 לקוחות</button>
-      <button class="nav-btn" onclick="showPage('stats',this)">📊 סטטיסטיקות</button>
+<div id="app" style="display:none">
+<div class="topbar">
+  <div class="brand">✨ סטודיו <span>ניילס</span></div>
+  <div class="nav">
+    <button class="nb active" onclick="showPage('appts',this)">📅 תורים <span class="badge-n" id="pending-badge" style="display:none">0</span></button>
+    <button class="nb" onclick="showPage('add',this)">＋ הוספה</button>
+    <button class="nb" onclick="showPage('clients',this)">👥 לקוחות</button>
+    <button class="nb" onclick="showPage('expenses',this)">💸 הוצאות</button>
+    <button class="nb" onclick="showPage('pnl',this)">📊 P&L</button>
+    <button class="nb" onclick="showPage('settings',this)">⚙️ הגדרות</button>
+  </div>
+  <div class="sync-pill"><span id="sync-lbl">מתחבר…</span><span class="dot loading" id="sync-dot"></span></div>
+</div>
+
+<!-- ═══ PAGE: APPOINTMENTS ═══ -->
+<div class="page active" id="page-appts">
+  <!-- Calendar -->
+  <div class="card">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calPrev()">‹</button>
+      <h3 id="cal-title"></h3>
+      <button class="cal-nav" onclick="calNext()">›</button>
     </div>
-    <div class="sync-pill"><span id="sync-lbl">מתחבר…</span><span class="dot loading" id="sync-dot"></span></div>
+    <div class="cal-grid" id="cal-grid"></div>
   </div>
 
-  <!-- ADD -->
-  <div class="page active" id="page-add">
-    <div class="card">
-      <div class="card-title">💅 הוספת תור</div>
-      <div class="form-grid">
-        <div class="fg req">
-          <label>טלפון</label>
-          <div class="ac-wrap">
-            <input type="tel" id="f-phone" placeholder="0501234567" oninput="onPhone()" onblur="closeAc()" autocomplete="off"/>
-            <div class="ac-list" id="ac-list"></div>
-          </div>
-          <span style="font-size:.7rem;color:var(--muted)">מזהה ייחודי של הלקוחה</span>
-        </div>
-        <div class="fg"><label>שם הלקוחה</label><input type="text" id="f-name" placeholder="שרה כהן"/></div>
-        <div class="fg"><label>תאריך</label><input type="date" id="f-date"/></div>
-        <div class="fg"><label>אימייל</label><input type="email" id="f-email" placeholder="sarah@email.com"/></div>
-        <div class="fg req">
-          <label>שירות</label>
-          <select id="f-service" onchange="toggleOther()">
-            <option value="">— בחרי שירות —</option>
-            <option>מניקור ג׳ל</option><option>מניקור קלאסי</option>
-            <option>פדיקור ג׳ל</option><option>פדיקור קלאסי</option>
-            <option>ציפורניים אקרילי — סט מלא</option><option>ציפורניים אקרילי — תיקון</option>
-            <option>עיצוב ציפורניים (נייל ארט)</option><option>החלפת לק ג׳ל</option>
-            <option>תיקון ציפורן</option><option>הסרה</option>
-            <option value="other">אחר…</option>
-          </select>
-        </div>
-        <div class="fg" id="other-wrap" style="display:none"><label>פרטי השירות</label><input type="text" id="f-other" placeholder="תארי…"/></div>
-        <div class="fg req"><label>סכום שהתקבל (₪)</label><input type="number" id="f-amount" placeholder="0" min="0" step="1"/></div>
-        <div class="fg">
-          <label>אמצעי תשלום</label>
-          <select id="f-payment">
-            <option value="">— בחרי —</option>
-            <option value="cash">💵 מזומן</option><option value="card">💳 אשראי</option>
-            <option value="bit">📱 ביט</option><option value="paybox">💜 פייבוקס</option>
-            <option value="transfer">🏦 העברה בנקאית</option>
-          </select>
-        </div>
-        <div class="fg full"><label>הערות (אופציונלי)</label><textarea id="f-notes" placeholder="צבע, העדפות, תור הבא…"></textarea></div>
-      </div>
-      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-primary" id="btn-add" onclick="addEntry()">＋ הוסף תור</button>
-        <span id="add-err" style="font-size:.8rem;color:var(--red);font-weight:600"></span>
-      </div>
+  <!-- Pending RDV -->
+  <div class="card">
+    <div class="card-title">
+      <div class="card-title-left">⏳ ממתינות לאישור</div>
     </div>
+    <div id="pending-list"><div class="empty"><div class="ei">✅</div>אין בקשות ממתינות</div></div>
   </div>
 
-  <!-- CLIENTS -->
-  <div class="page" id="page-clients">
-    <div class="card">
-      <div class="card-title">👥 לקוחות</div>
-      <div class="tbl-top">
-        <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-          <div class="sw"><span class="si">🔍</span><input type="text" id="cl-search" placeholder="חיפוש לקוחה…" oninput="renderClients()"/></div>
-          <span id="cl-count" style="font-size:.8rem;color:var(--muted)"></span>
-        </div>
-        <button class="btn btn-gold btn-sm" onclick="downloadCSV()">⬇ ייצוא CSV</button>
-      </div>
-      <div class="tw">
-        <table><thead><tr><th>שם</th><th>טלפון</th><th>ביקורים</th><th>סה"כ שולם</th><th>ממוצע</th><th>תור אחרון</th><th>שירות נפוץ</th><th></th></tr></thead><tbody id="cl-body"></tbody></table>
-        <div id="cl-empty" class="empty" style="display:none"><div class="ei">👥</div>אין לקוחות עדיין</div>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">📋 כל הביקורים</div>
-      <div class="tbl-top"><div class="sw"><span class="si">🔍</span><input type="text" id="vis-search" placeholder="חיפוש…" oninput="renderVisits()"/></div></div>
-      <div class="tw">
-        <table><thead><tr><th>#</th><th>שם</th><th>טלפון</th><th>תאריך</th><th>שירות</th><th>סכום</th><th>תשלום</th><th>הערות</th><th></th></tr></thead><tbody id="vis-body"></tbody></table>
-        <div id="vis-empty" class="empty" style="display:none"><div class="ei">💅</div>אין ביקורים עדיין</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- STATS -->
-  <div class="page" id="page-stats">
-    <div class="card">
-      <div class="card-title">📅 בחירת תקופה</div>
-      <div class="period-bar">
-        <button class="pb active" onclick="setPeriod('week',this)">שבוע אחרון</button>
-        <button class="pb" onclick="setPeriod('month',this)">חודש אחרון</button>
-        <button class="pb" onclick="setPeriod('3months',this)">3 חודשים</button>
-        <button class="pb" onclick="setPeriod('year',this)">שנה</button>
-        <button class="pb" onclick="setPeriod('all',this)">הכל</button>
-        <button class="pb" onclick="setPeriod('custom',this)">טווח מותאם ▾</button>
-      </div>
-      <div class="cr" id="custom-range" style="display:none">
-        <input type="date" id="range-from" onchange="renderStats()"/>
-        <span style="color:var(--muted);font-size:.82rem">עד</span>
-        <input type="date" id="range-to" onchange="renderStats()"/>
-      </div>
-    </div>
-    <div class="kpi" id="kpi"></div>
-    <div class="two-col">
-      <div class="card"><div class="section-lbl">שירותים פופולריים</div><div id="ch-svc"></div></div>
-      <div class="card"><div class="section-lbl">אמצעי תשלום</div><div id="ch-pay"></div></div>
-    </div>
-    <div class="card"><div class="section-lbl">לקוחות מובילות (לפי הכנסה)</div><div id="ch-cust"></div></div>
+  <!-- Confirmed RDV -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">✅ תורים מאושרים</div></div>
+    <div id="confirmed-list"><div class="empty"><div class="ei">📅</div>אין תורים מאושרים</div></div>
   </div>
 </div>
 
-<!-- MODAL -->
+<!-- ═══ PAGE: ADD VISIT ═══ -->
+<div class="page" id="page-add">
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">💅 הוספת ביקור ידני</div></div>
+    <div class="fg-grid">
+      <div class="fg req">
+        <label>טלפון</label>
+        <div class="ac-wrap">
+          <input type="tel" id="f-phone" placeholder="0501234567" oninput="onPhone()" onblur="closeAc()" autocomplete="off"/>
+          <div class="ac-list" id="ac-list"></div>
+        </div>
+        <span style="font-size:.68rem;color:var(--muted)">מזהה ייחודי</span>
+      </div>
+      <div class="fg"><label>שם הלקוחה</label><input type="text" id="f-name" placeholder="שרה כהן"/></div>
+      <div class="fg"><label>תאריך</label><input type="date" id="f-date"/></div>
+      <div class="fg"><label>שעה</label><input type="time" id="f-time"/></div>
+      <div class="fg"><label>אימייל</label><input type="email" id="f-email" placeholder="sarah@email.com"/></div>
+      <div class="fg req">
+        <label>שירות</label>
+        <select id="f-service" onchange="toggleOther()">
+          <option value="">— בחרי שירות —</option>
+          <option>מניקור ג׳ל</option><option>מניקור קלאסי</option>
+          <option>פדיקור ג׳ל</option><option>פדיקור קלאסי</option>
+          <option>ציפורניים אקרילי — סט מלא</option><option>ציפורניים אקרילי — תיקון</option>
+          <option>עיצוב ציפורניים (נייל ארט)</option><option>החלפת לק ג׳ל</option>
+          <option>תיקון ציפורן</option><option>הסרה</option>
+          <option value="other">אחר…</option>
+        </select>
+      </div>
+      <div class="fg" id="other-wrap" style="display:none"><label>פרטי השירות</label><input type="text" id="f-other" placeholder="תארי…"/></div>
+      <div class="fg req"><label>סכום שהתקבל (₪)</label><input type="number" id="f-amount" placeholder="0" min="0" step="1"/></div>
+      <div class="fg">
+        <label>אמצעי תשלום</label>
+        <select id="f-payment">
+          <option value="">— בחרי —</option>
+          <option value="cash">💵 מזומן</option><option value="card">💳 אשראי</option>
+          <option value="bit">📱 ביט</option><option value="paybox">💜 פייבוקס</option>
+          <option value="transfer">🏦 העברה בנקאית</option>
+        </select>
+      </div>
+      <div class="fg full"><label>הערות</label><textarea id="f-notes" placeholder="צבע, העדפות, תור הבא…"></textarea></div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
+      <button class="btn btn-primary" id="btn-add" onclick="addVisit()">＋ הוסף ביקור</button>
+      <span id="add-err" style="font-size:.78rem;color:var(--red);font-weight:600"></span>
+    </div>
+  </div>
+
+  <!-- Recent visits -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">📋 ביקורים אחרונים</div>
+      <button class="btn btn-gold btn-sm" onclick="downloadCSV()">⬇ CSV</button>
+    </div>
+    <div class="tbl-top">
+      <div class="sw"><span class="si">🔍</span><input type="text" id="vis-search" placeholder="חיפוש…" oninput="renderVisits()"/></div>
+    </div>
+    <div class="tw">
+      <table><thead><tr><th>#</th><th>שם</th><th>טלפון</th><th>תאריך</th><th>שירות</th><th>סכום</th><th>תשלום</th><th>הערות</th><th></th></tr></thead>
+      <tbody id="vis-body"></tbody></table>
+      <div id="vis-empty" class="empty" style="display:none"><div class="ei">💅</div>אין ביקורים</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: CLIENTS ═══ -->
+<div class="page" id="page-clients">
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">👥 לקוחות</div></div>
+    <div class="tbl-top">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <div class="sw"><span class="si">🔍</span><input type="text" id="cl-search" placeholder="חיפוש…" oninput="renderClients()"/></div>
+        <span id="cl-count" style="font-size:.78rem;color:var(--muted)"></span>
+      </div>
+    </div>
+    <div class="tw">
+      <table><thead><tr><th>שם</th><th>טלפון</th><th>ביקורים</th><th>סה"כ</th><th>ממוצע</th><th>תור אחרון</th><th>שירות נפוץ</th><th></th></tr></thead>
+      <tbody id="cl-body"></tbody></table>
+      <div id="cl-empty" class="empty" style="display:none"><div class="ei">👥</div>אין לקוחות</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: EXPENSES ═══ -->
+<div class="page" id="page-expenses">
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">➕ הוספת הוצאה</div></div>
+    <div class="fg-grid">
+      <div class="fg req"><label>תאריך</label><input type="date" id="exp-date"/></div>
+      <div class="fg req">
+        <label>קטגוריה</label>
+        <select id="exp-cat">
+          <option value="">— בחרי —</option>
+          <option>חומרים ומוצרים</option><option>שכירות</option><option>תחבורה</option>
+          <option>ציוד</option><option>שיווק ופרסום</option><option>הכשרות</option>
+          <option value="custom">אחר (הגדרי)</option>
+        </select>
+      </div>
+      <div class="fg" id="exp-custom-wrap" style="display:none"><label>קטגוריה מותאמת</label><input type="text" id="exp-custom" placeholder="שם הקטגוריה…"/></div>
+      <div class="fg req"><label>סכום (₪)</label><input type="number" id="exp-amount" placeholder="0" min="0" step="1"/></div>
+      <div class="fg full"><label>תיאור (אופציונלי)</label><input type="text" id="exp-desc" placeholder="פרטים על ההוצאה…"/></div>
+    </div>
+    <div style="margin-top:13px;display:flex;gap:9px;align-items:center">
+      <button class="btn btn-primary" id="btn-exp" onclick="addExpense()">＋ הוסף הוצאה</button>
+      <span id="exp-err" style="font-size:.78rem;color:var(--red);font-weight:600"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">💸 היסטוריית הוצאות</div></div>
+    <div class="tw">
+      <table><thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th></th></tr></thead>
+      <tbody id="exp-body"></tbody></table>
+      <div id="exp-empty" class="empty" style="display:none"><div class="ei">💸</div>אין הוצאות</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE: P&L ═══ -->
+<div class="page" id="page-pnl">
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">📅 תקופה</div></div>
+    <div class="period-bar">
+      <button class="pb active" onclick="setPnlPeriod('month',this)">חודש זה</button>
+      <button class="pb" onclick="setPnlPeriod('3months',this)">3 חודשים</button>
+      <button class="pb" onclick="setPnlPeriod('year',this)">שנה זו</button>
+      <button class="pb" onclick="setPnlPeriod('all',this)">הכל</button>
+      <button class="pb" onclick="setPnlPeriod('custom',this)">מותאם ▾</button>
+    </div>
+    <div class="cr" id="pnl-custom" style="display:none">
+      <input type="date" id="pnl-from" onchange="renderPnl()"/>
+      <span style="color:var(--muted);font-size:.8rem">עד</span>
+      <input type="date" id="pnl-to" onchange="renderPnl()"/>
+    </div>
+  </div>
+  <div id="pnl-banner"></div>
+  <div class="kpi" id="pnl-kpi"></div>
+  <div class="two-col">
+    <div class="card"><div class="section-lbl">הכנסות לפי שירות</div><div id="pnl-ch-svc"></div></div>
+    <div class="card"><div class="section-lbl">הוצאות לפי קטגוריה</div><div id="pnl-ch-exp"></div></div>
+  </div>
+  <div class="card"><div class="section-lbl">לקוחות מובילות</div><div id="pnl-ch-cust"></div></div>
+</div>
+
+<!-- ═══ PAGE: SETTINGS ═══ -->
+<div class="page" id="page-settings">
+  <!-- Booking link -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">🔗 קישור לקוחות</div></div>
+    <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px">שתפי את הקישור הזה עם לקוחות לקביעת תורים:</p>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <input type="text" id="booking-url" readonly style="flex:1;min-width:200px;direction:ltr;text-align:left;font-size:.8rem;background:#f0f0f0"/>
+      <button class="btn btn-ghost btn-sm" onclick="copyBookingUrl()">📋 העתק</button>
+    </div>
+  </div>
+
+  <!-- Working days -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">📅 ימי עבודה</div></div>
+    <div class="day-toggles" id="day-toggles"></div>
+    <button class="btn btn-primary btn-sm" onclick="saveWorkDays()">💾 שמור ימים</button>
+  </div>
+
+  <!-- Working hours -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">🕐 שעות עבודה</div></div>
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+      <div class="fg"><label>שעת התחלה</label><input type="time" id="work-start" value="09:00"/></div>
+      <div class="fg"><label>שעת סיום</label><input type="time" id="work-end" value="19:00"/></div>
+      <div class="fg"><label>משך כל תור (דקות)</label><input type="number" id="slot-duration" value="90" min="15" max="240" step="15"/></div>
+    </div>
+    <button class="btn btn-primary btn-sm" onclick="saveHours()">💾 שמור שעות</button>
+  </div>
+
+  <!-- Pricing -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">💅 תעריפים (יוצגו ללקוחות)</div></div>
+    <div id="prices-list"></div>
+    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+      <input type="text" id="price-service" placeholder="שם השירות" style="flex:2;min-width:130px"/>
+      <input type="text" id="price-price" placeholder="מחיר (₪)" style="flex:1;min-width:80px"/>
+      <button class="btn btn-primary btn-sm" onclick="addPrice()">＋ הוסף</button>
+    </div>
+    <button class="btn btn-gold btn-sm" style="margin-top:10px" onclick="savePrices()">💾 שמור תעריפים</button>
+  </div>
+
+  <!-- EmailJS -->
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">📧 הגדרות Email (התראות)</div></div>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">הירשמי בחינם ב-<a href="https://emailjs.com" target="_blank" style="color:var(--deep)">emailjs.com</a> וקבלי מייל על כל תור חדש:</p>
+    <div class="fg-grid">
+      <div class="fg"><label>Service ID</label><input type="text" id="ejs-sid" placeholder="service_xxxxxx"/></div>
+      <div class="fg"><label>Template ID</label><input type="text" id="ejs-tid" placeholder="template_xxxxxx"/></div>
+      <div class="fg"><label>Public Key</label><input type="text" id="ejs-key" placeholder="xxxxxxxxxxxxxx"/></div>
+    </div>
+    <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="saveEmailJs()">💾 שמור</button>
+    <span id="ejs-status" style="font-size:.78rem;margin-right:10px;font-weight:600"></span>
+  </div>
+</div>
+
+</div><!-- end app -->
+
+<!-- ═══ CUSTOMER MODAL ═══ -->
 <div class="mbg" id="mbg" onclick="closeMBg(event)">
   <div class="modal">
     <div class="mh">
@@ -260,12 +461,12 @@ td.amt{font-weight:700;color:var(--green)}
       <div class="cust-stats">
         <div class="cs"><div class="v" id="m-vis">0</div><div class="l">ביקורים</div></div>
         <div class="cs"><div class="v" id="m-tot">₪0</div><div class="l">סה"כ שולם</div></div>
-        <div class="cs"><div class="v" id="m-avg">₪0</div><div class="l">ממוצע לביקור</div></div>
+        <div class="cs"><div class="v" id="m-avg">₪0</div><div class="l">ממוצע</div></div>
         <div class="cs"><div class="v" id="m-first">—</div><div class="l">ביקור ראשון</div></div>
         <div class="cs"><div class="v" id="m-last">—</div><div class="l">ביקור אחרון</div></div>
         <div class="cs"><div class="v" id="m-fav">—</div><div class="l">שירות מועדף</div></div>
       </div>
-      <div class="section-lbl" style="margin-bottom:9px">היסטוריית ביקורים</div>
+      <div class="section-lbl" style="margin-bottom:8px">היסטוריה</div>
       <div class="vlist" id="m-vlist"></div>
     </div>
   </div>
@@ -273,299 +474,610 @@ td.amt{font-weight:700;color:var(--green)}
 
 <div class="toast" id="toast"></div>
 
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, orderBy, query } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, orderBy, query, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAWkVT_GereCz0yRV15zbpGKUzQFEJmpck",
-  authDomain: "nails-studio-9085d.firebaseapp.com",
-  projectId: "nails-studio-9085d",
-  storageBucket: "nails-studio-9085d.firebasestorage.app",
-  messagingSenderId: "742223896533",
-  appId: "1:742223896533:web:0e39da166545e51979e75c"
+const FB = {
+  apiKey:"AIzaSyAWkVT_GereCz0yRV15zbpGKUzQFEJmpck",
+  authDomain:"nails-studio-9085d.firebaseapp.com",
+  projectId:"nails-studio-9085d",
+  storageBucket:"nails-studio-9085d.firebasestorage.app",
+  messagingSenderId:"742223896533",
+  appId:"1:742223896533:web:0e39da166545e51979e75c"
 };
-
-const fbApp = initializeApp(firebaseConfig);
+const fbApp = initializeApp(FB);
 const db = getFirestore(fbApp);
-const COL = 'appointments';
 
-let entries = [];
-let period = 'week';
+// ── STATE ──
+let visits=[], bookings=[], expenses=[], settings={}, prices=[];
+let calDate=new Date(), pnlPeriod='month', ejsConfig={};
 
-// Real-time listener — updates instantly on all devices
-const q = query(collection(db, COL), orderBy('date', 'desc'));
-onSnapshot(q, (snapshot) => {
-  entries = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('app-wrap').style.display = 'block';
-  setSyncOk(true);
-  renderAll();
-}, () => {
-  document.getElementById('loading-screen').style.display = 'none';
-  document.getElementById('app-wrap').style.display = 'block';
-  setSyncOk(false);
-});
+// ── COLLECTIONS ──
+const COL_VISITS='appointments';
+const COL_BOOKINGS='bookings';
+const COL_EXPENSES='expenses';
+const DOC_SETTINGS='config/settings';
+const DOC_PRICES='config/prices';
 
-function setSyncOk(ok) {
-  document.getElementById('sync-dot').className = 'dot ' + (ok ? 'ok' : 'err');
-  document.getElementById('sync-lbl').textContent = ok ? 'מחובר ✓' : 'שגיאת חיבור';
+// ── REAL-TIME LISTENERS ──
+let loaded={visits:false, bookings:false, expenses:false};
+function checkLoaded(){
+  if(loaded.visits&&loaded.bookings&&loaded.expenses){
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    setSyncOk(true);
+    renderAll();
+  }
 }
 
-// NAV
-window.showPage = (p, btn) => {
-  document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById('page-' + p).classList.add('active');
+onSnapshot(query(collection(db,COL_VISITS),orderBy('date','desc')),(snap)=>{
+  visits=snap.docs.map(d=>({id:d.id,...d.data()}));
+  loaded.visits=true; checkLoaded(); renderAll();
+});
+onSnapshot(query(collection(db,COL_BOOKINGS),orderBy('createdAt','desc')),(snap)=>{
+  bookings=snap.docs.map(d=>({id:d.id,...d.data()}));
+  loaded.bookings=true; checkLoaded();
+  renderAppointments(); updatePendingBadge();
+});
+onSnapshot(query(collection(db,COL_EXPENSES),orderBy('date','desc')),(snap)=>{
+  expenses=snap.docs.map(d=>({id:d.id,...d.data()}));
+  loaded.expenses=true; checkLoaded(); renderExpenses(); renderPnl();
+});
+
+// Load settings
+async function loadSettings(){
+  try{
+    const snap=await getDoc(doc(db,...DOC_SETTINGS.split('/')));
+    if(snap.exists()) settings=snap.data();
+    else settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
+    const psnap=await getDoc(doc(db,...DOC_PRICES.split('/')));
+    if(psnap.exists()) prices=psnap.data().list||[];
+    ejsConfig=JSON.parse(localStorage.getItem('ejs_config')||'{}');
+    initSettings();
+  }catch(e){console.error(e);}
+}
+loadSettings();
+
+function setSyncOk(ok){
+  document.getElementById('sync-dot').className='dot '+(ok?'ok':'err');
+  document.getElementById('sync-lbl').textContent=ok?'מחובר ✓':'שגיאה';
+}
+
+// ── NAV ──
+window.showPage=(p,btn)=>{
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
   btn.classList.add('active');
-  if (p === 'clients') { renderClients(); renderVisits(); }
-  if (p === 'stats') renderStats();
+  if(p==='appts')renderAppointments();
+  if(p==='clients'){renderClients();}
+  if(p==='pnl')renderPnl();
+  if(p==='expenses')renderExpenses();
 };
 
-// AUTOCOMPLETE
-function getCustomers() {
-  const m = {};
-  entries.forEach(e => {
-    if (!m[e.phone]) m[e.phone] = { phone: e.phone, name: e.name || '', email: e.email || '' };
-    if (e.name && !m[e.phone].name) m[e.phone].name = e.name;
+// ── PENDING BADGE ──
+function updatePendingBadge(){
+  const n=bookings.filter(b=>b.status==='pending').length;
+  const badge=document.getElementById('pending-badge');
+  badge.style.display=n>0?'inline':'none';
+  badge.textContent=n;
+}
+
+// ── CALENDAR ──
+const HE_DAYS=['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+const HE_MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+window.calPrev=()=>{calDate.setMonth(calDate.getMonth()-1);renderCal();};
+window.calNext=()=>{calDate.setMonth(calDate.getMonth()+1);renderCal();};
+
+function renderCal(){
+  const y=calDate.getFullYear(), m=calDate.getMonth();
+  document.getElementById('cal-title').textContent=HE_MONTHS[m]+' '+y;
+  const grid=document.getElementById('cal-grid');
+
+  // Day names (Sun first for Israel)
+  let html=HE_DAYS.map(d=>`<div class="cal-day-name">${d}</div>`).join('');
+
+  const first=new Date(y,m,1);
+  const startDow=first.getDay(); // 0=Sun
+  const daysInMonth=new Date(y,m+1,0).getDate();
+  const today=new Date(); today.setHours(0,0,0,0);
+
+  // Pad start
+  for(let i=0;i<startDow;i++){
+    const prevDay=new Date(y,m,0-startDow+i+1);
+    html+=`<div class="cal-day other-month past"><div class="day-num">${prevDay.getDate()}</div></div>`;
+  }
+
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(y,m,d);
+    const isPast=date<today;
+    const isToday=date.getTime()===today.getTime();
+    const dateStr=fmtDateStr(date);
+    const wd=date.getDay();
+    const isWorkDay=(settings.workDays||[0,1,2,3,4]).includes(wd);
+
+    // Get bookings for this day
+    const dayBookings=bookings.filter(b=>b.date===dateStr);
+    const dotsHtml=dayBookings.slice(0,2).map(b=>`<div class="appt-dot ${b.status}">${b.clientName||'לקוחה'} ${b.time||''}</div>`).join('');
+    const more=dayBookings.length>2?`<div style="font-size:.6rem;color:var(--muted)">+${dayBookings.length-2} נוסף</div>`:'';
+
+    let cls='cal-day';
+    if(isToday)cls+=' today';
+    if(isPast)cls+=' past';
+    if(!isWorkDay&&!isPast)cls+=' disabled';
+
+    html+=`<div class="${cls}" onclick="calDayClick('${dateStr}')">
+      <div class="day-num">${d}</div>
+      ${dotsHtml}${more}
+    </div>`;
+  }
+  grid.innerHTML=html;
+}
+
+window.calDayClick=(dateStr)=>{
+  // Show day detail in toast for now
+  const dayBookings=bookings.filter(b=>b.date===dateStr);
+  showToast(dateStr+': '+dayBookings.length+' תורים');
+};
+
+// ── APPOINTMENTS LIST ──
+function renderAppointments(){
+  renderCal();
+  const pending=bookings.filter(b=>b.status==='pending').sort((a,b)=>a.date.localeCompare(b.date));
+  const confirmed=bookings.filter(b=>b.status==='confirmed').sort((a,b)=>a.date.localeCompare(b.date));
+
+  const pEl=document.getElementById('pending-list');
+  if(!pending.length){pEl.innerHTML='<div class="empty"><div class="ei">✅</div>אין בקשות ממתינות</div>';}
+  else pEl.innerHTML=pending.map(b=>rdvCard(b)).join('');
+
+  const cEl=document.getElementById('confirmed-list');
+  if(!confirmed.length){cEl.innerHTML='<div class="empty"><div class="ei">📅</div>אין תורים מאושרים</div>';}
+  else cEl.innerHTML=confirmed.map(b=>rdvCard(b)).join('');
+}
+
+function rdvCard(b){
+  return`<div class="rdv-card ${b.status}">
+    <div class="rdv-info">
+      <div class="rdv-name">${esc(b.clientName||'—')} <span style="font-size:.76rem;color:var(--muted);direction:ltr">${esc(b.clientPhone||'')}</span></div>
+      <div class="rdv-details">📅 ${fmtDate(b.date)} ${b.time?'⏰ '+b.time:''} • 💅 ${esc(b.service||'—')}</div>
+      ${b.notes?`<div style="font-size:.75rem;color:var(--muted);margin-top:3px">📝 ${esc(b.notes)}</div>`:''}
+    </div>
+    <div class="rdv-actions">
+      <span class="badge ${b.status}">${statusLabel(b.status)}</span>
+      ${b.status==='pending'?`<button class="btn btn-green btn-sm" onclick="confirmBooking('${b.id}')">✓ אשרי</button>`:''}
+      ${b.status==='pending'||b.status==='confirmed'?`<button class="btn btn-red btn-sm" onclick="cancelBooking('${b.id}')">✕ בטלי</button>`:''}
+      <button class="bd" onclick="deleteBooking('${b.id}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+function statusLabel(s){return s==='pending'?'ממתין':s==='confirmed'?'מאושר':'בוטל';}
+
+window.confirmBooking=async(id)=>{
+  try{
+    await setDoc(doc(db,COL_BOOKINGS,id),{status:'confirmed'},{merge:true});
+    showToast('✅ התור אושר!');
+  }catch(e){showToast('❌ שגיאה');}
+};
+window.cancelBooking=async(id)=>{
+  if(!confirm('לבטל תור זה?'))return;
+  try{await setDoc(doc(db,COL_BOOKINGS,id),{status:'cancelled'},{merge:true});showToast('תור בוטל');}
+  catch(e){showToast('❌ שגיאה');}
+};
+window.deleteBooking=async(id)=>{
+  if(!confirm('למחוק?'))return;
+  try{await deleteDoc(doc(db,COL_BOOKINGS,id));showToast('🗑 נמחק');}
+  catch(e){showToast('❌ שגיאה');}
+};
+
+// ── ADD VISIT ──
+function getCustomers(){
+  const m={};
+  visits.forEach(e=>{
+    if(!m[e.phone])m[e.phone]={phone:e.phone,name:e.name||'',email:e.email||''};
+    if(e.name&&!m[e.phone].name)m[e.phone].name=e.name;
   });
   return Object.values(m);
 }
 
-window.onPhone = () => {
-  const val = document.getElementById('f-phone').value;
-  const list = document.getElementById('ac-list');
-  const matches = getCustomers().filter(c => c.phone.includes(val) || (c.name && c.name.toLowerCase().includes(val.toLowerCase()))).slice(0, 7);
-  if (val.length < 1 || !matches.length) { list.style.display = 'none'; return; }
-  list.innerHTML = matches.map(c => `<div class="ac-item" onmousedown="selectCust('${esc(c.phone)}','${esc(c.name)}','${esc(c.email)}')"><span>${esc(c.name || '—')}</span><span class="ac-ph">${esc(c.phone)}</span></div>`).join('');
-  list.style.display = 'block';
+window.onPhone=()=>{
+  const val=document.getElementById('f-phone').value;
+  const list=document.getElementById('ac-list');
+  const matches=getCustomers().filter(c=>c.phone.includes(val)||(c.name&&c.name.toLowerCase().includes(val.toLowerCase()))).slice(0,7);
+  if(val.length<1||!matches.length){list.style.display='none';return;}
+  list.innerHTML=matches.map(c=>`<div class="ac-item" onmousedown="selectCust('${esc(c.phone)}','${esc(c.name)}','${esc(c.email)}')"><span>${esc(c.name||'—')}</span><span class="ac-ph">${esc(c.phone)}</span></div>`).join('');
+  list.style.display='block';
 };
-window.closeAc = () => setTimeout(() => document.getElementById('ac-list').style.display = 'none', 160);
-window.selectCust = (phone, name, email) => {
-  document.getElementById('f-phone').value = phone;
-  document.getElementById('f-name').value = name;
-  document.getElementById('f-email').value = email;
-  document.getElementById('ac-list').style.display = 'none';
+window.closeAc=()=>setTimeout(()=>document.getElementById('ac-list').style.display='none',160);
+window.selectCust=(phone,name,email)=>{
+  document.getElementById('f-phone').value=phone;
+  document.getElementById('f-name').value=name;
+  document.getElementById('f-email').value=email;
+  document.getElementById('ac-list').style.display='none';
 };
+window.toggleOther=()=>{document.getElementById('other-wrap').style.display=document.getElementById('f-service').value==='other'?'block':'none';};
 
-// FORM
-window.toggleOther = () => {
-  document.getElementById('other-wrap').style.display = document.getElementById('f-service').value === 'other' ? 'block' : 'none';
-};
+window.addVisit=async()=>{
+  const phone=document.getElementById('f-phone').value.trim();
+  const name=document.getElementById('f-name').value.trim();
+  const date=document.getElementById('f-date').value;
+  const time=document.getElementById('f-time').value;
+  const email=document.getElementById('f-email').value.trim();
+  const svcSel=document.getElementById('f-service').value;
+  const svcOther=document.getElementById('f-other').value.trim();
+  const service=svcSel==='other'?(svcOther||'אחר'):svcSel;
+  const amtRaw=document.getElementById('f-amount').value;
+  const amount=parseFloat(amtRaw);
+  const payment=document.getElementById('f-payment').value;
+  const notes=document.getElementById('f-notes').value.trim();
 
-window.addEntry = async () => {
-  const phone = document.getElementById('f-phone').value.trim();
-  const name = document.getElementById('f-name').value.trim();
-  const date = document.getElementById('f-date').value;
-  const email = document.getElementById('f-email').value.trim();
-  const svcSel = document.getElementById('f-service').value;
-  const svcOther = document.getElementById('f-other').value.trim();
-  const service = svcSel === 'other' ? (svcOther || 'אחר') : svcSel;
-  const amtRaw = document.getElementById('f-amount').value;
-  const amount = parseFloat(amtRaw);
-  const payment = document.getElementById('f-payment').value;
-  const notes = document.getElementById('f-notes').value.trim();
-
-  const errEl = document.getElementById('add-err');
+  const errEl=document.getElementById('add-err');
   document.getElementById('f-phone').classList.remove('err');
   document.getElementById('f-amount').classList.remove('err');
 
-  if (!phone) { errEl.textContent = '⚠️ נדרש מספר טלפון'; document.getElementById('f-phone').classList.add('err'); return; }
-  if (!service) { errEl.textContent = '⚠️ נדרש שירות'; return; }
-  if (amtRaw === '' || isNaN(amount) || amount < 0) { errEl.textContent = '⚠️ נדרש סכום תקין'; document.getElementById('f-amount').classList.add('err'); return; }
-  errEl.textContent = '';
+  if(!phone){errEl.textContent='⚠️ נדרש טלפון';document.getElementById('f-phone').classList.add('err');return;}
+  if(!service){errEl.textContent='⚠️ נדרש שירות';return;}
+  if(amtRaw===''||isNaN(amount)||amount<0){errEl.textContent='⚠️ נדרש סכום';document.getElementById('f-amount').classList.add('err');return;}
+  errEl.textContent='';
 
-  let resolvedName = name;
-  if (!resolvedName) { const ex = getCustomers().find(c => c.phone === phone); if (ex?.name) resolvedName = ex.name; }
+  let resolvedName=name;
+  if(!resolvedName){const ex=getCustomers().find(c=>c.phone===phone);if(ex?.name)resolvedName=ex.name;}
 
-  const btn = document.getElementById('btn-add');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> שומרת…';
-
-  try {
-    await addDoc(collection(db, COL), { phone, name: resolvedName, date, email, service, amount, payment, notes, ts: new Date().toISOString() });
-    clearForm();
-    showToast('✨ התור נוסף!');
-  } catch(e) {
-    showToast('❌ שגיאה בשמירה'); console.error(e);
-  }
-  btn.disabled = false; btn.innerHTML = '＋ הוסף תור';
+  const btn=document.getElementById('btn-add');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> שומרת…';
+  try{
+    await addDoc(collection(db,COL_VISITS),{phone,name:resolvedName,date,time,email,service,amount,payment,notes,ts:new Date().toISOString()});
+    clearAddForm();showToast('✨ הביקור נוסף!');
+  }catch(e){showToast('❌ שגיאה');console.error(e);}
+  btn.disabled=false;btn.innerHTML='＋ הוסף ביקור';
 };
 
-function clearForm() {
-  ['f-name','f-phone','f-email','f-other','f-notes'].forEach(id => document.getElementById(id).value = '');
-  ['f-service','f-payment'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('f-amount').value = '';
-  document.getElementById('other-wrap').style.display = 'none';
-  document.getElementById('f-date').valueAsDate = new Date();
-  document.getElementById('ac-list').style.display = 'none';
-  document.getElementById('add-err').textContent = '';
+function clearAddForm(){
+  ['f-name','f-phone','f-email','f-other','f-notes','f-time'].forEach(id=>document.getElementById(id).value='');
+  ['f-service','f-payment'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-amount').value='';
+  document.getElementById('other-wrap').style.display='none';
+  document.getElementById('f-date').valueAsDate=new Date();
+  document.getElementById('ac-list').style.display='none';
+  document.getElementById('add-err').textContent='';
 }
 
-window.deleteEntry = async (id) => {
-  if (!confirm('למחוק ביקור זה?')) return;
-  try { await deleteDoc(doc(db, COL, id)); showToast('🗑 הביקור נמחק'); }
-  catch(e) { showToast('❌ שגיאה במחיקה'); }
+window.deleteVisit=async(id)=>{
+  if(!confirm('למחוק?'))return;
+  try{await deleteDoc(doc(db,COL_VISITS,id));showToast('🗑 נמחק');}
+  catch(e){showToast('❌ שגיאה');}
 };
 
-// CLIENTS
-function getUniqueCustomers() {
-  const m = {};
-  entries.forEach(e => {
-    if (!m[e.phone]) m[e.phone] = { phone: e.phone, name: e.name || '', visits: [], svcs: {} };
-    const c = m[e.phone];
-    c.visits.push(e);
-    if (e.name && !c.name) c.name = e.name;
-    c.svcs[e.service] = (c.svcs[e.service] || 0) + 1;
+function renderVisits(){
+  const q=document.getElementById('vis-search').value.toLowerCase();
+  let data=[...visits].sort((a,b)=>b.date.localeCompare(a.date));
+  if(q)data=data.filter(e=>(e.name||'').toLowerCase().includes(q)||(e.phone||'').includes(q)||(e.service||'').toLowerCase().includes(q));
+  const tbody=document.getElementById('vis-body'),empty=document.getElementById('vis-empty');
+  if(!data.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=data.map((e,i)=>`<tr>
+    <td style="color:var(--muted);font-size:.74rem">${i+1}</td>
+    <td><span class="rl" onclick="openModal('${esc(e.phone)}')">${esc(e.name||'—')}</span></td>
+    <td dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(e.phone)}</td>
+    <td style="white-space:nowrap">${fmtDate(e.date)}${e.time?' '+e.time:''}</td>
+    <td><span class="badge">${esc(e.service)}</span></td>
+    <td class="amt">₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
+    <td>${payBadge(e.payment)}</td>
+    <td style="font-size:.74rem;color:var(--muted);max-width:100px;white-space:normal">${esc(e.notes||'')}</td>
+    <td><button class="bd" onclick="deleteVisit('${e.id}')">✕</button></td>
+  </tr>`).join('');
+}
+
+// ── CLIENTS ──
+function getUniqueCustomers(){
+  const m={};
+  visits.forEach(e=>{
+    if(!m[e.phone])m[e.phone]={phone:e.phone,name:e.name||'',visits:[],svcs:{}};
+    const c=m[e.phone];c.visits.push(e);
+    if(e.name&&!c.name)c.name=e.name;
+    c.svcs[e.service]=(c.svcs[e.service]||0)+1;
   });
   return Object.values(m);
 }
 
-function renderClients() {
-  const q = document.getElementById('cl-search').value.toLowerCase();
-  let custs = getUniqueCustomers();
-  if (q) custs = custs.filter(c => c.name.toLowerCase().includes(q) || c.phone.includes(q));
-  custs.sort((a, b) => (b.visits.map(v => v.date).sort().pop() || '').localeCompare(a.visits.map(v => v.date).sort().pop() || ''));
-  const tbody = document.getElementById('cl-body'), empty = document.getElementById('cl-empty');
-  document.getElementById('cl-count').textContent = custs.length + ' לקוחות';
-  if (!custs.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = custs.map(c => {
-    const total = c.visits.reduce((s, v) => s + (parseFloat(v.amount) || 0), 0);
-    const avg = c.visits.length ? total / c.visits.length : 0;
-    const last = c.visits.map(v => v.date).sort().pop() || '';
-    const fav = Object.entries(c.svcs).sort((a, b) => b[1] - a[1])[0]?.[0] || '—';
-    return `<tr>
-      <td><span class="rl" onclick="openModal('${esc(c.phone)}')">${esc(c.name || '—')}</span></td>
-      <td dir="ltr" style="text-align:right;font-family:monospace">${esc(c.phone)}</td>
+function renderClients(){
+  const q=document.getElementById('cl-search').value.toLowerCase();
+  let custs=getUniqueCustomers();
+  if(q)custs=custs.filter(c=>c.name.toLowerCase().includes(q)||c.phone.includes(q));
+  custs.sort((a,b)=>(b.visits.map(v=>v.date).sort().pop()||'').localeCompare(a.visits.map(v=>v.date).sort().pop()||''));
+  const tbody=document.getElementById('cl-body'),empty=document.getElementById('cl-empty');
+  document.getElementById('cl-count').textContent=custs.length+' לקוחות';
+  if(!custs.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=custs.map(c=>{
+    const total=c.visits.reduce((s,v)=>s+(parseFloat(v.amount)||0),0);
+    const avg=c.visits.length?total/c.visits.length:0;
+    const last=c.visits.map(v=>v.date).sort().pop()||'';
+    const fav=Object.entries(c.svcs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+    return`<tr>
+      <td><span class="rl" onclick="openModal('${esc(c.phone)}')">${esc(c.name||'—')}</span></td>
+      <td dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(c.phone)}</td>
       <td><strong>${c.visits.length}</strong></td>
       <td class="amt">₪${total.toFixed(0)}</td>
       <td style="color:var(--muted)">₪${avg.toFixed(0)}</td>
       <td>${fmtDate(last)}</td>
-      <td><span class="badge">${esc(fav.length > 16 ? fav.slice(0,14)+'…' : fav)}</span></td>
+      <td><span class="badge">${esc(fav.length>16?fav.slice(0,14)+'…':fav)}</span></td>
       <td><button class="btn btn-ghost btn-sm" onclick="openModal('${esc(c.phone)}')">📋 כרטיס</button></td>
     </tr>`;
   }).join('');
 }
 
-function renderVisits() {
-  const q = document.getElementById('vis-search').value.toLowerCase();
-  let data = [...entries].sort((a, b) => b.date.localeCompare(a.date));
-  if (q) data = data.filter(e => (e.name||'').toLowerCase().includes(q)||(e.phone||'').includes(q)||(e.service||'').toLowerCase().includes(q));
-  const tbody = document.getElementById('vis-body'), empty = document.getElementById('vis-empty');
-  if (!data.length) { tbody.innerHTML = ''; empty.style.display = 'block'; return; }
-  empty.style.display = 'none';
-  tbody.innerHTML = data.map((e, i) => `<tr>
-    <td style="color:var(--muted);font-size:.76rem">${i+1}</td>
-    <td><span class="rl" onclick="openModal('${esc(e.phone)}')">${esc(e.name||'—')}</span></td>
-    <td dir="ltr" style="text-align:right;font-family:monospace">${esc(e.phone)}</td>
-    <td style="white-space:nowrap">${fmtDate(e.date)}</td>
-    <td><span class="badge">${esc(e.service)}</span></td>
-    <td class="amt">₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
-    <td>${payBadge(e.payment)}</td>
-    <td style="font-size:.76rem;color:var(--muted);max-width:110px;white-space:normal">${esc(e.notes||'')}</td>
-    <td><button class="bd" onclick="deleteEntry('${e.id}')">✕</button></td>
-  </tr>`).join('');
-}
-
-// MODAL
-window.openModal = (phone) => {
-  const c = getUniqueCustomers().find(x => x.phone === phone);
-  if (!c) return;
-  const vis = c.visits.sort((a, b) => b.date.localeCompare(a.date));
-  const total = vis.reduce((s, v) => s + (parseFloat(v.amount)||0), 0);
-  const avg = vis.length ? total/vis.length : 0;
-  document.getElementById('m-name').textContent = c.name || 'לקוחה';
-  document.getElementById('m-phone').textContent = c.phone;
-  document.getElementById('m-vis').textContent = vis.length;
-  document.getElementById('m-tot').textContent = '₪' + total.toFixed(0);
-  document.getElementById('m-avg').textContent = '₪' + avg.toFixed(0);
-  document.getElementById('m-first').textContent = fmtDate(vis[vis.length-1]?.date||'—');
-  document.getElementById('m-last').textContent = fmtDate(vis[0]?.date||'—');
-  const fav = Object.entries(c.svcs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
-  document.getElementById('m-fav').textContent = fav.length > 14 ? fav.slice(0,12)+'…' : fav;
-  document.getElementById('m-vlist').innerHTML = vis.map(v => `
+// ── MODAL ──
+window.openModal=(phone)=>{
+  const c=getUniqueCustomers().find(x=>x.phone===phone);
+  if(!c)return;
+  const vis=c.visits.sort((a,b)=>b.date.localeCompare(a.date));
+  const total=vis.reduce((s,v)=>s+(parseFloat(v.amount)||0),0);
+  const avg=vis.length?total/vis.length:0;
+  const fav=Object.entries(c.svcs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
+  document.getElementById('m-name').textContent=c.name||'לקוחה';
+  document.getElementById('m-phone').textContent=c.phone;
+  document.getElementById('m-vis').textContent=vis.length;
+  document.getElementById('m-tot').textContent='₪'+total.toFixed(0);
+  document.getElementById('m-avg').textContent='₪'+avg.toFixed(0);
+  document.getElementById('m-first').textContent=fmtDate(vis[vis.length-1]?.date||'—');
+  document.getElementById('m-last').textContent=fmtDate(vis[0]?.date||'—');
+  document.getElementById('m-fav').textContent=fav.length>14?fav.slice(0,12)+'…':fav;
+  document.getElementById('m-vlist').innerHTML=vis.map(v=>`
     <div class="vrow">
-      <div class="vl"><div class="vd">${fmtDate(v.date)}</div><div class="vs">${esc(v.service)}</div>${v.notes?`<div class="vn">${esc(v.notes)}</div>`:''}</div>
+      <div class="vl"><div class="vd">${fmtDate(v.date)}${v.time?' '+v.time:''}</div><div class="vs">${esc(v.service)}</div>${v.notes?`<div class="vn">${esc(v.notes)}</div>`:''}</div>
       <div class="vr-right">${payBadge(v.payment)}<strong style="color:var(--green)">₪${(parseFloat(v.amount)||0).toFixed(0)}</strong></div>
     </div>`).join('');
   document.getElementById('mbg').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.style.overflow='hidden';
 };
-window.closeMBg = (e) => { if (e.target === document.getElementById('mbg')) closeModal(); };
-window.closeModal = () => { document.getElementById('mbg').classList.remove('open'); document.body.style.overflow = ''; };
+window.closeMBg=(e)=>{if(e.target===document.getElementById('mbg'))closeModal();};
+window.closeModal=()=>{document.getElementById('mbg').classList.remove('open');document.body.style.overflow='';};
 
-// STATS
-window.setPeriod = (p, btn) => {
-  period = p;
-  document.querySelectorAll('.pb').forEach(b => b.classList.remove('active'));
+// ── EXPENSES ──
+document.getElementById('exp-cat').addEventListener('change',function(){
+  document.getElementById('exp-custom-wrap').style.display=this.value==='custom'?'block':'none';
+});
+
+window.addExpense=async()=>{
+  const date=document.getElementById('exp-date').value;
+  const catSel=document.getElementById('exp-cat').value;
+  const catCustom=document.getElementById('exp-custom').value.trim();
+  const category=catSel==='custom'?(catCustom||'אחר'):catSel;
+  const amtRaw=document.getElementById('exp-amount').value;
+  const amount=parseFloat(amtRaw);
+  const desc=document.getElementById('exp-desc').value.trim();
+
+  const errEl=document.getElementById('exp-err');
+  if(!date){errEl.textContent='⚠️ נדרש תאריך';return;}
+  if(!category){errEl.textContent='⚠️ נדרשת קטגוריה';return;}
+  if(amtRaw===''||isNaN(amount)||amount<=0){errEl.textContent='⚠️ נדרש סכום';return;}
+  errEl.textContent='';
+
+  const btn=document.getElementById('btn-exp');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  try{
+    await addDoc(collection(db,COL_EXPENSES),{date,category,amount,desc,ts:new Date().toISOString()});
+    ['exp-date','exp-amount','exp-desc','exp-custom'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('exp-cat').value='';
+    document.getElementById('exp-custom-wrap').style.display='none';
+    document.getElementById('exp-date').valueAsDate=new Date();
+    showToast('💸 הוצאה נוספה!');
+  }catch(e){showToast('❌ שגיאה');}
+  btn.disabled=false;btn.innerHTML='＋ הוסף הוצאה';
+};
+
+window.deleteExpense=async(id)=>{
+  if(!confirm('למחוק?'))return;
+  try{await deleteDoc(doc(db,COL_EXPENSES,id));showToast('🗑 נמחק');}
+  catch(e){showToast('❌ שגיאה');}
+};
+
+function renderExpenses(){
+  const tbody=document.getElementById('exp-body'),empty=document.getElementById('exp-empty');
+  if(!expenses.length){tbody.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  tbody.innerHTML=expenses.map(e=>`<tr>
+    <td style="white-space:nowrap">${fmtDate(e.date)}</td>
+    <td><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
+    <td style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
+    <td class="amt neg">-₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
+    <td><button class="bd" onclick="deleteExpense('${e.id}')">✕</button></td>
+  </tr>`).join('');
+}
+
+// ── P&L ──
+window.setPnlPeriod=(p,btn)=>{
+  pnlPeriod=p;
+  document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('custom-range').style.display = p === 'custom' ? 'flex' : 'none';
-  if (p !== 'custom') renderStats();
+  document.getElementById('pnl-custom').style.display=p==='custom'?'flex':'none';
+  if(p!=='custom')renderPnl();
 };
 
-function filteredEntries() {
-  const now = new Date(); let from = null, to = null;
-  if (period==='week'){from=new Date(now);from.setDate(now.getDate()-7);}
-  else if(period==='month'){from=new Date(now);from.setMonth(now.getMonth()-1);}
-  else if(period==='3months'){from=new Date(now);from.setMonth(now.getMonth()-3);}
-  else if(period==='year'){from=new Date(now);from.setFullYear(now.getFullYear()-1);}
-  else if(period==='custom'){
-    const f=document.getElementById('range-from').value, t=document.getElementById('range-to').value;
-    if(f)from=new Date(f); if(t){to=new Date(t);to.setHours(23,59,59);}
+function getPnlRange(){
+  const now=new Date();let from=null,to=null;
+  if(pnlPeriod==='month'){from=new Date(now.getFullYear(),now.getMonth(),1);}
+  else if(pnlPeriod==='3months'){from=new Date(now);from.setMonth(now.getMonth()-3);}
+  else if(pnlPeriod==='year'){from=new Date(now.getFullYear(),0,1);}
+  else if(pnlPeriod==='custom'){
+    const f=document.getElementById('pnl-from').value,t=document.getElementById('pnl-to').value;
+    if(f)from=new Date(f);if(t){to=new Date(t);to.setHours(23,59,59);}
   }
-  return entries.filter(e => { if(!e.date)return true; const d=new Date(e.date); if(from&&d<from)return false; if(to&&d>to)return false; return true; });
+  return{from,to};
 }
 
-function renderStats() {
-  const data = filteredEntries();
-  const total = data.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-  const uniq = new Set(data.map(e=>e.phone)).size;
-  const avg = data.length ? total/data.length : 0;
-  const avgC = uniq ? total/uniq : 0;
-  document.getElementById('kpi').innerHTML = `
-    <div class="kbox acc"><div class="kv">₪${total.toFixed(0)}</div><div class="kl">סה"כ הכנסות</div></div>
-    <div class="kbox"><div class="kv">${data.length}</div><div class="kl">ביקורים</div></div>
-    <div class="kbox"><div class="kv">${uniq}</div><div class="kl">לקוחות שונות</div></div>
-    <div class="kbox"><div class="kv">₪${avg.toFixed(0)}</div><div class="kl">ממוצע לביקור</div></div>
-    <div class="kbox"><div class="kv">₪${avgC.toFixed(0)}</div><div class="kl">ממוצע ללקוחה</div></div>`;
-  const sMap={}; data.forEach(e=>{sMap[e.service]=(sMap[e.service]||0)+1;}); barChart('ch-svc',sMap,'ביקורים');
-  const pMap={},pL={cash:'מזומן',card:'אשראי',bit:'ביט',paybox:'פייבוקס',transfer:'העברה'};
-  data.forEach(e=>{const l=pL[e.payment]||e.payment||'לא צוין';pMap[l]=(pMap[l]||0)+1;}); barChart('ch-pay',pMap,'ביקורים');
+function filterByRange(data,range){
+  return data.filter(e=>{
+    if(!e.date)return true;
+    const d=new Date(e.date);
+    if(range.from&&d<range.from)return false;
+    if(range.to&&d>range.to)return false;
+    return true;
+  });
+}
+
+function renderPnl(){
+  const range=getPnlRange();
+  const fVisits=filterByRange(visits,range);
+  const fExpenses=filterByRange(expenses,range);
+
+  const totalIncome=fVisits.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const totalExpenses=fExpenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const profit=totalIncome-totalExpenses;
+  const margin=totalIncome>0?(profit/totalIncome*100):0;
+
+  // Banner
+  const banner=document.getElementById('pnl-banner');
+  banner.className='pnl-banner '+(profit>=0?'profit':'loss');
+  banner.innerHTML=`<div class="pnl-val">${profit>=0?'':'−'}₪${Math.abs(profit).toFixed(0)}</div>
+    <div class="pnl-lbl">${profit>=0?'רווח נקי':'הפסד נקי'} • מרווח ${margin.toFixed(1)}%</div>`;
+
+  // KPIs
+  document.getElementById('pnl-kpi').innerHTML=`
+    <div class="kbox acc"><div class="kv">₪${totalIncome.toFixed(0)}</div><div class="kl">סה"כ הכנסות</div></div>
+    <div class="kbox red"><div class="kv">₪${totalExpenses.toFixed(0)}</div><div class="kl">סה"כ הוצאות</div></div>
+    <div class="kbox ${profit>=0?'gre':'red'}"><div class="kv">${profit>=0?'':'−'}₪${Math.abs(profit).toFixed(0)}</div><div class="kl">רווח נקי</div></div>
+    <div class="kbox"><div class="kv">${fVisits.length}</div><div class="kl">ביקורים</div></div>
+    <div class="kbox"><div class="kv">${margin.toFixed(0)}%</div><div class="kl">מרווח רווח</div></div>
+  `;
+
+  // Income by service
+  const sMap={};fVisits.forEach(e=>{sMap[e.service]=(sMap[e.service]||0)+(parseFloat(e.amount)||0);});
+  barChart('pnl-ch-svc',sMap,'₪',true,'income');
+
+  // Expenses by category
+  const eMap={};fExpenses.forEach(e=>{eMap[e.category]=(eMap[e.category]||0)+(parseFloat(e.amount)||0);});
+  barChart('pnl-ch-exp',eMap,'₪',true,'expense');
+
+  // Top customers
   const cMap={};
-  data.forEach(e=>{if(!cMap[e.phone])cMap[e.phone]={label:e.name||e.phone,total:0};cMap[e.phone].total+=parseFloat(e.amount)||0;});
-  const topC={};Object.values(cMap).sort((a,b)=>b.total-a.total).slice(0,8).forEach(c=>{topC[c.label]=c.total;}); barChart('ch-cust',topC,'₪',true);
+  fVisits.forEach(e=>{if(!cMap[e.phone])cMap[e.phone]={label:e.name||e.phone,total:0};cMap[e.phone].total+=parseFloat(e.amount)||0;});
+  const topC={};Object.values(cMap).sort((a,b)=>b.total-a.total).slice(0,7).forEach(c=>{topC[c.label]=c.total;});
+  barChart('pnl-ch-cust',topC,'₪',true,'income');
 }
 
-function barChart(id, dataMap, unit, money=false) {
-  const el = document.getElementById(id);
-  const sorted = Object.entries(dataMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if(!sorted.length){el.innerHTML='<div style="color:var(--muted);font-size:.82rem;text-align:center;padding:18px">אין נתונים בתקופה זו</div>';return;}
-  const max = sorted[0][1];
-  el.innerHTML = sorted.map(([l,v])=>`
+function barChart(id,dataMap,unit,money=false,type='income'){
+  const el=document.getElementById(id);
+  const sorted=Object.entries(dataMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(!sorted.length){el.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:16px">אין נתונים</div>';return;}
+  const max=sorted[0][1];
+  el.innerHTML=sorted.map(([l,v])=>`
     <div class="chart-row">
       <div class="chart-lbl" title="${esc(l)}">${esc(l)}</div>
-      <div class="chart-track"><div class="chart-fill" style="width:${(v/max*100).toFixed(1)}%"></div></div>
+      <div class="chart-track"><div class="chart-fill ${type}" style="width:${(v/max*100).toFixed(1)}%"></div></div>
       <div class="chart-val">${money?'₪'+v.toFixed(0):v+' '+unit}</div>
     </div>`).join('');
 }
 
-// CSV
-window.downloadCSV = () => {
-  if(!entries.length){showToast('אין נתונים לייצוא');return;}
-  const h=['שם','טלפון','תאריך','אימייל','שירות','סכום (₪)','אמצעי תשלום','הערות'];
-  const rows=[...entries].sort((a,b)=>b.date.localeCompare(a.date)).map(e=>[e.name,e.phone,e.date,e.email,e.service,(parseFloat(e.amount)||0).toFixed(0),e.payment,e.notes].map(v=>`"${String(v||'').replace(/"/g,'""')}"`));
-  const csv='\uFEFF'+[h.join(','),...rows.map(r=>r.join(','))].join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=`ניילס_${new Date().toISOString().slice(0,10)}.csv`;a.click();showToast('📥 הקובץ יורד!');
+// ── SETTINGS ──
+function initSettings(){
+  // Booking URL
+  const url=window.location.href.replace('index.html','').replace(/\/?$/,'/')+'/booking.html';
+  const cleanUrl=window.location.origin+window.location.pathname.replace('index.html','').replace(/\/?$/,'/')+'/booking.html';
+  document.getElementById('booking-url').value=cleanUrl;
+
+  // Work days
+  const days=['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+  const workDays=settings.workDays||[0,1,2,3,4];
+  document.getElementById('day-toggles').innerHTML=days.map((d,i)=>`
+    <button class="day-tog ${workDays.includes(i)?'on':''}" onclick="this.classList.toggle('on')" data-day="${i}">${d}</button>
+  `).join('');
+
+  // Hours
+  if(settings.workStart)document.getElementById('work-start').value=settings.workStart;
+  if(settings.workEnd)document.getElementById('work-end').value=settings.workEnd;
+  if(settings.slotDuration)document.getElementById('slot-duration').value=settings.slotDuration;
+
+  // Prices
+  renderPricesList();
+
+  // EmailJS
+  if(ejsConfig.serviceId)document.getElementById('ejs-sid').value=ejsConfig.serviceId;
+  if(ejsConfig.templateId)document.getElementById('ejs-tid').value=ejsConfig.templateId;
+  if(ejsConfig.publicKey)document.getElementById('ejs-key').value=ejsConfig.publicKey;
+}
+
+window.copyBookingUrl=()=>{
+  navigator.clipboard.writeText(document.getElementById('booking-url').value);
+  showToast('📋 הקישור הועתק!');
 };
 
-// HELPERS
-function renderAll(){renderClients();renderVisits();renderStats();}
+window.saveWorkDays=async()=>{
+  const toggled=[...document.querySelectorAll('.day-tog.on')].map(b=>parseInt(b.dataset.day));
+  settings.workDays=toggled;
+  await setDoc(doc(db,...DOC_SETTINGS.split('/')),settings,{merge:true});
+  showToast('✅ ימי עבודה נשמרו');
+};
+
+window.saveHours=async()=>{
+  settings.workStart=document.getElementById('work-start').value;
+  settings.workEnd=document.getElementById('work-end').value;
+  settings.slotDuration=parseInt(document.getElementById('slot-duration').value)||90;
+  await setDoc(doc(db,...DOC_SETTINGS.split('/')),settings,{merge:true});
+  showToast('✅ שעות נשמרו');
+};
+
+function renderPricesList(){
+  const el=document.getElementById('prices-list');
+  if(!prices.length){el.innerHTML='<p style="font-size:.82rem;color:var(--muted);margin-bottom:8px">אין תעריפים עדיין</p>';return;}
+  el.innerHTML=prices.map((p,i)=>`
+    <div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)">
+      <span style="font-size:.88rem">${esc(p.service)}</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <strong style="color:var(--deep)">₪${p.price}</strong>
+        <button class="bd" onclick="removePrice(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+window.addPrice=()=>{
+  const svc=document.getElementById('price-service').value.trim();
+  const price=document.getElementById('price-price').value.trim();
+  if(!svc||!price)return;
+  prices.push({service:svc,price});
+  document.getElementById('price-service').value='';
+  document.getElementById('price-price').value='';
+  renderPricesList();
+};
+window.removePrice=(i)=>{prices.splice(i,1);renderPricesList();};
+window.savePrices=async()=>{
+  await setDoc(doc(db,...DOC_PRICES.split('/')),{list:prices});
+  showToast('✅ תעריפים נשמרו!');
+};
+
+window.saveEmailJs=()=>{
+  ejsConfig={serviceId:document.getElementById('ejs-sid').value.trim(),templateId:document.getElementById('ejs-tid').value.trim(),publicKey:document.getElementById('ejs-key').value.trim()};
+  localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
+  if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
+  document.getElementById('ejs-status').textContent='✅ נשמר!';
+  document.getElementById('ejs-status').style.color='var(--green)';
+};
+
+// ── CSV ──
+window.downloadCSV=()=>{
+  if(!visits.length){showToast('אין נתונים');return;}
+  const h=['שם','טלפון','תאריך','שעה','שירות','סכום (₪)','תשלום','הערות'];
+  const rows=[...visits].sort((a,b)=>b.date.localeCompare(a.date)).map(e=>[e.name,e.phone,e.date,e.time||'',e.service,(parseFloat(e.amount)||0).toFixed(0),e.payment,e.notes].map(v=>`"${String(v||'').replace(/"/g,'""')}"`));
+  const csv='\uFEFF'+[h.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=`ניילס_${new Date().toISOString().slice(0,10)}.csv`;a.click();showToast('📥 יורד!');
+};
+
+// ── HELPERS ──
+function renderAll(){renderVisits();renderClients();renderExpenses();renderPnl();renderAppointments();}
 function fmtDate(d){if(!d||d==='—')return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
+function fmtDateStr(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
 function payBadge(p){const m={cash:'💵 מזומן',card:'💳 אשראי',bit:'📱 ביט',paybox:'💜 פייבוקס',transfer:'🏦 העברה'};return p&&m[p]?`<span class="badge ${p}">${m[p]}</span>`:'<span style="color:#ccc">—</span>';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-document.getElementById('f-date').valueAsDate = new Date();
+document.getElementById('f-date').valueAsDate=new Date();
+document.getElementById('exp-date').valueAsDate=new Date();
 </script>
 </body>
 </html>
