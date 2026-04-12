@@ -437,28 +437,23 @@ td.amt.neg{color:var(--red)}
   <!-- EmailJS -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">📧 הגדרות Email (התראות)</div></div>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">הירשמי בחינם ב-<a href="https://emailjs.com" target="_blank" style="color:var(--deep)">emailjs.com</a> — דרושים 3 templates:</p>
+    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">הירשמי בחינם ב-<a href="https://emailjs.com" target="_blank" style="color:var(--deep)">emailjs.com</a> — דרושים 2 templates:</p>
 
     <div style="background:var(--soft);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.8rem;line-height:1.7">
       <strong style="color:var(--deep)">Template 1 — התראה אליך על תור חדש</strong><br>
       To: <code>davidelkaim@gmail.com</code> | Subject: <code>תור חדש מ-{{client_name}}</code><br>
       Body: <code>שם: {{client_name}} | טלפון: {{client_phone}} | תאריך: {{date}} {{time}} | שירות: {{service}} | הערות: {{notes}}</code>
       <hr style="border:none;border-top:1px solid var(--border);margin:8px 0">
-      <strong style="color:var(--deep)">Template 2 — אישור קבלה ללקוחה</strong><br>
-      To: <code>{{client_email}}</code> | Subject: <code>קיבלנו את בקשת התור שלך 💅</code><br>
-      Body: <code>שלום {{client_name}}, קיבלנו את בקשתך לתור ב-{{date}} בשעה {{time}} ({{service}}). נחזור אליך עם אישור בקרוב!</code>
-      <hr style="border:none;border-top:1px solid var(--border);margin:8px 0">
-      <strong style="color:var(--deep)">Template 3 — תגובה ללקוחה (אושר/בוטל)</strong><br>
-      To: <code>{{client_email}}</code> | Subject: <code>עדכון לגבי התור שלך</code><br>
-      Body: <code>שלום {{client_name}}, {{message}} — {{date}} {{time}} ({{service}})</code>
+      <strong style="color:var(--deep)">Template 2 — אישור ללקוחה (כשאת מאשרת)</strong><br>
+      To: <code>{{client_email}}</code> | Subject: <code>התור שלך אושר! 💅</code><br>
+      Body: <code>שלום {{client_name}}, תורך אושר ל-{{date}} בשעה {{time}} ({{service}}). מחכים לך! סטודיו ניילס ✨</code>
     </div>
 
     <div class="fg-grid">
       <div class="fg"><label>Service ID</label><input type="text" id="ejs-sid" placeholder="service_xxxxxx"/></div>
       <div class="fg"><label>Public Key</label><input type="text" id="ejs-key" placeholder="xxxxxxxxxxxxxx"/></div>
-      <div class="fg"><label>Template 1 — התראה אליך</label><input type="text" id="ejs-tid-notify" placeholder="template_xxxxxx"/></div>
-      <div class="fg"><label>Template 2 — אישור קבלה ללקוחה</label><input type="text" id="ejs-tid-confirm" placeholder="template_xxxxxx"/></div>
-      <div class="fg"><label>Template 3 — אושר/בוטל ללקוחה</label><input type="text" id="ejs-tid-update" placeholder="template_xxxxxx"/></div>
+      <div class="fg"><label>Template 1 — התראה אליך (תור חדש)</label><input type="text" id="ejs-tid-notify" placeholder="template_xxxxxx"/></div>
+      <div class="fg"><label>Template 2 — אישור ללקוחה (כשמאשרת)</label><input type="text" id="ejs-tid-confirm" placeholder="template_xxxxxx"/></div>
     </div>
     <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
       <button class="btn btn-primary btn-sm" onclick="saveEmailJs()">💾 שמור הגדרות</button>
@@ -678,21 +673,19 @@ function rdvCard(b){
 function statusLabel(s){return s==='pending'?'ממתין':s==='confirmed'?'מאושר':'בוטל';}
 
 async function sendUpdateEmail(booking, approved){
-  if(!ejsConfig.serviceId||!ejsConfig.tidUpdate||!ejsConfig.publicKey)return;
+  if(!approved)return; // only send email when confirmed, not cancelled
+  if(!ejsConfig.serviceId||!ejsConfig.tidConfirm||!ejsConfig.publicKey)return;
   if(!booking.clientEmail)return;
   try{
     if(window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
-    await window.emailjs.send(ejsConfig.serviceId, ejsConfig.tidUpdate, {
+    await window.emailjs.send(ejsConfig.serviceId, ejsConfig.tidConfirm,{
       client_email: booking.clientEmail,
       client_name:  booking.clientName||'לקוחה יקרה',
       date:         fmtDate(booking.date),
       time:         booking.time||'',
       service:      booking.service||'',
-      message:      approved
-        ? '🎉 תורך אושר! מחכים לך בשמחה'
-        : 'לצערנו, התור המבוקש אינו זמין. אנא קבעי תור חדש',
     });
-  }catch(e){console.warn('Email update failed:',e);}
+  }catch(e){console.warn('Email confirmation failed:',e);}
 }
 
 window.confirmBooking=async(id)=>{
@@ -1099,11 +1092,10 @@ window.savePrices=async()=>{
 
 window.saveEmailJs=()=>{
   ejsConfig={
-    serviceId:document.getElementById('ejs-sid').value.trim(),
-    publicKey:document.getElementById('ejs-key').value.trim(),
-    tidNotify:document.getElementById('ejs-tid-notify').value.trim(),
-    tidConfirm:document.getElementById('ejs-tid-confirm').value.trim(),
-    tidUpdate:document.getElementById('ejs-tid-update').value.trim(),
+    serviceId:  document.getElementById('ejs-sid').value.trim(),
+    publicKey:  document.getElementById('ejs-key').value.trim(),
+    tidNotify:  document.getElementById('ejs-tid-notify').value.trim(),
+    tidConfirm: document.getElementById('ejs-tid-confirm').value.trim(),
   };
   localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
   if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
