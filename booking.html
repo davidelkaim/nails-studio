@@ -388,17 +388,38 @@ window.confirmBooking=async()=>{
       status:'pending',createdAt:new Date().toISOString()
     });
 
-    // Try EmailJS notification
+    // Load EmailJS config from Firebase settings
     const ejsCfg=JSON.parse(localStorage.getItem('ejs_config')||'{}');
-    if(ejsCfg.serviceId&&ejsCfg.templateId&&ejsCfg.publicKey&&window.emailjs){
-      try{
-        window.emailjs.init({publicKey:ejsCfg.publicKey});
-        await window.emailjs.send(ejsCfg.serviceId,ejsCfg.templateId,{
-          to_email:'davidelkaim@gmail.com',
-          client_name:name,client_phone:phone,
-          date:fmtDate(selectedDate),time:selectedTime,service,notes
-        });
-      }catch(emailErr){console.log('Email notification failed:',emailErr);}
+    if(ejsCfg.serviceId&&ejsCfg.publicKey&&window.emailjs){
+      window.emailjs.init({publicKey:ejsCfg.publicKey});
+
+      // Mail 1 — notify admin
+      if(ejsCfg.tidNotify){
+        try{
+          await window.emailjs.send(ejsCfg.serviceId, ejsCfg.tidNotify,{
+            client_name:  name,
+            client_phone: phone,
+            client_email: email,
+            date:         fmtDate(selectedDate),
+            time:         selectedTime,
+            service:      service,
+            notes:        notes||'—',
+          });
+        }catch(e){console.warn('Admin notification failed:',e);}
+      }
+
+      // Mail 2 — confirm reception to client (only if they gave email)
+      if(ejsCfg.tidConfirm&&email){
+        try{
+          await window.emailjs.send(ejsCfg.serviceId, ejsCfg.tidConfirm,{
+            client_email: email,
+            client_name:  name,
+            date:         fmtDate(selectedDate),
+            time:         selectedTime,
+            service:      service,
+          });
+        }catch(e){console.warn('Client confirmation failed:',e);}
+      }
     }
 
     setSection('sec-success',-1);
