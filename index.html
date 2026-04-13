@@ -87,18 +87,24 @@ td.amt.neg{color:var(--red)}
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .cal-header h3{font-size:1rem;font-weight:700;color:var(--deep)}
 .cal-nav{background:none;border:1.5px solid var(--border);color:var(--deep);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}.cal-nav:hover{background:var(--blush)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
 .cal-day-name{text-align:center;font-size:.68rem;font-weight:700;color:var(--muted);padding:4px 0}
-.cal-day{min-height:70px;border:1.5px solid var(--border);border-radius:9px;padding:5px;cursor:pointer;transition:border-color .2s,background .2s;position:relative;background:var(--white)}
+.cal-day{height:52px;border:1.5px solid var(--border);border-radius:8px;padding:4px 3px;cursor:pointer;transition:border-color .2s,background .2s;background:var(--white);overflow:hidden;display:flex;flex-direction:column}
 .cal-day:hover{border-color:var(--rose);background:var(--soft)}
 .cal-day.today{border-color:var(--rose);background:var(--blush)}
 .cal-day.other-month{background:#f8f4f6;opacity:.5}
 .cal-day.past{opacity:.4;cursor:default;pointer-events:none}
 .cal-day.disabled{background:#f5f0f3;opacity:.5;cursor:not-allowed;pointer-events:none}
-.cal-day .day-num{font-size:.78rem;font-weight:700;color:var(--ink);margin-bottom:3px}
+.cal-day .day-num{font-size:.72rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:2px;flex-shrink:0}
 .cal-day.today .day-num{color:var(--deep)}
-.appt-dot{font-size:.66rem;background:var(--rose);color:var(--white);border-radius:4px;padding:1px 4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.appt-dot{font-size:.6rem;background:var(--rose);color:var(--white);border-radius:3px;padding:1px 3px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;flex-shrink:0}
 .appt-dot.confirmed{background:var(--green)}.appt-dot.pending{background:var(--gold)}.appt-dot.completed{background:#3a7abf}
+/* Day detail panel shown below calendar on click */
+.cal-day-detail{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;display:none}
+.cal-day-detail.open{display:block}
+.cal-day-detail h4{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:8px}
+.cal-detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem}
+.cal-detail-row:last-child{border-bottom:none}
 /* RDV CARDS */
 .rdv-card{border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;transition:border-color .2s}
 .rdv-card:hover{border-color:var(--rose)}
@@ -158,33 +164,46 @@ td.amt.neg{color:var(--red)}
 .day-tog{padding:7px 14px;border-radius:50px;border:1.5px solid var(--border);font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);background:var(--soft)}
 .day-tog.on{background:var(--deep);color:var(--blush);border-color:var(--deep)}
 
-/* ── MOBILE RESPONSIVE ── */
+/* ── HAMBURGER MENU ── */
+.hamburger{display:none;flex-direction:column;justify-content:space-between;width:28px;height:20px;background:none;border:none;cursor:pointer;padding:2px 0;flex-shrink:0}
+.hamburger span{display:block;height:2px;background:var(--blush);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,6px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
+.mobile-menu-overlay{display:none;position:fixed;inset:0;background:rgba(40,24,32,.5);z-index:399}
+.mobile-menu-overlay.open{display:block}
+.mobile-menu{position:fixed;top:0;left:0;width:75%;max-width:280px;height:100vh;background:var(--deep);z-index:400;transform:translateX(-100%);transition:transform .3s ease;display:flex;flex-direction:column;padding:0}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-menu-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.mob-nb{background:none;border:none;color:#c9a8bc;font-family:'Heebo',sans-serif;font-size:.95rem;font-weight:600;padding:16px 20px;cursor:pointer;text-align:right;width:100%;transition:background .2s,color .2s;border-bottom:1px solid rgba(255,255,255,.06)}
+.mob-nb:hover{background:rgba(255,255,255,.08);color:var(--blush)}
+.mob-nb.active{color:var(--rose);background:rgba(232,150,176,.1)}
 
 /* Tables → card layout on mobile */
 @media(max-width:600px){
-  /* Nav — scrollable, smaller text */
-  .topbar{padding:0 12px}
-  .brand{font-size:1rem;padding:12px 0}
-  .nb{font-size:.74rem;padding:13px 9px}
+  /* Nav — hide desktop nav, show hamburger */
+  .nav#desktop-nav{display:none}
+  .hamburger{display:flex}
+  .topbar{padding:0 14px}
+  .brand{font-size:1.05rem;padding:13px 0}
+  .sync-pill{font-size:.68rem}
 
   /* Pages */
   .page{padding:14px 10px}
   .card{padding:16px 14px;margin-bottom:14px}
   .card-title{font-size:.88rem}
 
-  /* Calendar portrait fix — min-height auto, smaller dots */
-  .cal-day{min-height:auto;padding:4px 3px}
-  .cal-day .day-num{font-size:.72rem;margin-bottom:1px}
-  .appt-dot{font-size:.58rem;padding:1px 2px;margin-bottom:1px}
+  /* Calendar portrait fix — fixed height cells, time only */
   .cal-grid{gap:2px}
+  .cal-day{height:46px;padding:3px 2px}
+  .cal-day .day-num{font-size:.68rem}
+  .appt-dot{font-size:.56rem;padding:1px 2px}
 
   /* RDV cards — stack actions below info */
   .rdv-card{flex-direction:column;gap:10px}
   .rdv-actions{width:100%;justify-content:flex-start}
-  /* Delete button — keep inside card */
-  .bd{margin-right:auto}
 
-  /* KPI grid — 2 cols on mobile */
+  /* KPI grid — 2 cols */
   .kpi{grid-template-columns:repeat(2,1fr);gap:8px}
   .kbox .kv{font-size:1.2rem}
   .kbox{padding:12px 10px}
@@ -197,7 +216,7 @@ td.amt.neg{color:var(--red)}
 
   /* Modals — full screen bottom sheet */
   .mbg{padding:0;align-items:flex-end}
-  .modal{border-radius:16px 16px 0 0;max-height:90vh;overflow-y:auto}
+  .modal{border-radius:16px 16px 0 0;max-height:92vh;overflow-y:auto}
   .mh{padding:16px 18px}
   .mb{padding:16px 18px}
   .cust-stats{grid-template-columns:repeat(2,1fr);gap:8px}
@@ -206,21 +225,21 @@ td.amt.neg{color:var(--red)}
   /* fg-grid → single col */
   .fg-grid{grid-template-columns:1fr}
 
-  /* Tables → replace horizontal scroll with card-style rows */
+  /* Tables → card layout */
   .tw{border:none;border-radius:0}
   table thead{display:none}
   table tbody tr{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--border);border-radius:11px;margin-bottom:9px;padding:12px 14px;gap:4px}
   table tbody tr:last-child{border-bottom:1px solid var(--border)}
   table tbody td{padding:0;border:none;font-size:.84rem;display:flex;align-items:center;gap:6px}
   table tbody td::before{content:attr(data-label);font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:70px;flex-shrink:0}
-  table tbody td:first-child{display:none} /* hide # */
+  table tbody td:first-child{display:none}
   table tbody td.amt{font-size:.95rem}
-  /* Last td (delete button) */
   table tbody td:last-child::before{display:none}
   table tbody td:last-child{justify-content:flex-end}
 
-  /* Search width */
+  /* Search + tbl-top */
   .sw input{width:160px}
+  .tbl-top{flex-direction:column;align-items:flex-start}
 
   /* Settings */
   .day-tog{padding:6px 10px;font-size:.74rem}
@@ -247,7 +266,7 @@ td.amt.neg{color:var(--red)}
 <div id="app" style="display:none">
 <div class="topbar">
   <div class="brand">✨ סטודיו <span>ניילס</span></div>
-  <div class="nav">
+  <div class="nav" id="desktop-nav">
     <button class="nb active" onclick="showPage('appts',this)">📅 תורים <span class="badge-n" id="pending-badge" style="display:none">0</span></button>
     <button class="nb" onclick="showPage('add',this)">＋ הוספה</button>
     <button class="nb" onclick="showPage('clients',this)">👥 לקוחות</button>
@@ -255,7 +274,27 @@ td.amt.neg{color:var(--red)}
     <button class="nb" onclick="showPage('pnl',this)">📊 P&L</button>
     <button class="nb" onclick="showPage('settings',this)">⚙️ הגדרות</button>
   </div>
-  <div class="sync-pill"><span id="sync-lbl">מתחבר…</span><span class="dot loading" id="sync-dot"></span></div>
+  <div style="display:flex;align-items:center;gap:10px">
+    <div class="sync-pill"><span id="sync-lbl">מתחבר…</span><span class="dot loading" id="sync-dot"></span></div>
+    <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="תפריט">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</div>
+
+<!-- Mobile menu overlay -->
+<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+<div class="mobile-menu" id="mobile-menu">
+  <div class="mobile-menu-header">
+    <span style="font-weight:700;color:var(--blush)">תפריט</span>
+    <button onclick="closeMobileMenu()" style="background:none;border:none;color:var(--blush);font-size:1.3rem;cursor:pointer">✕</button>
+  </div>
+  <button class="mob-nb active" id="mob-appts" onclick="showPage('appts',this);closeMobileMenu()">📅 תורים <span class="badge-n" id="mob-pending-badge" style="display:none">0</span></button>
+  <button class="mob-nb" onclick="showPage('add',this);closeMobileMenu()">＋ הוספת ביקור</button>
+  <button class="mob-nb" onclick="showPage('clients',this);closeMobileMenu()">👥 לקוחות</button>
+  <button class="mob-nb" onclick="showPage('expenses',this);closeMobileMenu()">💸 הוצאות</button>
+  <button class="mob-nb" onclick="showPage('pnl',this);closeMobileMenu()">📊 P&L</button>
+  <button class="mob-nb" onclick="showPage('settings',this);closeMobileMenu()">⚙️ הגדרות</button>
 </div>
 
 <!-- ═══ APPOINTMENTS ═══ -->
@@ -267,6 +306,10 @@ td.amt.neg{color:var(--red)}
       <button class="cal-nav" onclick="calNext()">›</button>
     </div>
     <div class="cal-grid" id="cal-grid"></div>
+    <div class="cal-day-detail" id="cal-day-detail">
+      <h4></h4>
+      <div class="cal-detail-body"></div>
+    </div>
     <div style="margin-top:12px;display:flex;justify-content:flex-end">
       <button class="btn btn-blue btn-sm" onclick="openManualApptModal()">＋ תור ידני</button>
     </div>
@@ -588,7 +631,7 @@ const fbApp=initializeApp(FB);
 const db=getFirestore(fbApp);
 
 const COL_VISITS='appointments', COL_BOOKINGS='bookings', COL_EXPENSES='expenses';
-const DOC_SETTINGS='config/settings', DOC_SERVICES='config/services', DOC_PROMOS='config/promos';
+const DOC_SETTINGS='config/settings', DOC_SERVICES='config/services', DOC_PROMOS='config/promos', DOC_EMAILJS='config/emailjs';
 
 let visits=[], bookings=[], expenses=[];
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
@@ -612,7 +655,11 @@ async function loadConfig(){
     if(sv.exists())services=sv.data().list||[];
     const sp=await getDoc(doc(db,...DOC_PROMOS.split('/')));
     if(sp.exists())promos=sp.data().list||[];
-    ejsConfig=JSON.parse(localStorage.getItem('ejs_config')||'{}');
+    // Load EmailJS from Firebase (with localStorage fallback)
+    const se=await getDoc(doc(db,...DOC_EMAILJS.split('/')));
+    if(se.exists()) ejsConfig=se.data();
+    else ejsConfig=JSON.parse(localStorage.getItem('ejs_config')||'{}');
+    if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
     initSettings();
   }catch(e){console.error(e);}
 }
@@ -620,11 +667,29 @@ loadConfig();
 
 function setSyncOk(ok){document.getElementById('sync-dot').className='dot '+(ok?'ok':'err');document.getElementById('sync-lbl').textContent=ok?'מחובר ✓':'שגיאה';}
 
+// ── HAMBURGER MENU ──
+window.toggleMobileMenu=()=>{
+  const btn=document.getElementById('hamburger-btn');
+  const menu=document.getElementById('mobile-menu');
+  const overlay=document.getElementById('mobile-menu-overlay');
+  btn.classList.toggle('open');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('open');
+  document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
+};
+window.closeMobileMenu=()=>{
+  document.getElementById('hamburger-btn').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+  document.getElementById('mobile-menu-overlay').classList.remove('open');
+  document.body.style.overflow='';
+};
+
 // ── NAV ──
 window.showPage=(p,btn)=>{
   document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
-  document.querySelectorAll('.nb').forEach(el=>el.classList.remove('active'));
-  document.getElementById('page-'+p).classList.add('active');btn.classList.add('active');
+  document.querySelectorAll('.nb,.mob-nb').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  if(btn)btn.classList.add('active');
   if(p==='appts')renderAppointments();
   if(p==='clients')renderClients();
   if(p==='pnl')renderPnl();
@@ -635,8 +700,12 @@ window.showPage=(p,btn)=>{
 // ── PENDING BADGE ──
 function updatePendingBadge(){
   const n=bookings.filter(b=>b.status==='pending').length;
+  // Desktop badge
   const badge=document.getElementById('pending-badge');
   badge.style.display=n>0?'inline':'none';badge.textContent=n;
+  // Mobile menu badge
+  const mobBadge=document.getElementById('mob-pending-badge');
+  if(mobBadge){mobBadge.style.display=n>0?'inline':'none';mobBadge.textContent=n;}
 }
 
 // ── CALENDAR ──
@@ -660,14 +729,41 @@ function renderCal(){
     const dateStr=fmtDateStr(date),wd=date.getDay();
     const isWork=(settings.workDays||[0,1,2,3,4]).includes(wd);
     const dayB=bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled');
-    const dots=dayB.slice(0,2).map(b=>`<div class="appt-dot ${b.status}">${b.clientName||'לקוחה'} ${b.time||''}</div>`).join('');
-    const more=dayB.length>2?`<div style="font-size:.6rem;color:var(--muted)">+${dayB.length-2}</div>`:'';
+    // Show time only in dots (no name) to keep cells compact
+    const dots=dayB.slice(0,2).map(b=>`<div class="appt-dot ${b.status}">${b.time||'—'}</div>`).join('');
+    const more=dayB.length>2?`<div style="font-size:.58rem;color:var(--muted);line-height:1">+${dayB.length-2}</div>`:'';
     let cls='cal-day';
     if(isToday)cls+=' today';if(isPast)cls+=' past';if(!isWork&&!isPast)cls+=' disabled';
-    html+=`<div class="${cls}"><div class="day-num">${d}</div>${dots}${more}</div>`;
+    html+=`<div class="${cls}" onclick="calDayClick('${dateStr}')"><div class="day-num">${d}</div>${dots}${more}</div>`;
   }
   grid.innerHTML=html;
+  // Close detail panel on re-render
+  const detail=document.getElementById('cal-day-detail');
+  if(detail)detail.classList.remove('open');
 }
+
+window.calDayClick=(dateStr)=>{
+  const detail=document.getElementById('cal-day-detail');
+  const dayB=bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled').sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  if(!dayB.length){detail.classList.remove('open');return;}
+  const [y,mo,d]=dateStr.split('-');
+  detail.querySelector('h4').textContent=`📅 ${d}/${mo}/${y} — ${dayB.length} תורים`;
+  detail.querySelector('.cal-detail-body').innerHTML=dayB.map(b=>{
+    const svcText=Array.isArray(b.service)?b.service.join(', '):b.service||'—';
+    return`<div class="cal-detail-row">
+      <div>
+        <span style="font-weight:600">${esc(b.clientName||'—')}</span>
+        <span style="color:var(--muted);font-size:.76rem;margin-right:6px">${esc(b.clientPhone||'')}</span>
+        <div style="font-size:.76rem;color:var(--muted)">${esc(svcText)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        <span style="font-weight:700;color:var(--deep)">${b.time||'—'}</span>
+        <span class="badge ${b.status}">${statusLabel(b.status)}</span>
+      </div>
+    </div>`;
+  }).join('');
+  detail.classList.add('open');
+};
 
 // ── APPOINTMENTS ──
 function renderAppointments(){
@@ -1213,11 +1309,26 @@ window.savePromos=async()=>{
   showToast('✅ קודי פרומו נשמרו!');
 };
 
-window.saveEmailJs=()=>{
-  ejsConfig={serviceId:document.getElementById('ejs-sid').value.trim(),publicKey:document.getElementById('ejs-key').value.trim(),tidNotify:document.getElementById('ejs-tid-notify').value.trim(),tidConfirm:document.getElementById('ejs-tid-confirm').value.trim()};
-  localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
-  if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
-  const st=document.getElementById('ejs-status');st.textContent='✅ נשמר!';st.style.color='var(--green)';
+window.saveEmailJs=async()=>{
+  ejsConfig={
+    serviceId:document.getElementById('ejs-sid').value.trim(),
+    publicKey:document.getElementById('ejs-key').value.trim(),
+    tidNotify:document.getElementById('ejs-tid-notify').value.trim(),
+    tidConfirm:document.getElementById('ejs-tid-confirm').value.trim()
+  };
+  const st=document.getElementById('ejs-status');
+  st.textContent='שומרת…';st.style.color='var(--muted)';
+  try{
+    // Save to Firebase — persists across devices and updates
+    await setDoc(doc(db,...DOC_EMAILJS.split('/')),ejsConfig);
+    // Also keep localStorage as fast fallback
+    localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
+    if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
+    st.textContent='✅ נשמר בענן!';st.style.color='var(--green)';
+  }catch(e){
+    st.textContent='⚠️ שגיאה — נשמר מקומית בלבד';st.style.color='var(--gold)';
+    localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
+  }
 };
 
 // ── CSV ──
