@@ -157,7 +157,83 @@ td.amt.neg{color:var(--red)}
 @keyframes ld{0%{width:10%;margin-right:90%}50%{width:60%;margin-right:0}100%{width:10%;margin-right:90%}}
 .day-tog{padding:7px 14px;border-radius:50px;border:1.5px solid var(--border);font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);background:var(--soft)}
 .day-tog.on{background:var(--deep);color:var(--blush);border-color:var(--deep)}
-@media(max-width:560px){.mbg{padding:0;align-items:flex-end}.modal{border-radius:16px 16px 0 0}.cal-grid{gap:2px}.cal-day{min-height:55px}}
+
+/* ── MOBILE RESPONSIVE ── */
+
+/* Tables → card layout on mobile */
+@media(max-width:600px){
+  /* Nav — scrollable, smaller text */
+  .topbar{padding:0 12px}
+  .brand{font-size:1rem;padding:12px 0}
+  .nb{font-size:.74rem;padding:13px 9px}
+
+  /* Pages */
+  .page{padding:14px 10px}
+  .card{padding:16px 14px;margin-bottom:14px}
+  .card-title{font-size:.88rem}
+
+  /* Calendar portrait fix — min-height auto, smaller dots */
+  .cal-day{min-height:auto;padding:4px 3px}
+  .cal-day .day-num{font-size:.72rem;margin-bottom:1px}
+  .appt-dot{font-size:.58rem;padding:1px 2px;margin-bottom:1px}
+  .cal-grid{gap:2px}
+
+  /* RDV cards — stack actions below info */
+  .rdv-card{flex-direction:column;gap:10px}
+  .rdv-actions{width:100%;justify-content:flex-start}
+  /* Delete button — keep inside card */
+  .bd{margin-right:auto}
+
+  /* KPI grid — 2 cols on mobile */
+  .kpi{grid-template-columns:repeat(2,1fr);gap:8px}
+  .kbox .kv{font-size:1.2rem}
+  .kbox{padding:12px 10px}
+
+  /* Two col → single col */
+  .two-col{grid-template-columns:1fr}
+
+  /* Chart labels shorter */
+  .chart-lbl{width:90px;font-size:.7rem}
+
+  /* Modals — full screen bottom sheet */
+  .mbg{padding:0;align-items:flex-end}
+  .modal{border-radius:16px 16px 0 0;max-height:90vh;overflow-y:auto}
+  .mh{padding:16px 18px}
+  .mb{padding:16px 18px}
+  .cust-stats{grid-template-columns:repeat(2,1fr);gap:8px}
+  .cs .v{font-size:1.1rem}
+
+  /* fg-grid → single col */
+  .fg-grid{grid-template-columns:1fr}
+
+  /* Tables → replace horizontal scroll with card-style rows */
+  .tw{border:none;border-radius:0}
+  table thead{display:none}
+  table tbody tr{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--border);border-radius:11px;margin-bottom:9px;padding:12px 14px;gap:4px}
+  table tbody tr:last-child{border-bottom:1px solid var(--border)}
+  table tbody td{padding:0;border:none;font-size:.84rem;display:flex;align-items:center;gap:6px}
+  table tbody td::before{content:attr(data-label);font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:70px;flex-shrink:0}
+  table tbody td:first-child{display:none} /* hide # */
+  table tbody td.amt{font-size:.95rem}
+  /* Last td (delete button) */
+  table tbody td:last-child::before{display:none}
+  table tbody td:last-child{justify-content:flex-end}
+
+  /* Search width */
+  .sw input{width:160px}
+
+  /* Settings */
+  .day-tog{padding:6px 10px;font-size:.74rem}
+}
+
+/* Medium mobile — 601-768 */
+@media(min-width:601px) and (max-width:768px){
+  .page{padding:18px 14px}
+  .mbg{padding:12px}
+  .modal{border-radius:14px}
+  .fg-grid{grid-template-columns:1fr 1fr}
+  .kpi{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
@@ -866,14 +942,14 @@ function renderVisits(){
   empty.style.display='none';
   tbody.innerHTML=data.map((e,i)=>`<tr>
     <td style="color:var(--muted);font-size:.74rem">${i+1}</td>
-    <td><span class="rl" onclick="openCustModal('${esc(e.phone)}')">${esc(e.name||'—')}</span></td>
-    <td dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(e.phone)}</td>
-    <td style="white-space:nowrap">${fmtDate(e.date)}${e.time?' '+e.time:''}</td>
-    <td style="max-width:150px;white-space:normal;font-size:.8rem">${esc(e.service)}</td>
-    <td class="amt">₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
-    <td>${payBadge(e.payment)}</td>
-    <td style="font-size:.76rem;color:var(--gold)">${e.promoCode?`🎟️ ${esc(e.promoCode)}`:''}</td>
-    <td style="font-size:.74rem;color:var(--muted);max-width:100px;white-space:normal">${esc(e.notes||'')}</td>
+    <td data-label="שם"><span class="rl" onclick="openCustModal('${esc(e.phone)}')">${esc(e.name||'—')}</span></td>
+    <td data-label="טלפון" dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(e.phone)}</td>
+    <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}${e.time?' '+e.time:''}</td>
+    <td data-label="שירות" style="max-width:150px;white-space:normal;font-size:.8rem">${esc(e.service)}</td>
+    <td data-label="סכום" class="amt">₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
+    <td data-label="תשלום">${payBadge(e.payment)}</td>
+    <td data-label="פרומו" style="font-size:.76rem;color:var(--gold)">${e.promoCode?`🎟️ ${esc(e.promoCode)}`:''}</td>
+    <td data-label="הערות" style="font-size:.74rem;color:var(--muted);max-width:100px;white-space:normal">${esc(e.notes||'')}</td>
     <td><button class="bd" onclick="deleteVisit('${e.id}')">✕</button></td>
   </tr>`).join('');
 }
@@ -906,13 +982,13 @@ function renderClients(){
     const last=c.visits.map(v=>v.date).sort().pop()||'';
     const fav=Object.entries(c.svcs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
     return`<tr>
-      <td><span class="rl" onclick="openCustModal('${esc(c.phone)}')">${esc(c.name||'—')}</span></td>
-      <td dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(c.phone)}</td>
-      <td><strong>${c.visits.length}</strong></td>
-      <td class="amt">₪${total.toFixed(0)}</td>
-      <td style="color:var(--muted)">₪${avg.toFixed(0)}</td>
-      <td>${fmtDate(last)}</td>
-      <td><span class="badge">${esc(fav.length>16?fav.slice(0,14)+'…':fav)}</span></td>
+      <td data-label="שם"><span class="rl" onclick="openCustModal('${esc(c.phone)}')">${esc(c.name||'—')}</span></td>
+      <td data-label="טלפון" dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(c.phone)}</td>
+      <td data-label="ביקורים"><strong>${c.visits.length}</strong></td>
+      <td data-label="סה״כ" class="amt">₪${total.toFixed(0)}</td>
+      <td data-label="ממוצע" style="color:var(--muted)">₪${avg.toFixed(0)}</td>
+      <td data-label="תור אחרון">${fmtDate(last)}</td>
+      <td data-label="שירות נפוץ"><span class="badge">${esc(fav.length>16?fav.slice(0,14)+'…':fav)}</span></td>
       <td><button class="btn btn-ghost btn-sm" onclick="openCustModal('${esc(c.phone)}')">📋 כרטיס</button></td>
     </tr>`;
   }).join('');
@@ -983,10 +1059,10 @@ function renderExpenses(){
   if(!expenses.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   tbody.innerHTML=expenses.map(e=>`<tr>
-    <td style="white-space:nowrap">${fmtDate(e.date)}</td>
-    <td><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
-    <td style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
-    <td class="amt neg">-₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
+    <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}</td>
+    <td data-label="קטגוריה"><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
+    <td data-label="תיאור" style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
+    <td data-label="סכום" class="amt neg">-₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
     <td><button class="bd" onclick="deleteExpense('${e.id}')">✕</button></td>
   </tr>`).join('');
 }
