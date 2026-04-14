@@ -6,47 +6,93 @@
 <title>✨ סטודיו ניילס — ניהול</title>
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--deep:#6b3050;--rose:#e896b0;--blush:#f7e0ea;--cream:#fdf6f0;--gold:#c9906a;--ink:#281820;--border:#e6cfda;--soft:#faf0f5;--white:#fff;--green:#3d9e6e;--red:#c0392b;--muted:#9a7088;--shadow:rgba(107,48,80,.09)}
+:root{
+  --deep:#6b3050;--rose:#e896b0;--blush:#f7e0ea;--cream:#fdf6f0;
+  --gold:#c9906a;--ink:#281820;--border:#e6cfda;--soft:#faf0f5;
+  --white:#fff;--green:#3d9e6e;--red:#c0392b;--muted:#9a7088;
+  --blue:#3a7abf;--shadow:rgba(107,48,80,.09);
+}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Heebo',sans-serif;background:var(--cream);color:var(--ink);direction:rtl;min-height:100vh}
-.topbar{background:var(--deep);padding:0 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;position:sticky;top:0;z-index:300}
-.brand{color:var(--blush);font-size:1.2rem;font-weight:800;padding:14px 0;white-space:nowrap}
+
+/* ── TOPBAR ── */
+.topbar{background:var(--deep);padding:0 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:300;gap:8px}
+.brand{color:var(--blush);font-size:1.15rem;font-weight:800;padding:14px 0;white-space:nowrap;flex-shrink:0}
 .brand span{color:var(--rose)}
-.nav{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch}.nav::-webkit-scrollbar{display:none}
+.nav{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;flex:1}
+.nav::-webkit-scrollbar{display:none}
 .nb{background:none;border:none;color:#c9a8bc;font-family:'Heebo',sans-serif;font-size:.82rem;font-weight:600;padding:16px 12px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
 .nb:hover{color:var(--blush)}.nb.active{color:var(--rose);border-bottom-color:var(--rose)}
-.badge-n{background:var(--rose);color:var(--white);border-radius:20px;font-size:.65rem;padding:1px 6px;margin-right:4px;font-weight:700}
-.sync-pill{display:flex;align-items:center;gap:5px;font-size:.74rem;color:#c9a8bc;white-space:nowrap}
-.dot{width:7px;height:7px;border-radius:50%;background:#555;transition:background .3s}
+.badge-n{background:var(--rose);color:#fff;border-radius:20px;font-size:.65rem;padding:1px 6px;margin-right:4px;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.sync-pill{display:flex;align-items:center;gap:5px;font-size:.72rem;color:#c9a8bc;white-space:nowrap}
+.dot{width:7px;height:7px;border-radius:50%;background:#888;transition:background .3s}
 .dot.ok{background:#3d9e6e}.dot.err{background:var(--red)}.dot.loading{background:var(--gold);animation:pulse 1s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.page{display:none;max-width:1080px;margin:0 auto;padding:22px 16px}.page.active{display:block}
-.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px 24px;margin-bottom:18px;box-shadow:0 2px 12px var(--shadow)}
-.card-title{font-size:.98rem;font-weight:700;color:var(--deep);margin-bottom:16px;padding-bottom:11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
+
+/* ── HAMBURGER ── */
+.hamburger{display:none;flex-direction:column;justify-content:space-between;width:26px;height:19px;background:none;border:none;cursor:pointer;padding:0;flex-shrink:0}
+.hamburger span{display:block;height:2.5px;width:100%;background:#f7e0ea;border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,6px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
+.mob-overlay{display:none;position:fixed;inset:0;background:rgba(40,24,32,.5);z-index:399}
+.mob-overlay.open{display:block}
+.mob-menu{position:fixed;top:0;right:0;width:72%;max-width:270px;height:100vh;background:var(--deep);z-index:400;transform:translateX(100%);transition:transform .3s ease;display:flex;flex-direction:column}
+.mob-menu.open{transform:translateX(0)}
+.mob-menu-top{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.mob-menu-top span{color:var(--blush);font-weight:700;font-size:.95rem}
+.mob-close{background:none;border:none;color:var(--blush);font-size:1.3rem;cursor:pointer;line-height:1}
+.mob-nb{background:none;border:none;color:#c9a8bc;font-family:'Heebo',sans-serif;font-size:.95rem;font-weight:600;padding:15px 18px;cursor:pointer;text-align:right;width:100%;border-bottom:1px solid rgba(255,255,255,.06);transition:background .2s,color .2s}
+.mob-nb:hover{background:rgba(255,255,255,.08);color:var(--blush)}
+.mob-nb.active{color:var(--rose);background:rgba(232,150,176,.1)}
+
+/* ── PAGES ── */
+.page{display:none;max-width:1080px;margin:0 auto;padding:20px 16px}
+.page.active{display:block}
+
+/* ── SUB TABS (ניהול) ── */
+.sub-tabs{display:flex;gap:0;margin-bottom:18px;background:var(--white);border-radius:12px;border:1px solid var(--border);overflow:hidden;box-shadow:0 1px 6px var(--shadow)}
+.stb{flex:1;background:none;border:none;font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;color:var(--muted);padding:11px 8px;cursor:pointer;transition:background .2s,color .2s;border-bottom:3px solid transparent}
+.stb.active{color:var(--deep);background:var(--soft);border-bottom-color:var(--deep)}
+.sub-page{display:none}.sub-page.active{display:block}
+
+/* ── CARD ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:20px 22px;margin-bottom:16px;box-shadow:0 2px 10px var(--shadow)}
+.card-title{font-size:.96rem;font-weight:700;color:var(--deep);margin-bottom:14px;padding-bottom:11px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:8px}
 .card-title-left{display:flex;align-items:center;gap:8px}
-.fg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:13px}
-.fg{display:flex;flex-direction:column;gap:4px}.fg.full{grid-column:1/-1}
+
+/* ── FORM ── */
+.fg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px}
+.fg{display:flex;flex-direction:column;gap:4px}
+.fg.full{grid-column:1/-1}
 .fg.req label::after{content:' *';color:var(--rose)}
-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--deep)}
-input,select,textarea{font-family:'Heebo',sans-serif;font-size:.91rem;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;background:var(--soft);color:var(--ink);direction:rtl;text-align:right;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
-input:focus,select:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,150,176,.15);background:var(--white)}
+label{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--deep)}
+input,select,textarea{font-family:'Heebo',sans-serif;font-size:.9rem;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;background:var(--soft);color:var(--ink);direction:rtl;text-align:right;outline:none;transition:border-color .2s,box-shadow .2s;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--rose);box-shadow:0 0 0 3px rgba(232,150,176,.14);background:var(--white)}
 input.err{border-color:var(--red)!important}
-textarea{resize:vertical;min-height:60px}
-.btn{font-family:'Heebo',sans-serif;font-size:.86rem;font-weight:600;cursor:pointer;border:none;border-radius:50px;padding:9px 22px;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:6px}
+textarea{resize:vertical;min-height:58px}
+
+/* ── BUTTONS ── */
+.btn{font-family:'Heebo',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;border:none;border-radius:50px;padding:9px 20px;transition:background .2s,transform .1s;display:inline-flex;align-items:center;gap:5px}
 .btn:hover{transform:translateY(-1px)}.btn:active{transform:none}.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 .btn-primary{background:var(--deep);color:var(--blush)}.btn-primary:hover{background:#5a2844}
-.btn-gold{background:var(--gold);color:var(--white)}.btn-gold:hover{background:#b5805a}
+.btn-gold{background:var(--gold);color:#fff}.btn-gold:hover{background:#b5805a}
 .btn-ghost{background:var(--soft);color:var(--deep);border:1.5px solid var(--border)}.btn-ghost:hover{background:var(--blush)}
-.btn-green{background:var(--green);color:var(--white)}.btn-green:hover{background:#2d7a54}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#2d7a54}
 .btn-red{background:#fde8e8;color:var(--red);border:1px solid #f5c6c6}.btn-red:hover{background:#fdd}
-.btn-blue{background:#3a7abf;color:var(--white)}.btn-blue:hover{background:#2d6aaa}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue:hover{background:#2d6aaa}
 .btn-sm{padding:5px 13px;font-size:.76rem}
 .spinner{display:inline-block;width:12px;height:12px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--deep);color:var(--blush);padding:9px 20px;border-radius:50px;font-size:.86rem;font-weight:500;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--deep);color:var(--blush);padding:9px 20px;border-radius:50px;font-size:.85rem;font-weight:500;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.tbl-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:9px;margin-bottom:12px}
-.sw{position:relative}.sw input{padding-right:30px;width:185px}
+
+/* ── TABLE ── */
+.tbl-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:11px}
+.sw{position:relative}.sw input{padding-right:30px;width:180px}
 .si{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--rose);pointer-events:none;font-size:.88rem}
 .tw{overflow-x:auto;border-radius:10px;border:1px solid var(--border)}
 table{width:100%;border-collapse:collapse;font-size:.84rem}
@@ -68,237 +114,212 @@ td.amt.neg{color:var(--red)}
 .badge.cancelled{background:#fde8e8;color:var(--red)}
 .rl{color:var(--deep);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:2px}.rl:hover{color:var(--rose)}
 .bd{background:none;border:none;cursor:pointer;color:#cbb;font-size:.88rem;padding:2px 6px;border-radius:5px;transition:color .15s,background .15s}.bd:hover{color:var(--red);background:#fde8e8}
-.empty{text-align:center;padding:38px 20px;color:var(--muted)}.empty .ei{font-size:1.8rem;margin-bottom:7px}
+.empty{text-align:center;padding:36px 20px;color:var(--muted)}.empty .ei{font-size:1.8rem;margin-bottom:7px}
+
+/* ── AUTOCOMPLETE ── */
 .ac-wrap{position:relative}
 .ac-list{position:absolute;top:calc(100% + 3px);right:0;left:0;background:var(--white);border:1.5px solid var(--border);border-radius:10px;box-shadow:0 8px 24px var(--shadow);z-index:400;max-height:180px;overflow-y:auto;display:none}
-.ac-item{padding:8px 13px;cursor:pointer;font-size:.87rem;display:flex;justify-content:space-between;align-items:center}.ac-item:hover{background:var(--soft)}
+.ac-item{padding:8px 12px;cursor:pointer;font-size:.86rem;display:flex;justify-content:space-between;align-items:center}.ac-item:hover{background:var(--soft)}
 .ac-ph{font-size:.74rem;color:var(--muted);direction:ltr}
-/* SERVICE CHECKBOXES */
-.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:4px}
-.svc-check{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all .2s;background:var(--soft);gap:8px}
+
+/* ── SERVICE CHECKBOXES ── */
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:7px;margin-top:4px}
+.svc-check{display:flex;align-items:center;justify-content:space-between;padding:8px 11px;border:1.5px solid var(--border);border-radius:9px;cursor:pointer;transition:all .2s;background:var(--soft);gap:7px;user-select:none}
 .svc-check:hover{border-color:var(--rose);background:var(--white)}
 .svc-check.selected{border-color:var(--deep);background:var(--blush)}
-.svc-check input[type=checkbox]{width:16px;height:16px;accent-color:var(--deep);flex-shrink:0;cursor:pointer}
-.svc-check .svc-name{font-size:.85rem;font-weight:500;flex:1}
-.svc-check .svc-price{font-size:.8rem;font-weight:700;color:var(--deep)}
-.svc-total{margin-top:8px;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:.85rem;display:flex;justify-content:space-between;align-items:center}
-.svc-total strong{color:var(--deep);font-size:1rem}
-/* CALENDAR */
-.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
-.cal-header h3{font-size:1rem;font-weight:700;color:var(--deep)}
-.cal-nav{background:none;border:1.5px solid var(--border);color:var(--deep);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}.cal-nav:hover{background:var(--blush)}
+.svc-check input[type=checkbox]{display:none}
+.svc-check .svc-name{font-size:.84rem;font-weight:500;flex:1}
+.svc-check .svc-price{font-size:.78rem;font-weight:700;color:var(--deep)}
+.svc-total{margin-top:7px;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:.84rem;display:flex;justify-content:space-between;align-items:center}
+.svc-total strong{color:var(--deep);font-size:.98rem}
+
+/* ── CALENDAR ── */
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.cal-header h3{font-size:.96rem;font-weight:700;color:var(--deep)}
+.cal-nav{background:none;border:1.5px solid var(--border);color:var(--deep);width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}.cal-nav:hover{background:var(--blush)}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
-.cal-day-name{text-align:center;font-size:.68rem;font-weight:700;color:var(--muted);padding:4px 0}
+.cal-day-name{text-align:center;font-size:.66rem;font-weight:700;color:var(--muted);padding:3px 0}
 .cal-day{height:52px;border:1.5px solid var(--border);border-radius:8px;padding:4px 3px;cursor:pointer;transition:border-color .2s,background .2s;background:var(--white);overflow:hidden;display:flex;flex-direction:column}
 .cal-day:hover{border-color:var(--rose);background:var(--soft)}
 .cal-day.today{border-color:var(--rose);background:var(--blush)}
 .cal-day.other-month{background:#f8f4f6;opacity:.5}
 .cal-day.past{opacity:.4;cursor:default;pointer-events:none}
 .cal-day.disabled{background:#f5f0f3;opacity:.5;cursor:not-allowed;pointer-events:none}
-.cal-day .day-num{font-size:.72rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:2px;flex-shrink:0}
+.cal-day .day-num{font-size:.7rem;font-weight:700;color:var(--ink);line-height:1;margin-bottom:2px;flex-shrink:0}
 .cal-day.today .day-num{color:var(--deep)}
-.appt-dot{font-size:.6rem;background:var(--rose);color:var(--white);border-radius:3px;padding:1px 3px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;flex-shrink:0}
-.appt-dot.confirmed{background:var(--green)}.appt-dot.pending{background:var(--gold)}.appt-dot.completed{background:#3a7abf}
-/* Day detail panel shown below calendar on click */
-.cal-day-detail{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:10px;display:none}
-.cal-day-detail.open{display:block}
-.cal-day-detail h4{font-size:.82rem;font-weight:700;color:var(--deep);margin-bottom:8px}
-.cal-detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem}
+.appt-dot{font-size:.58rem;color:#fff;border-radius:3px;padding:1px 3px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;flex-shrink:0}
+.appt-dot.confirmed{background:var(--green)}.appt-dot.pending{background:var(--gold)}.appt-dot.completed{background:var(--blue)}
+.cal-detail{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:11px 14px;margin-top:9px;display:none}
+.cal-detail.open{display:block}
+.cal-detail h4{font-size:.8rem;font-weight:700;color:var(--deep);margin-bottom:8px}
+.cal-detail-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:.8rem;gap:8px;flex-wrap:wrap}
 .cal-detail-row:last-child{border-bottom:none}
-/* RDV CARDS */
-.rdv-card{border:1.5px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:10px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;transition:border-color .2s}
+
+/* ── RDV CARDS ── */
+.rdv-card{border:1.5px solid var(--border);border-radius:12px;padding:13px 15px;margin-bottom:9px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;transition:border-color .2s}
 .rdv-card:hover{border-color:var(--rose)}
 .rdv-card.pending{border-right:4px solid var(--gold)}
 .rdv-card.confirmed{border-right:4px solid var(--green)}
-.rdv-card.completed{border-right:4px solid #3a7abf}
 .rdv-card.cancelled{border-right:4px solid var(--red);opacity:.6}
-.rdv-info .rdv-name{font-weight:700;font-size:.95rem}
-.rdv-info .rdv-details{font-size:.78rem;color:var(--muted);margin-top:3px}
-.rdv-actions{display:flex;gap:7px;flex-wrap:wrap;align-items:center;flex-shrink:0}
-/* STATS / KPI */
-.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:11px;margin-bottom:18px}
-.kbox{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:15px;text-align:center;box-shadow:0 1px 6px var(--shadow)}
-.kbox .kv{font-size:1.45rem;font-weight:800;color:var(--deep);line-height:1.1}
-.kbox .kl{font-size:.7rem;color:var(--muted);margin-top:4px;font-weight:500}
-.kbox.acc{background:var(--deep);border-color:var(--deep)}.kbox.acc .kv{color:var(--rose)}.kbox.acc .kl{color:#c9a8bc}
+.rdv-info .rdv-name{font-weight:700;font-size:.93rem}
+.rdv-info .rdv-det{font-size:.77rem;color:var(--muted);margin-top:2px}
+.rdv-actions{display:flex;gap:6px;flex-wrap:wrap;align-items:center;flex-shrink:0}
+
+/* ── KPI / STATS ── */
+.kpi{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.kbox{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;box-shadow:0 1px 6px var(--shadow)}
+.kbox .kv{font-size:1.4rem;font-weight:800;color:var(--deep);line-height:1.1}
+.kbox .kl{font-size:.69rem;color:var(--muted);margin-top:4px;font-weight:500}
+.kbox.acc{background:var(--deep)}.kbox.acc .kv{color:var(--rose)}.kbox.acc .kl{color:#c9a8bc}
 .kbox.red{background:#fff0f0;border-color:#f5c6c6}.kbox.red .kv{color:var(--red)}
 .kbox.gre{background:#f0fff4;border-color:#b8e0c8}.kbox.gre .kv{color:var(--green)}
-.period-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
-.pb{background:var(--soft);border:1.5px solid var(--border);color:var(--deep);font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:600;padding:5px 13px;border-radius:50px;cursor:pointer;transition:background .2s}
+.period-bar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+.pb{background:var(--soft);border:1.5px solid var(--border);color:var(--deep);font-family:'Heebo',sans-serif;font-size:.77rem;font-weight:600;padding:5px 12px;border-radius:50px;cursor:pointer;transition:background .2s}
 .pb.active{background:var(--deep);color:var(--blush);border-color:var(--deep)}
-.cr{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.cr input{width:130px;font-size:.83rem}
-.section-lbl{font-size:.77rem;font-weight:700;color:var(--deep);margin-bottom:9px;text-transform:uppercase;letter-spacing:.06em}
+.cr{display:flex;gap:7px;align-items:center;flex-wrap:wrap}.cr input{width:128px;font-size:.82rem}
+.section-lbl{font-size:.75rem;font-weight:700;color:var(--deep);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-@media(max-width:640px){.two-col{grid-template-columns:1fr}}
-.chart-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.chart-lbl{font-size:.74rem;color:var(--ink);width:115px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.chart-track{flex:1;background:var(--soft);border-radius:20px;height:15px;overflow:hidden}
+.chart-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.chart-lbl{font-size:.73rem;color:var(--ink);width:110px;text-align:right;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chart-track{flex:1;background:var(--soft);border-radius:20px;height:14px;overflow:hidden}
 .chart-fill{height:100%;border-radius:20px;transition:width .5s ease;min-width:2px}
 .chart-fill.income{background:linear-gradient(90deg,var(--rose),var(--deep))}
 .chart-fill.expense{background:linear-gradient(90deg,#f5a623,var(--red))}
-.chart-val{font-size:.74rem;font-weight:700;color:var(--deep);white-space:nowrap;width:52px;text-align:left;flex-shrink:0}
-/* MODAL */
-.mbg{display:none;position:fixed;inset:0;background:rgba(40,24,32,.55);z-index:500;backdrop-filter:blur(3px);align-items:flex-start;justify-content:center;padding:24px 14px;overflow-y:auto}
+.chart-val{font-size:.73rem;font-weight:700;color:var(--deep);white-space:nowrap;width:50px;text-align:left;flex-shrink:0}
+
+/* ── SUMMARY BOX (total) ── */
+.summary-box{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.summary-box .sb-item{text-align:center}
+.summary-box .sb-val{font-size:1.3rem;font-weight:800;color:var(--deep)}
+.summary-box .sb-lbl{font-size:.7rem;color:var(--muted);font-weight:500}
+
+/* ── MODALS ── */
+.mbg{display:none;position:fixed;inset:0;background:rgba(40,24,32,.55);z-index:500;backdrop-filter:blur(3px);align-items:flex-start;justify-content:center;padding:22px 14px;overflow-y:auto}
 .mbg.open{display:flex}
 .modal{background:var(--white);border-radius:16px;width:100%;max-width:640px;overflow:hidden;box-shadow:0 20px 60px rgba(40,24,32,.25)}
-.mh{background:var(--deep);padding:20px 24px;color:var(--blush);display:flex;justify-content:space-between;align-items:flex-start}
-.mh h2{font-size:1.1rem;font-weight:800}.mh .sub{color:#c9a8bc;font-size:.78rem;margin-top:3px}
+.mh{background:var(--deep);padding:18px 22px;color:var(--blush);display:flex;justify-content:space-between;align-items:flex-start}
+.mh h2{font-size:1.05rem;font-weight:800}.mh .sub{color:#c9a8bc;font-size:.76rem;margin-top:3px}
 .mc-btn{background:rgba(255,255,255,.15);border:none;color:var(--blush);width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center;transition:background .2s;flex-shrink:0}.mc-btn:hover{background:rgba(255,255,255,.3)}
-.mb{padding:20px 24px}
-.cust-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:16px}
-.cs{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:11px;text-align:center}
-.cs .v{font-size:1.2rem;font-weight:800;color:var(--deep)}.cs .l{font-size:.68rem;color:var(--muted);margin-top:3px;font-weight:500}
-.vlist{max-height:250px;overflow-y:auto}
-.vrow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);gap:8px;flex-wrap:wrap}
+.mb{padding:18px 22px}
+.cust-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.cs{background:var(--soft);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center}
+.cs .v{font-size:1.15rem;font-weight:800;color:var(--deep)}.cs .l{font-size:.67rem;color:var(--muted);margin-top:2px;font-weight:500}
+.vlist{max-height:240px;overflow-y:auto}
+.vrow{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);gap:7px;flex-wrap:wrap}
 .vrow:last-child{border-bottom:none}
-.vl .vd{font-size:.74rem;color:var(--muted)}.vl .vs{font-weight:600;font-size:.86rem}.vl .vn{font-size:.72rem;color:var(--muted);font-style:italic}
-.vr-right{display:flex;align-items:center;gap:7px;flex-shrink:0}
-/* PROMO */
-.promo-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.vl .vd{font-size:.72rem;color:var(--muted)}.vl .vs{font-weight:600;font-size:.84rem}
+.vr-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+
+/* ── SETTINGS ── */
+.day-tog{padding:6px 13px;border-radius:50px;border:1.5px solid var(--border);font-family:'Heebo',sans-serif;font-size:.78rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);background:var(--soft)}
+.day-tog.on{background:var(--deep);color:var(--blush);border-color:var(--deep)}
+.promo-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
 .promo-row:last-child{border-bottom:none}
-/* LOADING */
+
+/* ── LOADING ── */
 .loading-screen{position:fixed;inset:0;background:var(--cream);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:14px}
-.loading-bar{width:180px;height:3px;background:var(--border);border-radius:20px;overflow:hidden}
+.loading-bar{width:170px;height:3px;background:var(--border);border-radius:20px;overflow:hidden}
 .loading-bar-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--deep));border-radius:20px;animation:ld 1.5s ease infinite}
 @keyframes ld{0%{width:10%;margin-right:90%}50%{width:60%;margin-right:0}100%{width:10%;margin-right:90%}}
-.day-tog{padding:7px 14px;border-radius:50px;border:1.5px solid var(--border);font-family:'Heebo',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;color:var(--muted);background:var(--soft)}
-.day-tog.on{background:var(--deep);color:var(--blush);border-color:var(--deep)}
 
-/* ── HAMBURGER MENU ── */
-.hamburger{display:none;flex-direction:column;justify-content:space-between;width:28px;height:20px;background:none;border:none;cursor:pointer;padding:2px 0;flex-shrink:0}
-.hamburger span{display:block;height:2px;background:var(--blush);border-radius:2px;transition:all .3s}
-.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,6px)}
-.hamburger.open span:nth-child(2){opacity:0}
-.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-6px)}
-.mobile-menu-overlay{display:none;position:fixed;inset:0;background:rgba(40,24,32,.5);z-index:399}
-.mobile-menu-overlay.open{display:block}
-.mobile-menu{position:fixed;top:0;left:0;width:75%;max-width:280px;height:100vh;background:var(--deep);z-index:400;transform:translateX(-100%);transition:transform .3s ease;display:flex;flex-direction:column;padding:0}
-.mobile-menu.open{transform:translateX(0)}
-.mobile-menu-header{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid rgba(255,255,255,.1)}
-.mob-nb{background:none;border:none;color:#c9a8bc;font-family:'Heebo',sans-serif;font-size:.95rem;font-weight:600;padding:16px 20px;cursor:pointer;text-align:right;width:100%;transition:background .2s,color .2s;border-bottom:1px solid rgba(255,255,255,.06)}
-.mob-nb:hover{background:rgba(255,255,255,.08);color:var(--blush)}
-.mob-nb.active{color:var(--rose);background:rgba(232,150,176,.1)}
+/* ── RESPONSIVE ── */
+@media(max-width:640px){.two-col{grid-template-columns:1fr}}
 
-/* Tables → card layout on mobile */
 @media(max-width:600px){
-  /* Nav — hide desktop nav, show hamburger */
-  .nav#desktop-nav{display:none}
+  .nav{display:none}
   .hamburger{display:flex}
   .topbar{padding:0 14px}
-  .brand{font-size:1.05rem;padding:13px 0}
-  .sync-pill{font-size:.68rem}
-
-  /* Pages */
-  .page{padding:14px 10px}
-  .card{padding:16px 14px;margin-bottom:14px}
-  .card-title{font-size:.88rem}
-
-  /* Calendar portrait fix — fixed height cells, time only */
+  .brand{font-size:1rem;padding:12px 0}
+  .sync-pill{display:none}
+  .page{padding:12px 10px}
+  .card{padding:14px 12px;margin-bottom:12px}
+  .cal-day{height:44px;padding:3px 2px}
+  .cal-day .day-num{font-size:.66rem}
+  .appt-dot{font-size:.54rem;padding:1px 2px}
   .cal-grid{gap:2px}
-  .cal-day{height:46px;padding:3px 2px}
-  .cal-day .day-num{font-size:.68rem}
-  .appt-dot{font-size:.56rem;padding:1px 2px}
-
-  /* RDV cards — stack actions below info */
-  .rdv-card{flex-direction:column;gap:10px}
+  .rdv-card{flex-direction:column;gap:8px}
   .rdv-actions{width:100%;justify-content:flex-start}
-
-  /* KPI grid — 2 cols */
-  .kpi{grid-template-columns:repeat(2,1fr);gap:8px}
-  .kbox .kv{font-size:1.2rem}
-  .kbox{padding:12px 10px}
-
-  /* Two col → single col */
-  .two-col{grid-template-columns:1fr}
-
-  /* Chart labels shorter */
-  .chart-lbl{width:90px;font-size:.7rem}
-
-  /* Modals — full screen bottom sheet */
+  .kpi{grid-template-columns:repeat(2,1fr);gap:7px}
+  .kbox .kv{font-size:1.15rem}.kbox{padding:11px 9px}
   .mbg{padding:0;align-items:flex-end}
   .modal{border-radius:16px 16px 0 0;max-height:92vh;overflow-y:auto}
-  .mh{padding:16px 18px}
-  .mb{padding:16px 18px}
-  .cust-stats{grid-template-columns:repeat(2,1fr);gap:8px}
-  .cs .v{font-size:1.1rem}
-
-  /* fg-grid → single col */
+  .mh{padding:14px 16px}.mb{padding:14px 16px}
+  .cust-stats{grid-template-columns:repeat(2,1fr)}
   .fg-grid{grid-template-columns:1fr}
-
-  /* Tables → card layout */
+  .svc-grid{grid-template-columns:1fr}
   .tw{border:none;border-radius:0}
   table thead{display:none}
-  table tbody tr{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--border);border-radius:11px;margin-bottom:9px;padding:12px 14px;gap:4px}
+  table tbody tr{display:flex;flex-direction:column;background:var(--white);border:1px solid var(--border);border-radius:11px;margin-bottom:8px;padding:11px 13px;gap:4px}
   table tbody tr:last-child{border-bottom:1px solid var(--border)}
-  table tbody td{padding:0;border:none;font-size:.84rem;display:flex;align-items:center;gap:6px}
-  table tbody td::before{content:attr(data-label);font-size:.68rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:70px;flex-shrink:0}
+  table tbody td{padding:0;border:none;font-size:.83rem;display:flex;align-items:center;gap:6px}
+  table tbody td::before{content:attr(data-label);font-size:.67rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:68px;flex-shrink:0}
   table tbody td:first-child{display:none}
-  table tbody td.amt{font-size:.95rem}
+  table tbody td.amt{font-size:.92rem}
   table tbody td:last-child::before{display:none}
   table tbody td:last-child{justify-content:flex-end}
-
-  /* Search + tbl-top */
-  .sw input{width:160px}
+  .sw input{width:150px}
   .tbl-top{flex-direction:column;align-items:flex-start}
-
-  /* Settings */
-  .day-tog{padding:6px 10px;font-size:.74rem}
+  .sub-tabs{border-radius:9px}
+  .stb{font-size:.78rem;padding:10px 6px}
+  .summary-box{flex-direction:column;gap:12px}
+  .summary-box .sb-item{width:100%;display:flex;justify-content:space-between;align-items:center}
+  .summary-box .sb-val{font-size:1.1rem}
 }
-
-/* Medium mobile — 601-768 */
 @media(min-width:601px) and (max-width:768px){
-  .page{padding:18px 14px}
-  .mbg{padding:12px}
-  .modal{border-radius:14px}
   .fg-grid{grid-template-columns:1fr 1fr}
   .kpi{grid-template-columns:repeat(3,1fr)}
+  .mbg{padding:14px}
+  .modal{border-radius:14px}
 }
 </style>
 </head>
 <body>
 
 <div class="loading-screen" id="loading-screen">
-  <div style="font-size:1.8rem;font-weight:800;color:var(--deep)">✨ סטודיו <span style="color:var(--rose)">ניילס</span></div>
+  <div style="font-size:1.7rem;font-weight:800;color:var(--deep)">✨ סטודיו <span style="color:var(--rose)">ניילס</span></div>
   <div class="loading-bar"><div class="loading-bar-fill"></div></div>
-  <p style="color:var(--muted);font-size:.88rem">מתחברת…</p>
+  <p style="color:var(--muted);font-size:.86rem">מתחברת…</p>
 </div>
 
 <div id="app" style="display:none">
+
+<!-- TOPBAR -->
 <div class="topbar">
   <div class="brand">✨ סטודיו <span>ניילס</span></div>
-  <div class="nav" id="desktop-nav">
+  <div class="nav" id="desk-nav">
     <button class="nb active" onclick="showPage('appts',this)">📅 תורים <span class="badge-n" id="pending-badge" style="display:none">0</span></button>
-    <button class="nb" onclick="showPage('add',this)">＋ הוספה</button>
     <button class="nb" onclick="showPage('clients',this)">👥 לקוחות</button>
-    <button class="nb" onclick="showPage('expenses',this)">💸 הוצאות</button>
-    <button class="nb" onclick="showPage('pnl',this)">📊 P&L</button>
+    <button class="nb" onclick="showPage('mgmt',this)">💰 ניהול</button>
     <button class="nb" onclick="showPage('settings',this)">⚙️ הגדרות</button>
   </div>
-  <div style="display:flex;align-items:center;gap:10px">
+  <div class="topbar-right">
     <div class="sync-pill"><span id="sync-lbl">מתחבר…</span><span class="dot loading" id="sync-dot"></span></div>
-    <button class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="תפריט">
+    <button class="hamburger" id="ham-btn" onclick="toggleMenu()" aria-label="תפריט">
       <span></span><span></span><span></span>
     </button>
   </div>
 </div>
 
-<!-- Mobile menu overlay -->
-<div class="mobile-menu-overlay" id="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
-<div class="mobile-menu" id="mobile-menu">
-  <div class="mobile-menu-header">
-    <span style="font-weight:700;color:var(--blush)">תפריט</span>
-    <button onclick="closeMobileMenu()" style="background:none;border:none;color:var(--blush);font-size:1.3rem;cursor:pointer">✕</button>
+<!-- MOBILE MENU -->
+<div class="mob-overlay" id="mob-overlay" onclick="closeMenu()"></div>
+<div class="mob-menu" id="mob-menu">
+  <div class="mob-menu-top">
+    <span>✨ סטודיו ניילס</span>
+    <button class="mob-close" onclick="closeMenu()">✕</button>
   </div>
-  <button class="mob-nb active" id="mob-appts" onclick="showPage('appts',this);closeMobileMenu()">📅 תורים <span class="badge-n" id="mob-pending-badge" style="display:none">0</span></button>
-  <button class="mob-nb" onclick="showPage('add',this);closeMobileMenu()">＋ הוספת ביקור</button>
-  <button class="mob-nb" onclick="showPage('clients',this);closeMobileMenu()">👥 לקוחות</button>
-  <button class="mob-nb" onclick="showPage('expenses',this);closeMobileMenu()">💸 הוצאות</button>
-  <button class="mob-nb" onclick="showPage('pnl',this);closeMobileMenu()">📊 P&L</button>
-  <button class="mob-nb" onclick="showPage('settings',this);closeMobileMenu()">⚙️ הגדרות</button>
+  <button class="mob-nb active" onclick="showPage('appts',this);closeMenu()">📅 תורים <span class="badge-n" id="mob-pending-badge" style="display:none">0</span></button>
+  <button class="mob-nb" onclick="showPage('clients',this);closeMenu()">👥 לקוחות</button>
+  <button class="mob-nb" onclick="showPage('mgmt',this);closeMenu()">💰 ניהול</button>
+  <button class="mob-nb" onclick="showPage('settings',this);closeMenu()">⚙️ הגדרות</button>
+  <div style="padding:14px 18px;margin-top:auto;border-top:1px solid rgba(255,255,255,.1)">
+    <div class="sync-pill" style="color:#c9a8bc"><span id="mob-sync-lbl">מתחבר…</span><span class="dot loading" id="mob-sync-dot"></span></div>
+  </div>
 </div>
 
-<!-- ═══ APPOINTMENTS ═══ -->
+<!-- ═══ PAGE: תורים ═══ -->
 <div class="page active" id="page-appts">
+
+  <!-- Calendar -->
   <div class="card">
     <div class="cal-header">
       <button class="cal-nav" onclick="calPrev()">‹</button>
@@ -306,85 +327,30 @@ td.amt.neg{color:var(--red)}
       <button class="cal-nav" onclick="calNext()">›</button>
     </div>
     <div class="cal-grid" id="cal-grid"></div>
-    <div class="cal-day-detail" id="cal-day-detail">
-      <h4></h4>
-      <div class="cal-detail-body"></div>
+    <div class="cal-detail" id="cal-detail">
+      <h4 id="cal-detail-title"></h4>
+      <div id="cal-detail-body"></div>
     </div>
-    <div style="margin-top:12px;display:flex;justify-content:flex-end">
-      <button class="btn btn-blue btn-sm" onclick="openManualApptModal()">＋ תור ידני</button>
+    <div style="margin-top:11px;display:flex;justify-content:flex-end;gap:8px">
+      <button class="btn btn-blue btn-sm" onclick="openManualApptModal()">📅 תור ידני</button>
+      <button class="btn btn-primary btn-sm" onclick="openAddVisitModal()">💅 ביקור ידני</button>
     </div>
   </div>
+
+  <!-- Pending -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">⏳ ממתינות לאישור</div></div>
     <div id="pending-list"><div class="empty"><div class="ei">✅</div>אין בקשות ממתינות</div></div>
   </div>
+
+  <!-- Confirmed -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">✅ תורים מאושרים</div></div>
     <div id="confirmed-list"><div class="empty"><div class="ei">📅</div>אין תורים מאושרים</div></div>
   </div>
-  <div class="card">
-    <div class="card-title"><div class="card-title-left">🏁 הושלמו</div></div>
-    <div id="completed-list"><div class="empty"><div class="ei">🏁</div>אין תורים שהושלמו</div></div>
-  </div>
 </div>
 
-<!-- ═══ ADD VISIT ═══ -->
-<div class="page" id="page-add">
-  <div class="card">
-    <div class="card-title"><div class="card-title-left">💅 הוספת ביקור ידני (ללא תור)</div></div>
-    <div class="fg-grid">
-      <div class="fg req">
-        <label>טלפון</label>
-        <div class="ac-wrap">
-          <input type="tel" id="f-phone" placeholder="0501234567" oninput="onPhone()" onblur="closeAc()" autocomplete="off"/>
-          <div class="ac-list" id="ac-list"></div>
-        </div>
-        <span style="font-size:.68rem;color:var(--muted)">מזהה ייחודי</span>
-      </div>
-      <div class="fg"><label>שם הלקוחה</label><input type="text" id="f-name" placeholder="שרה כהן"/></div>
-      <div class="fg"><label>תאריך</label><input type="date" id="f-date"/></div>
-      <div class="fg"><label>שעה</label><input type="time" id="f-time"/></div>
-      <div class="fg"><label>אימייל</label><input type="email" id="f-email" placeholder="sarah@email.com"/></div>
-      <div class="fg req full">
-        <label>שירותים (ניתן לבחור כמה)</label>
-        <div class="svc-grid" id="add-svc-grid"></div>
-        <div class="svc-total" id="add-svc-total" style="display:none">
-          <span>סה"כ משוער</span><strong id="add-svc-total-val">₪0</strong>
-        </div>
-      </div>
-      <div class="fg req"><label>סכום שהתקבל (₪)</label><input type="number" id="f-amount" placeholder="0" min="0" step="1"/></div>
-      <div class="fg">
-        <label>אמצעי תשלום</label>
-        <select id="f-payment">
-          <option value="">— בחרי —</option>
-          <option value="cash">💵 מזומן</option><option value="card">💳 אשראי</option>
-          <option value="bit">📱 ביט</option><option value="paybox">💜 פייבוקס</option>
-          <option value="transfer">🏦 העברה בנקאית</option>
-        </select>
-      </div>
-      <div class="fg full"><label>הערות</label><textarea id="f-notes" placeholder="צבע, העדפות, תור הבא…"></textarea></div>
-    </div>
-    <div style="margin-top:14px;display:flex;gap:9px;align-items:center;flex-wrap:wrap">
-      <button class="btn btn-primary" id="btn-add" onclick="addVisit()">＋ הוסף ביקור</button>
-      <span id="add-err" style="font-size:.78rem;color:var(--red);font-weight:600"></span>
-    </div>
-  </div>
-  <div class="card">
-    <div class="card-title"><div class="card-title-left">📋 ביקורים אחרונים</div>
-      <button class="btn btn-gold btn-sm" onclick="downloadCSV()">⬇ CSV</button>
-    </div>
-    <div class="tbl-top">
-      <div class="sw"><span class="si">🔍</span><input type="text" id="vis-search" placeholder="חיפוש…" oninput="renderVisits()"/></div>
-    </div>
-    <div class="tw">
-      <table><thead><tr><th>#</th><th>שם</th><th>טלפון</th><th>תאריך</th><th>שירותים</th><th>סכום</th><th>תשלום</th><th>קוד פרומו</th><th>הערות</th><th></th></tr></thead>
-      <tbody id="vis-body"></tbody></table>
-      <div id="vis-empty" class="empty" style="display:none"><div class="ei">💅</div>אין ביקורים</div>
-    </div>
-  </div>
-</div>
-
-<!-- ═══ CLIENTS ═══ -->
+<!-- ═══ PAGE: לקוחות ═══ -->
 <div class="page" id="page-clients">
   <div class="card">
     <div class="card-title"><div class="card-title-left">👥 לקוחות</div></div>
@@ -395,144 +361,170 @@ td.amt.neg{color:var(--red)}
       </div>
     </div>
     <div class="tw">
-      <table><thead><tr><th>שם</th><th>טלפון</th><th>ביקורים</th><th>סה"כ</th><th>ממוצע</th><th>תור אחרון</th><th>שירות נפוץ</th><th></th></tr></thead>
-      <tbody id="cl-body"></tbody></table>
-      <div id="cl-empty" class="empty" style="display:none"><div class="ei">👥</div>אין לקוחות</div>
+      <table>
+        <thead><tr><th>שם</th><th>טלפון</th><th>ביקורים</th><th>סה"כ</th><th>ממוצע</th><th>תור אחרון</th><th>שירות נפוץ</th><th></th></tr></thead>
+        <tbody id="cl-body"></tbody>
+      </table>
+      <div id="cl-empty" class="empty" style="display:none"><div class="ei">👥</div>אין לקוחות עדיין</div>
     </div>
   </div>
 </div>
 
-<!-- ═══ EXPENSES ═══ -->
-<div class="page" id="page-expenses">
-  <div class="card">
-    <div class="card-title"><div class="card-title-left">➕ הוספת הוצאה</div></div>
-    <div class="fg-grid">
-      <div class="fg req"><label>תאריך</label><input type="date" id="exp-date"/></div>
-      <div class="fg req">
-        <label>קטגוריה</label>
-        <select id="exp-cat" onchange="toggleExpCustom()">
-          <option value="">— בחרי —</option>
-          <option>חומרים ומוצרים</option><option>שכירות</option><option>תחבורה</option>
-          <option>ציוד</option><option>שיווק ופרסום</option><option>הכשרות</option>
-          <option value="custom">אחר (הגדרי)</option>
-        </select>
+<!-- ═══ PAGE: ניהול ═══ -->
+<div class="page" id="page-mgmt">
+  <div class="sub-tabs">
+    <button class="stb active" onclick="showSubPage('revenues',this)">💰 הכנסות</button>
+    <button class="stb" onclick="showSubPage('expenses',this)">💸 הוצאות</button>
+    <button class="stb" onclick="showSubPage('pnl',this)">📊 P&L</button>
+  </div>
+
+  <!-- SUB: הכנסות -->
+  <div class="sub-page active" id="sub-revenues">
+    <div class="summary-box" id="rev-summary">
+      <div class="sb-item"><div class="sb-val" id="rev-total">₪0</div><div class="sb-lbl">סה"כ הכנסות</div></div>
+      <div class="sb-item"><div class="sb-val" id="rev-count">0</div><div class="sb-lbl">ביקורים</div></div>
+      <div class="sb-item"><div class="sb-val" id="rev-avg">₪0</div><div class="sb-lbl">ממוצע לביקור</div></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><div class="card-title-left">💰 כל הביקורים</div>
+        <button class="btn btn-gold btn-sm" onclick="downloadCSV()">⬇ CSV</button>
       </div>
-      <div class="fg" id="exp-custom-wrap" style="display:none"><label>קטגוריה מותאמת</label><input type="text" id="exp-custom" placeholder="שם הקטגוריה…"/></div>
-      <div class="fg req"><label>סכום (₪)</label><input type="number" id="exp-amount" placeholder="0" min="0" step="1"/></div>
-      <div class="fg full"><label>תיאור (אופציונלי)</label><input type="text" id="exp-desc" placeholder="פרטים…"/></div>
-    </div>
-    <div style="margin-top:13px;display:flex;gap:9px;align-items:center">
-      <button class="btn btn-primary" id="btn-exp" onclick="addExpense()">＋ הוסף הוצאה</button>
-      <span id="exp-err" style="font-size:.78rem;color:var(--red);font-weight:600"></span>
+      <div class="tbl-top">
+        <div class="sw"><span class="si">🔍</span><input type="text" id="vis-search" placeholder="חיפוש…" oninput="renderVisits()"/></div>
+      </div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>#</th><th>שם</th><th>טלפון</th><th>תאריך</th><th>שירות</th><th>סכום</th><th>תשלום</th><th>פרומו</th><th>הערות</th><th></th></tr></thead>
+          <tbody id="vis-body"></tbody>
+        </table>
+        <div id="vis-empty" class="empty" style="display:none"><div class="ei">💰</div>אין ביקורים עדיין</div>
+      </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-title"><div class="card-title-left">💸 היסטוריית הוצאות</div></div>
-    <div class="tw">
-      <table><thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th></th></tr></thead>
-      <tbody id="exp-body"></tbody></table>
-      <div id="exp-empty" class="empty" style="display:none"><div class="ei">💸</div>אין הוצאות</div>
+
+  <!-- SUB: הוצאות -->
+  <div class="sub-page" id="sub-expenses">
+    <div class="card">
+      <div class="card-title"><div class="card-title-left">➕ הוספת הוצאה</div></div>
+      <div class="fg-grid">
+        <div class="fg req"><label>תאריך</label><input type="date" id="exp-date"/></div>
+        <div class="fg req">
+          <label>קטגוריה</label>
+          <select id="exp-cat" onchange="toggleExpCustom()">
+            <option value="">— בחרי —</option>
+            <option>חומרים ומוצרים</option><option>שכירות</option><option>תחבורה</option>
+            <option>ציוד</option><option>שיווק ופרסום</option><option>הכשרות</option>
+            <option value="custom">אחר (הגדרי)</option>
+          </select>
+        </div>
+        <div class="fg" id="exp-custom-wrap" style="display:none"><label>קטגוריה מותאמת</label><input type="text" id="exp-custom" placeholder="שם הקטגוריה…"/></div>
+        <div class="fg req"><label>סכום (₪)</label><input type="number" id="exp-amount" placeholder="0" min="0" step="1"/></div>
+        <div class="fg full"><label>תיאור (אופציונלי)</label><input type="text" id="exp-desc" placeholder="פרטים…"/></div>
+      </div>
+      <div style="margin-top:11px;display:flex;gap:8px;align-items:center">
+        <button class="btn btn-primary" id="btn-exp" onclick="addExpense()">＋ הוסף הוצאה</button>
+        <span id="exp-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
+      </div>
+    </div>
+
+    <!-- Expenses total -->
+    <div class="summary-box" id="exp-summary">
+      <div class="sb-item"><div class="sb-val" id="exp-total-val">₪0</div><div class="sb-lbl">סה"כ הוצאות</div></div>
+      <div class="sb-item"><div class="sb-val" id="exp-count-val">0</div><div class="sb-lbl">רשומות</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><div class="card-title-left">💸 היסטוריית הוצאות</div></div>
+      <div class="tw">
+        <table>
+          <thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th></th></tr></thead>
+          <tbody id="exp-body"></tbody>
+        </table>
+        <div id="exp-empty" class="empty" style="display:none"><div class="ei">💸</div>אין הוצאות</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUB: P&L -->
+  <div class="sub-page" id="sub-pnl">
+    <div class="card">
+      <div class="card-title"><div class="card-title-left">📅 תקופה</div></div>
+      <div class="period-bar">
+        <button class="pb active" onclick="setPnlPeriod('month',this)">חודש זה</button>
+        <button class="pb" onclick="setPnlPeriod('3months',this)">3 חודשים</button>
+        <button class="pb" onclick="setPnlPeriod('year',this)">שנה זו</button>
+        <button class="pb" onclick="setPnlPeriod('all',this)">הכל</button>
+        <button class="pb" onclick="setPnlPeriod('custom',this)">מותאם ▾</button>
+      </div>
+      <div class="cr" id="pnl-custom" style="display:none">
+        <input type="date" id="pnl-from" onchange="renderPnl()"/>
+        <span style="color:var(--muted);font-size:.8rem">עד</span>
+        <input type="date" id="pnl-to" onchange="renderPnl()"/>
+      </div>
+    </div>
+    <div id="pnl-banner"></div>
+    <div class="kpi" id="pnl-kpi"></div>
+    <div class="two-col">
+      <div class="card"><div class="section-lbl">הכנסות לפי שירות</div><div id="pnl-ch-svc"></div></div>
+      <div class="card"><div class="section-lbl">הוצאות לפי קטגוריה</div><div id="pnl-ch-exp"></div></div>
+    </div>
+    <div class="two-col">
+      <div class="card"><div class="section-lbl">לקוחות מובילות</div><div id="pnl-ch-cust"></div></div>
+      <div class="card"><div class="section-lbl">קודי פרומו</div><div id="pnl-ch-promo"></div></div>
     </div>
   </div>
 </div>
 
-<!-- ═══ P&L ═══ -->
-<div class="page" id="page-pnl">
-  <div class="card">
-    <div class="card-title"><div class="card-title-left">📅 תקופה</div></div>
-    <div class="period-bar">
-      <button class="pb active" onclick="setPnlPeriod('month',this)">חודש זה</button>
-      <button class="pb" onclick="setPnlPeriod('3months',this)">3 חודשים</button>
-      <button class="pb" onclick="setPnlPeriod('year',this)">שנה זו</button>
-      <button class="pb" onclick="setPnlPeriod('all',this)">הכל</button>
-      <button class="pb" onclick="setPnlPeriod('custom',this)">מותאם ▾</button>
-    </div>
-    <div class="cr" id="pnl-custom" style="display:none">
-      <input type="date" id="pnl-from" onchange="renderPnl()"/>
-      <span style="color:var(--muted);font-size:.8rem">עד</span>
-      <input type="date" id="pnl-to" onchange="renderPnl()"/>
-    </div>
-  </div>
-  <div id="pnl-banner"></div>
-  <div class="kpi" id="pnl-kpi"></div>
-  <div class="two-col">
-    <div class="card"><div class="section-lbl">הכנסות לפי שירות</div><div id="pnl-ch-svc"></div></div>
-    <div class="card"><div class="section-lbl">הוצאות לפי קטגוריה</div><div id="pnl-ch-exp"></div></div>
-  </div>
-  <div class="two-col">
-    <div class="card"><div class="section-lbl">לקוחות מובילות</div><div id="pnl-ch-cust"></div></div>
-    <div class="card"><div class="section-lbl">שימוש בקודי פרומו</div><div id="pnl-ch-promo"></div></div>
-  </div>
-</div>
-
-<!-- ═══ SETTINGS ═══ -->
+<!-- ═══ PAGE: הגדרות ═══ -->
 <div class="page" id="page-settings">
   <div class="card">
     <div class="card-title"><div class="card-title-left">🔗 קישור לקוחות</div></div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <input type="text" id="booking-url" readonly style="flex:1;min-width:200px;direction:ltr;text-align:left;font-size:.8rem;background:#f0f0f0"/>
+      <input type="text" id="booking-url" readonly style="flex:1;min-width:180px;direction:ltr;text-align:left;font-size:.78rem;background:#f0f0f0"/>
       <button class="btn btn-ghost btn-sm" onclick="copyBookingUrl()">📋 העתק</button>
     </div>
   </div>
-
-  <!-- Services -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">💅 שירותים ותעריפים</div></div>
-    <p style="font-size:.82rem;color:var(--muted);margin-bottom:12px">שירותים אלו יוצגו בטפסי ההזמנה ובדף הלקוחות</p>
     <div id="services-list"></div>
-    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:flex-end">
-      <div class="fg" style="flex:2;min-width:130px"><label>שם השירות</label><input type="text" id="svc-name" placeholder="מניקור ג׳ל"/></div>
-      <div class="fg" style="flex:1;min-width:80px"><label>מחיר (₪)</label><input type="number" id="svc-price" placeholder="150" min="0"/></div>
-      <button class="btn btn-primary btn-sm" onclick="addService()" style="margin-bottom:1px">＋ הוסף</button>
+    <div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap;align-items:flex-end">
+      <div class="fg" style="flex:2;min-width:120px"><label>שם השירות</label><input type="text" id="svc-name" placeholder="מניקור ג׳ל"/></div>
+      <div class="fg" style="flex:1;min-width:75px"><label>מחיר (₪)</label><input type="number" id="svc-price" placeholder="150" min="0"/></div>
+      <button class="btn btn-primary btn-sm" onclick="addService()">＋</button>
     </div>
-    <button class="btn btn-gold btn-sm" style="margin-top:10px" onclick="saveServices()">💾 שמור שירותים</button>
+    <button class="btn btn-gold btn-sm" style="margin-top:9px" onclick="saveServices()">💾 שמור שירותים</button>
   </div>
-
-  <!-- Promo codes -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">🎟️ קודי פרומו</div></div>
     <div id="promos-list"></div>
-    <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;align-items:flex-end">
-      <div class="fg" style="flex:1;min-width:100px"><label>קוד</label><input type="text" id="promo-code" placeholder="SALE10" style="text-transform:uppercase"/></div>
-      <div class="fg" style="flex:1;min-width:80px">
-        <label>סוג</label>
-        <select id="promo-type">
-          <option value="percent">% הנחה</option>
-          <option value="fixed">₪ הנחה קבועה</option>
-        </select>
-      </div>
-      <div class="fg" style="flex:1;min-width:70px"><label>ערך</label><input type="number" id="promo-value" placeholder="10" min="0"/></div>
-      <div class="fg" style="flex:1;min-width:120px"><label>תפוגה (אופציונלי)</label><input type="date" id="promo-expiry"/></div>
-      <button class="btn btn-primary btn-sm" onclick="addPromo()" style="margin-bottom:1px">＋ הוסף</button>
+    <div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap;align-items:flex-end">
+      <div class="fg" style="flex:1;min-width:90px"><label>קוד</label><input type="text" id="promo-code" placeholder="SALE10" style="text-transform:uppercase"/></div>
+      <div class="fg" style="flex:1;min-width:75px"><label>סוג</label><select id="promo-type"><option value="percent">% הנחה</option><option value="fixed">₪ קבוע</option></select></div>
+      <div class="fg" style="flex:1;min-width:65px"><label>ערך</label><input type="number" id="promo-value" placeholder="10" min="0"/></div>
+      <div class="fg" style="flex:1;min-width:110px"><label>תפוגה</label><input type="date" id="promo-expiry"/></div>
+      <button class="btn btn-primary btn-sm" onclick="addPromo()">＋</button>
     </div>
-    <button class="btn btn-gold btn-sm" style="margin-top:10px" onclick="savePromos()">💾 שמור קודים</button>
+    <button class="btn btn-gold btn-sm" style="margin-top:9px" onclick="savePromos()">💾 שמור קודים</button>
   </div>
-
-  <!-- Work days & hours -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">📅 ימי עבודה</div></div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px" id="day-toggles"></div>
-    <button class="btn btn-primary btn-sm" onclick="saveWorkDays()">💾 שמור ימים</button>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px" id="day-toggles"></div>
+    <button class="btn btn-primary btn-sm" onclick="saveWorkDays()">💾 שמור</button>
   </div>
   <div class="card">
     <div class="card-title"><div class="card-title-left">🕐 שעות עבודה</div></div>
-    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:13px">
       <div class="fg"><label>התחלה</label><input type="time" id="work-start" value="09:00"/></div>
       <div class="fg"><label>סיום</label><input type="time" id="work-end" value="19:00"/></div>
       <div class="fg"><label>משך תור (דקות)</label><input type="number" id="slot-duration" value="90" min="15" max="240" step="15"/></div>
     </div>
-    <button class="btn btn-primary btn-sm" onclick="saveHours()">💾 שמור שעות</button>
+    <button class="btn btn-primary btn-sm" onclick="saveHours()">💾 שמור</button>
   </div>
-
-  <!-- EmailJS -->
   <div class="card">
     <div class="card-title"><div class="card-title-left">📧 EmailJS</div></div>
-    <div style="background:var(--soft);border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.8rem;line-height:1.7">
-      <strong style="color:var(--deep)">Template 1 — התראה אליך</strong> — To: <code>davidelkaim@gmail.com</code><br>
-      משתנים: <code>{{client_name}} {{client_phone}} {{client_email}} {{date}} {{time}} {{service}} {{notes}}</code>
-      <hr style="border:none;border-top:1px solid var(--border);margin:7px 0">
-      <strong style="color:var(--deep)">Template 2 — אישור ללקוחה</strong> — To: <code>{{client_email}}</code><br>
-      משתנים: <code>{{client_name}} {{client_email}} {{date}} {{time}} {{service}}</code>
+    <div style="background:var(--soft);border-radius:9px;padding:11px 13px;margin-bottom:13px;font-size:.78rem;line-height:1.7">
+      <strong style="color:var(--deep)">Template 1</strong> — התראה אליך — To: <code>davidelkaim@gmail.com</code><br>
+      <strong style="color:var(--deep)">Template 2</strong> — אישור ללקוחה — To: <code>{{client_email}}</code>
     </div>
     <div class="fg-grid">
       <div class="fg"><label>Service ID</label><input type="text" id="ejs-sid" placeholder="service_xxxxxx"/></div>
@@ -540,29 +532,74 @@ td.amt.neg{color:var(--red)}
       <div class="fg"><label>Template 1 — התראה אליך</label><input type="text" id="ejs-tid-notify" placeholder="template_xxxxxx"/></div>
       <div class="fg"><label>Template 2 — אישור ללקוחה</label><input type="text" id="ejs-tid-confirm" placeholder="template_xxxxxx"/></div>
     </div>
-    <div style="margin-top:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="saveEmailJs()">💾 שמור</button>
-      <span id="ejs-status" style="font-size:.78rem;font-weight:600"></span>
+    <div style="margin-top:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-primary btn-sm" onclick="saveEmailJs()">💾 שמור בענן</button>
+      <span id="ejs-status" style="font-size:.77rem;font-weight:600"></span>
     </div>
   </div>
 </div>
-</div>
+
+</div><!-- end app -->
 
 <!-- ═══ CUSTOMER MODAL ═══ -->
-<div class="mbg" id="mbg" onclick="closeMBg(event)">
+<div class="mbg" id="mbg-cust" onclick="closeMBg(event)">
   <div class="modal">
-    <div class="mh"><div><h2 id="m-name"></h2><div class="sub" id="m-phone"></div></div><button class="mc-btn" onclick="closeModal('mbg')">✕</button></div>
+    <div class="mh"><div><h2 id="m-name"></h2><div class="sub" id="m-phone"></div></div><button class="mc-btn" onclick="closeModal('mbg-cust')">✕</button></div>
     <div class="mb">
       <div class="cust-stats">
         <div class="cs"><div class="v" id="m-vis">0</div><div class="l">ביקורים</div></div>
-        <div class="cs"><div class="v" id="m-tot">₪0</div><div class="l">סה"כ שולם</div></div>
+        <div class="cs"><div class="v" id="m-tot">₪0</div><div class="l">סה"כ</div></div>
         <div class="cs"><div class="v" id="m-avg">₪0</div><div class="l">ממוצע</div></div>
         <div class="cs"><div class="v" id="m-first">—</div><div class="l">ביקור ראשון</div></div>
         <div class="cs"><div class="v" id="m-last">—</div><div class="l">ביקור אחרון</div></div>
         <div class="cs"><div class="v" id="m-fav">—</div><div class="l">שירות מועדף</div></div>
       </div>
-      <div class="section-lbl" style="margin-bottom:8px">היסטוריה</div>
+      <div class="section-lbl" style="margin-bottom:7px">היסטוריה</div>
       <div class="vlist" id="m-vlist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ADD VISIT MODAL ═══ -->
+<div class="mbg" id="mbg-visit" onclick="closeMBg(event)">
+  <div class="modal">
+    <div class="mh"><div><h2>💅 הוספת ביקור ידני</h2><div class="sub">ביקור ללא תור מוגדר מראש</div></div><button class="mc-btn" onclick="closeModal('mbg-visit')">✕</button></div>
+    <div class="mb">
+      <div class="fg-grid">
+        <div class="fg req">
+          <label>טלפון</label>
+          <div class="ac-wrap">
+            <input type="tel" id="f-phone" placeholder="0501234567" oninput="onPhone()" onblur="closeAc()" autocomplete="off"/>
+            <div class="ac-list" id="ac-list"></div>
+          </div>
+        </div>
+        <div class="fg"><label>שם הלקוחה</label><input type="text" id="f-name" placeholder="שרה כהן"/></div>
+        <div class="fg"><label>תאריך</label><input type="date" id="f-date"/></div>
+        <div class="fg"><label>שעה</label><input type="time" id="f-time"/></div>
+        <div class="fg"><label>אימייל</label><input type="email" id="f-email" placeholder="sarah@email.com"/></div>
+        <div class="fg req full">
+          <label>שירותים</label>
+          <div class="svc-grid" id="add-svc-grid"></div>
+          <div class="svc-total" id="add-svc-total" style="display:none">
+            <span>סה"כ משוער</span><strong id="add-svc-total-val">₪0</strong>
+          </div>
+        </div>
+        <div class="fg req"><label>סכום שהתקבל (₪)</label><input type="number" id="f-amount" placeholder="0" min="0" step="1"/></div>
+        <div class="fg">
+          <label>אמצעי תשלום</label>
+          <select id="f-payment">
+            <option value="">— בחרי —</option>
+            <option value="cash">💵 מזומן</option><option value="card">💳 אשראי</option>
+            <option value="bit">📱 ביט</option><option value="paybox">💜 פייבוקס</option>
+            <option value="transfer">🏦 העברה</option>
+          </select>
+        </div>
+        <div class="fg full"><label>הערות</label><textarea id="f-notes" placeholder="צבע, העדפות…" rows="2"></textarea></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-primary" id="btn-add-visit" onclick="addVisit()">＋ הוסף ביקור</button>
+        <span id="add-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
+      </div>
     </div>
   </div>
 </div>
@@ -572,7 +609,7 @@ td.amt.neg{color:var(--red)}
   <div class="modal">
     <div class="mh"><div><h2>✅ סיום טיפול</h2><div class="sub" id="ct-subtitle"></div></div><button class="mc-btn" onclick="closeModal('mbg-complete')">✕</button></div>
     <div class="mb">
-      <p style="font-size:.85rem;color:var(--muted);margin-bottom:16px">הפרטים מולאו אוטומטית מהתור. הוסיפי את פרטי התשלום:</p>
+      <p style="font-size:.83rem;color:var(--muted);margin-bottom:14px">הפרטים מולאו מהתור — הוסיפי פרטי תשלום:</p>
       <div class="fg-grid">
         <div class="fg req"><label>סכום שהתקבל (₪)</label><input type="number" id="ct-amount" placeholder="0" min="0" step="1"/></div>
         <div class="fg">
@@ -581,39 +618,36 @@ td.amt.neg{color:var(--red)}
             <option value="">— בחרי —</option>
             <option value="cash">💵 מזומן</option><option value="card">💳 אשראי</option>
             <option value="bit">📱 ביט</option><option value="paybox">💜 פייבוקס</option>
-            <option value="transfer">🏦 העברה בנקאית</option>
+            <option value="transfer">🏦 העברה</option>
           </select>
         </div>
-        <div class="fg full"><label>הערות</label><textarea id="ct-notes" placeholder="הערות נוספות…" rows="2"></textarea></div>
+        <div class="fg full"><label>הערות</label><textarea id="ct-notes" rows="2"></textarea></div>
       </div>
-      <div style="margin-top:14px;display:flex;gap:9px;flex-wrap:wrap">
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-green" id="btn-ct" onclick="completeVisit()">✅ אשרי ושמרי</button>
-        <span id="ct-err" style="font-size:.78rem;color:var(--red);font-weight:600"></span>
+        <span id="ct-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ═══ MANUAL APPOINTMENT MODAL ═══ -->
+<!-- ═══ MANUAL APPT MODAL ═══ -->
 <div class="mbg" id="mbg-manual" onclick="closeMBg(event)">
   <div class="modal">
     <div class="mh"><div><h2>📅 תור ידני</h2><div class="sub">נקבע בטלפון — מאושר אוטומטית</div></div><button class="mc-btn" onclick="closeModal('mbg-manual')">✕</button></div>
     <div class="mb">
       <div class="fg-grid">
-        <div class="fg req"><label>שם הלקוחה</label><input type="text" id="ma-name" placeholder="שרה כהן"/></div>
+        <div class="fg req"><label>שם</label><input type="text" id="ma-name" placeholder="שרה כהן"/></div>
         <div class="fg req"><label>טלפון</label><input type="tel" id="ma-phone" placeholder="0501234567"/></div>
         <div class="fg"><label>אימייל</label><input type="email" id="ma-email" placeholder="sarah@email.com"/></div>
         <div class="fg req"><label>תאריך</label><input type="date" id="ma-date"/></div>
         <div class="fg req"><label>שעה</label><input type="time" id="ma-time"/></div>
-        <div class="fg req">
-          <label>שירות</label>
-          <select id="ma-service"><option value="">— בחרי שירות —</option></select>
-        </div>
-        <div class="fg full"><label>הערות</label><textarea id="ma-notes" placeholder="הערות…" rows="2"></textarea></div>
+        <div class="fg req"><label>שירות</label><select id="ma-service"><option value="">— בחרי —</option></select></div>
+        <div class="fg full"><label>הערות</label><textarea id="ma-notes" rows="2"></textarea></div>
       </div>
-      <div style="margin-top:14px;display:flex;gap:9px;flex-wrap:wrap">
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary" id="btn-ma" onclick="saveManualAppt()">📅 שמור תור</button>
-        <span id="ma-err" style="font-size:.78rem;color:var(--red);font-weight:600"></span>
+        <span id="ma-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
       </div>
     </div>
   </div>
@@ -630,34 +664,35 @@ const FB={apiKey:"AIzaSyAWkVT_GereCz0yRV15zbpGKUzQFEJmpck",authDomain:"nails-stu
 const fbApp=initializeApp(FB);
 const db=getFirestore(fbApp);
 
-const COL_VISITS='appointments', COL_BOOKINGS='bookings', COL_EXPENSES='expenses';
-const DOC_SETTINGS='config/settings', DOC_SERVICES='config/services', DOC_PROMOS='config/promos', DOC_EMAILJS='config/emailjs';
+const COL_V='appointments', COL_B='bookings', COL_E='expenses';
+const DOC_SET='config/settings', DOC_SVC='config/services', DOC_PRO='config/promos', DOC_EJS='config/emailjs';
 
 let visits=[], bookings=[], expenses=[];
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
 let services=[], promos=[], ejsConfig={};
-let pnlPeriod='month';
-let currentBookingId=null; // for complete treatment
+let pnlPeriod='month', currentBookingId=null;
+let calDate=new Date();
 
-// ── REAL-TIME LISTENERS ──
+// ── LISTENERS ──
 let loaded={v:false,b:false,e:false};
-function chkLoad(){if(loaded.v&&loaded.b&&loaded.e){document.getElementById('loading-screen').style.display='none';document.getElementById('app').style.display='block';setSyncOk(true);renderAll();}}
-
-onSnapshot(query(collection(db,COL_VISITS),orderBy('date','desc')),(s)=>{visits=s.docs.map(d=>({id:d.id,...d.data()}));loaded.v=true;chkLoad();renderAll();});
-onSnapshot(query(collection(db,COL_BOOKINGS),orderBy('createdAt','desc')),(s)=>{bookings=s.docs.map(d=>({id:d.id,...d.data()}));loaded.b=true;chkLoad();renderAppointments();updatePendingBadge();});
-onSnapshot(query(collection(db,COL_EXPENSES),orderBy('date','desc')),(s)=>{expenses=s.docs.map(d=>({id:d.id,...d.data()}));loaded.e=true;chkLoad();renderExpenses();renderPnl();});
+function chkLoad(){
+  if(loaded.v&&loaded.b&&loaded.e){
+    document.getElementById('loading-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    setSyncOk(true);renderAll();
+  }
+}
+onSnapshot(query(collection(db,COL_V),orderBy('date','desc')),(s)=>{visits=s.docs.map(d=>({id:d.id,...d.data()}));loaded.v=true;chkLoad();renderVisits();renderClients();renderPnl();updateRevSummary();});
+onSnapshot(query(collection(db,COL_B),orderBy('createdAt','desc')),(s)=>{bookings=s.docs.map(d=>({id:d.id,...d.data()}));loaded.b=true;chkLoad();renderAppointments();updatePendingBadge();});
+onSnapshot(query(collection(db,COL_E),orderBy('date','desc')),(s)=>{expenses=s.docs.map(d=>({id:d.id,...d.data()}));loaded.e=true;chkLoad();renderExpenses();renderPnl();updateExpSummary();});
 
 async function loadConfig(){
   try{
-    const ss=await getDoc(doc(db,...DOC_SETTINGS.split('/')));
-    if(ss.exists())settings={...settings,...ss.data()};
-    const sv=await getDoc(doc(db,...DOC_SERVICES.split('/')));
-    if(sv.exists())services=sv.data().list||[];
-    const sp=await getDoc(doc(db,...DOC_PROMOS.split('/')));
-    if(sp.exists())promos=sp.data().list||[];
-    // Load EmailJS from Firebase (with localStorage fallback)
-    const se=await getDoc(doc(db,...DOC_EMAILJS.split('/')));
-    if(se.exists()) ejsConfig=se.data();
+    const ss=await getDoc(doc(db,...DOC_SET.split('/')));if(ss.exists())settings={...settings,...ss.data()};
+    const sv=await getDoc(doc(db,...DOC_SVC.split('/')));if(sv.exists())services=sv.data().list||[];
+    const sp=await getDoc(doc(db,...DOC_PRO.split('/')));if(sp.exists())promos=sp.data().list||[];
+    const se=await getDoc(doc(db,...DOC_EJS.split('/')));
+    if(se.exists())ejsConfig=se.data();
     else ejsConfig=JSON.parse(localStorage.getItem('ejs_config')||'{}');
     if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
     initSettings();
@@ -665,24 +700,10 @@ async function loadConfig(){
 }
 loadConfig();
 
-function setSyncOk(ok){document.getElementById('sync-dot').className='dot '+(ok?'ok':'err');document.getElementById('sync-lbl').textContent=ok?'מחובר ✓':'שגיאה';}
-
-// ── HAMBURGER MENU ──
-window.toggleMobileMenu=()=>{
-  const btn=document.getElementById('hamburger-btn');
-  const menu=document.getElementById('mobile-menu');
-  const overlay=document.getElementById('mobile-menu-overlay');
-  btn.classList.toggle('open');
-  menu.classList.toggle('open');
-  overlay.classList.toggle('open');
-  document.body.style.overflow=menu.classList.contains('open')?'hidden':'';
-};
-window.closeMobileMenu=()=>{
-  document.getElementById('hamburger-btn').classList.remove('open');
-  document.getElementById('mobile-menu').classList.remove('open');
-  document.getElementById('mobile-menu-overlay').classList.remove('open');
-  document.body.style.overflow='';
-};
+function setSyncOk(ok){
+  ['sync-dot','mob-sync-dot'].forEach(id=>{const el=document.getElementById(id);if(el)el.className='dot '+(ok?'ok':'err');});
+  ['sync-lbl','mob-sync-lbl'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ok?'מחובר ✓':'שגיאה';});
+}
 
 // ── NAV ──
 window.showPage=(p,btn)=>{
@@ -692,26 +713,42 @@ window.showPage=(p,btn)=>{
   if(btn)btn.classList.add('active');
   if(p==='appts')renderAppointments();
   if(p==='clients')renderClients();
-  if(p==='pnl')renderPnl();
-  if(p==='expenses')renderExpenses();
-  if(p==='add'){renderAddServiceGrid();renderVisits();}
+  if(p==='mgmt'){renderVisits();renderExpenses();renderPnl();updateRevSummary();updateExpSummary();}
+};
+
+window.showSubPage=(p,btn)=>{
+  document.querySelectorAll('.sub-page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.stb').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sub-'+p).classList.add('active');
+  if(btn)btn.classList.add('active');
+};
+
+// ── HAMBURGER ──
+window.toggleMenu=()=>{
+  const open=document.getElementById('mob-menu').classList.toggle('open');
+  document.getElementById('mob-overlay').classList.toggle('open',open);
+  document.getElementById('ham-btn').classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+};
+window.closeMenu=()=>{
+  document.getElementById('mob-menu').classList.remove('open');
+  document.getElementById('mob-overlay').classList.remove('open');
+  document.getElementById('ham-btn').classList.remove('open');
+  document.body.style.overflow='';
 };
 
 // ── PENDING BADGE ──
 function updatePendingBadge(){
   const n=bookings.filter(b=>b.status==='pending').length;
-  // Desktop badge
-  const badge=document.getElementById('pending-badge');
-  badge.style.display=n>0?'inline':'none';badge.textContent=n;
-  // Mobile menu badge
-  const mobBadge=document.getElementById('mob-pending-badge');
-  if(mobBadge){mobBadge.style.display=n>0?'inline':'none';mobBadge.textContent=n;}
+  ['pending-badge','mob-pending-badge'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.style.display=n>0?'inline':'none';el.textContent=n;
+  });
 }
 
 // ── CALENDAR ──
 const HE_DAYS=['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
 const HE_MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
-let calDate=new Date();
 
 window.calPrev=()=>{calDate.setMonth(calDate.getMonth()-1);renderCal();};
 window.calNext=()=>{calDate.setMonth(calDate.getMonth()+1);renderCal();};
@@ -729,32 +766,29 @@ function renderCal(){
     const dateStr=fmtDateStr(date),wd=date.getDay();
     const isWork=(settings.workDays||[0,1,2,3,4]).includes(wd);
     const dayB=bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled');
-    // Show time only in dots (no name) to keep cells compact
     const dots=dayB.slice(0,2).map(b=>`<div class="appt-dot ${b.status}">${b.time||'—'}</div>`).join('');
-    const more=dayB.length>2?`<div style="font-size:.58rem;color:var(--muted);line-height:1">+${dayB.length-2}</div>`:'';
+    const more=dayB.length>2?`<div style="font-size:.54rem;color:var(--muted)">+${dayB.length-2}</div>`:'';
     let cls='cal-day';
     if(isToday)cls+=' today';if(isPast)cls+=' past';if(!isWork&&!isPast)cls+=' disabled';
     html+=`<div class="${cls}" onclick="calDayClick('${dateStr}')"><div class="day-num">${d}</div>${dots}${more}</div>`;
   }
   grid.innerHTML=html;
-  // Close detail panel on re-render
-  const detail=document.getElementById('cal-day-detail');
-  if(detail)detail.classList.remove('open');
+  document.getElementById('cal-detail').classList.remove('open');
 }
 
 window.calDayClick=(dateStr)=>{
-  const detail=document.getElementById('cal-day-detail');
+  const detail=document.getElementById('cal-detail');
   const dayB=bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled').sort((a,b)=>(a.time||'').localeCompare(b.time||''));
   if(!dayB.length){detail.classList.remove('open');return;}
   const [y,mo,d]=dateStr.split('-');
-  detail.querySelector('h4').textContent=`📅 ${d}/${mo}/${y} — ${dayB.length} תורים`;
-  detail.querySelector('.cal-detail-body').innerHTML=dayB.map(b=>{
+  document.getElementById('cal-detail-title').textContent=`📅 ${d}/${mo}/${y} — ${dayB.length} תורים`;
+  document.getElementById('cal-detail-body').innerHTML=dayB.map(b=>{
     const svcText=Array.isArray(b.service)?b.service.join(', '):b.service||'—';
     return`<div class="cal-detail-row">
       <div>
         <span style="font-weight:600">${esc(b.clientName||'—')}</span>
-        <span style="color:var(--muted);font-size:.76rem;margin-right:6px">${esc(b.clientPhone||'')}</span>
-        <div style="font-size:.76rem;color:var(--muted)">${esc(svcText)}</div>
+        <span style="color:var(--muted);font-size:.74rem;margin-right:6px" dir="ltr">${esc(b.clientPhone||'')}</span>
+        <div style="font-size:.74rem;color:var(--muted)">${esc(svcText)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
         <span style="font-weight:700;color:var(--deep)">${b.time||'—'}</span>
@@ -770,10 +804,8 @@ function renderAppointments(){
   renderCal();
   const pending=bookings.filter(b=>b.status==='pending').sort((a,b)=>a.date.localeCompare(b.date));
   const confirmed=bookings.filter(b=>b.status==='confirmed').sort((a,b)=>a.date.localeCompare(b.date));
-  const completed=bookings.filter(b=>b.status==='completed').sort((a,b)=>b.date.localeCompare(a.date));
   renderRdvList('pending-list',pending,'אין בקשות ממתינות','✅');
   renderRdvList('confirmed-list',confirmed,'אין תורים מאושרים','📅');
-  renderRdvList('completed-list',completed,'אין תורים שהושלמו','🏁');
 }
 
 function renderRdvList(elId,list,emptyMsg,emptyIcon){
@@ -786,24 +818,24 @@ function rdvCard(b){
   const svcText=Array.isArray(b.service)?b.service.join(', '):b.service||'—';
   return`<div class="rdv-card ${b.status}">
     <div class="rdv-info">
-      <div class="rdv-name">${esc(b.clientName||'—')} <span style="font-size:.76rem;color:var(--muted);direction:ltr">${esc(b.clientPhone||'')}</span></div>
-      <div class="rdv-details">📅 ${fmtDate(b.date)} ${b.time?'⏰ '+b.time:''} • 💅 ${esc(svcText)}${b.estimatedTotal?` • ~₪${b.estimatedTotal}`:''}</div>
-      ${b.promoCode?`<div style="font-size:.74rem;color:var(--gold);margin-top:2px">🎟️ קוד: ${esc(b.promoCode)} (${esc(b.promoDesc||'')})</div>`:''}
-      ${b.notes?`<div style="font-size:.74rem;color:var(--muted);margin-top:2px">📝 ${esc(b.notes)}</div>`:''}
+      <div class="rdv-name">${esc(b.clientName||'—')} <span style="font-size:.74rem;color:var(--muted)" dir="ltr">${esc(b.clientPhone||'')}</span></div>
+      <div class="rdv-det">📅 ${fmtDate(b.date)} ${b.time?'⏰ '+b.time:''} • 💅 ${esc(svcText)}${b.estimatedTotal?` • ~₪${b.estimatedTotal}`:''}</div>
+      ${b.promoCode?`<div style="font-size:.72rem;color:var(--gold);margin-top:2px">🎟️ ${esc(b.promoCode)}</div>`:''}
+      ${b.notes?`<div style="font-size:.72rem;color:var(--muted);margin-top:2px">📝 ${esc(b.notes)}</div>`:''}
     </div>
     <div class="rdv-actions">
       <span class="badge ${b.status}">${statusLabel(b.status)}</span>
       ${b.status==='pending'?`<button class="btn btn-green btn-sm" onclick="confirmBooking('${b.id}')">✓ אשרי</button>`:''}
-      ${b.status==='confirmed'?`<button class="btn btn-blue btn-sm" onclick="openCompleteModal('${b.id}')">✅ סיים טיפול</button>`:''}
+      ${b.status==='confirmed'?`<button class="btn btn-blue btn-sm" onclick="openCompleteModal('${b.id}')">✅ סיים</button>`:''}
       ${b.status==='pending'||b.status==='confirmed'?`<button class="btn btn-red btn-sm" onclick="cancelBooking('${b.id}')">✕ בטלי</button>`:''}
-      ${b.status!=='completed'?`<button class="bd" onclick="deleteBooking('${b.id}')">🗑</button>`:''}
+      <button class="bd" onclick="deleteBooking('${b.id}')">🗑</button>
     </div>
   </div>`;
 }
 
 function statusLabel(s){return{pending:'ממתין',confirmed:'מאושר',completed:'הושלם',cancelled:'בוטל'}[s]||s;}
 
-// ── CONFIRM / CANCEL / DELETE BOOKING ──
+// ── EMAIL ──
 async function sendUpdateEmail(booking,approved){
   if(!approved)return;
   if(!ejsConfig.serviceId||!ejsConfig.tidConfirm||!ejsConfig.publicKey)return;
@@ -821,41 +853,37 @@ async function sendUpdateEmail(booking,approved){
 window.confirmBooking=async(id)=>{
   try{
     const b=bookings.find(x=>x.id===id);
-    await setDoc(doc(db,COL_BOOKINGS,id),{status:'confirmed'},{merge:true});
+    await setDoc(doc(db,COL_B,id),{status:'confirmed'},{merge:true});
     showToast('✅ התור אושר!');
     if(b)await sendUpdateEmail(b,true);
   }catch(e){showToast('❌ שגיאה');}
 };
 window.cancelBooking=async(id)=>{
   if(!confirm('לבטל תור זה?'))return;
-  try{await setDoc(doc(db,COL_BOOKINGS,id),{status:'cancelled'},{merge:true});showToast('תור בוטל');}
+  try{await setDoc(doc(db,COL_B,id),{status:'cancelled'},{merge:true});showToast('תור בוטל');}
   catch(e){showToast('❌ שגיאה');}
 };
 window.deleteBooking=async(id)=>{
   if(!confirm('למחוק?'))return;
-  try{await deleteDoc(doc(db,COL_BOOKINGS,id));showToast('🗑 נמחק');}
+  try{await deleteDoc(doc(db,COL_B,id));showToast('🗑 נמחק');}
   catch(e){showToast('❌ שגיאה');}
 };
 
-// ── COMPLETE TREATMENT MODAL ──
+// ── COMPLETE TREATMENT ──
 window.openCompleteModal=(id)=>{
-  const b=bookings.find(x=>x.id===id);
-  if(!b)return;
+  const b=bookings.find(x=>x.id===id);if(!b)return;
   currentBookingId=id;
   const svcText=Array.isArray(b.service)?b.service.join(', '):b.service||'—';
   document.getElementById('ct-subtitle').textContent=`${b.clientName||'לקוחה'} • ${fmtDate(b.date)} ${b.time||''} • ${svcText}`;
-  document.getElementById('ct-amount').value='';
+  document.getElementById('ct-amount').value=b.estimatedTotal||'';
   document.getElementById('ct-payment').value='';
   document.getElementById('ct-notes').value='';
   document.getElementById('ct-err').textContent='';
-  // Pre-fill estimated total
-  if(b.estimatedTotal)document.getElementById('ct-amount').value=b.estimatedTotal;
   openModal('mbg-complete');
 };
 
 window.completeVisit=async()=>{
-  const b=bookings.find(x=>x.id===currentBookingId);
-  if(!b)return;
+  const b=bookings.find(x=>x.id===currentBookingId);if(!b)return;
   const amtRaw=document.getElementById('ct-amount').value;
   const amount=parseFloat(amtRaw);
   const payment=document.getElementById('ct-payment').value;
@@ -867,29 +895,25 @@ window.completeVisit=async()=>{
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
     const svcText=Array.isArray(b.service)?b.service.join(', '):b.service||'';
-    await addDoc(collection(db,COL_VISITS),{
+    await addDoc(collection(db,COL_V),{
       phone:b.clientPhone,name:b.clientName,date:b.date,time:b.time||'',
       email:b.clientEmail||'',service:svcText,amount,payment,notes,
       promoCode:b.promoCode||'',promoDesc:b.promoDesc||'',
       ts:new Date().toISOString(),fromBooking:currentBookingId
     });
-    await setDoc(doc(db,COL_BOOKINGS,currentBookingId),{status:'completed'},{merge:true});
+    await deleteDoc(doc(db,COL_B,currentBookingId));
     closeModal('mbg-complete');
     showToast('✅ הטיפול הושלם ונשמר!');
   }catch(e){showToast('❌ שגיאה');console.error(e);}
   btn.disabled=false;btn.innerHTML='✅ אשרי ושמרי';
 };
 
-// ── MANUAL APPOINTMENT MODAL ──
+// ── MANUAL APPT ──
 window.openManualApptModal=()=>{
-  document.getElementById('ma-name').value='';
-  document.getElementById('ma-phone').value='';
-  document.getElementById('ma-email').value='';
+  ['ma-name','ma-phone','ma-email','ma-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('ma-date').valueAsDate=new Date();
   document.getElementById('ma-time').value='';
-  document.getElementById('ma-notes').value='';
   document.getElementById('ma-err').textContent='';
-  // Populate service dropdown
   const sel=document.getElementById('ma-service');
   sel.innerHTML='<option value="">— בחרי שירות —</option>'+
     services.map(s=>`<option value="${esc(s.name)}">${esc(s.name)}${s.price?' — ₪'+s.price:''}</option>`).join('')+
@@ -908,35 +932,40 @@ window.saveManualAppt=async()=>{
   const errEl=document.getElementById('ma-err');
   if(!name){errEl.textContent='⚠️ נדרש שם';return;}
   if(!phone){errEl.textContent='⚠️ נדרש טלפון';return;}
-  if(!date){errEl.textContent='⚠️ נדרש תאריך';return;}
-  if(!time){errEl.textContent='⚠️ נדרשת שעה';return;}
+  if(!date||!time){errEl.textContent='⚠️ נדרשים תאריך ושעה';return;}
   if(!service){errEl.textContent='⚠️ נדרש שירות';return;}
   errEl.textContent='';
-  const btn=document.getElementById('btn-ma');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  const btn=document.getElementById('btn-ma');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
-    // Estimate price
     const svcObj=services.find(s=>s.name===service);
-    const estimatedTotal=svcObj?.price?parseInt(svcObj.price):null;
-    await addDoc(collection(db,COL_BOOKINGS),{
-      clientName:name,clientPhone:phone,clientEmail:email,
-      date,time,service,notes,estimatedTotal,
-      status:'confirmed', // manual = auto confirmed
-      createdAt:new Date().toISOString(),manual:true
+    await addDoc(collection(db,COL_B),{
+      clientName:name,clientPhone:phone,clientEmail:email,date,time,service,notes,
+      estimatedTotal:svcObj?.price?parseInt(svcObj.price):null,
+      status:'confirmed',createdAt:new Date().toISOString(),manual:true
     });
-    closeModal('mbg-manual');
-    showToast('📅 התור נוסף!');
+    closeModal('mbg-manual');showToast('📅 התור נוסף!');
   }catch(e){showToast('❌ שגיאה');}
   btn.disabled=false;btn.innerHTML='📅 שמור תור';
 };
 
-// ── ADD VISIT (walk-in) ──
+// ── ADD VISIT (manual walk-in) ──
+window.openAddVisitModal=()=>{
+  ['f-name','f-phone','f-email','f-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-payment').value='';
+  document.getElementById('f-amount').value='';
+  document.getElementById('f-time').value='';
+  document.getElementById('f-date').valueAsDate=new Date();
+  document.getElementById('add-err').textContent='';
+  document.getElementById('ac-list').style.display='none';
+  renderAddServiceGrid();
+  openModal('mbg-visit');
+};
+
 function getCustomers(){
   const m={};
   visits.forEach(e=>{if(!m[e.phone])m[e.phone]={phone:e.phone,name:e.name||'',email:e.email||''};if(e.name&&!m[e.phone].name)m[e.phone].name=e.name;});
   return Object.values(m);
 }
-
 window.onPhone=()=>{
   const val=document.getElementById('f-phone').value;
   const list=document.getElementById('ac-list');
@@ -960,31 +989,16 @@ function renderAddServiceGrid(){
       <span class="svc-name">${esc(s.name)}</span>
       ${s.price?`<span class="svc-price">₪${s.price}</span>`:''}
     </label>`).join('');
-  updateAddTotal();
+  document.getElementById('add-svc-total').style.display='none';
 }
-
 window.toggleSvc=(el)=>{
-  const cb=el.querySelector('input');
-  cb.checked=!cb.checked;
-  el.classList.toggle('selected',cb.checked);
-  updateAddTotal();
-};
-
-function updateAddTotal(){
+  const cb=el.querySelector('input');cb.checked=!cb.checked;el.classList.toggle('selected',cb.checked);
   const checked=[...document.querySelectorAll('#add-svc-grid input:checked')];
   const total=checked.reduce((s,cb)=>s+(parseFloat(cb.dataset.price)||0),0);
   const totalEl=document.getElementById('add-svc-total');
-  const totalVal=document.getElementById('add-svc-total-val');
-  if(checked.length>0&&total>0){
-    totalEl.style.display='flex';totalVal.textContent='₪'+total;
-    // Auto-fill amount field
-    document.getElementById('f-amount').value=total;
-  }else{totalEl.style.display='none';}
-}
-
-function getSelectedServices(){
-  return[...document.querySelectorAll('#add-svc-grid input:checked')].map(cb=>cb.value);
-}
+  if(checked.length>0&&total>0){totalEl.style.display='flex';document.getElementById('add-svc-total-val').textContent='₪'+total;document.getElementById('f-amount').value=total;}
+  else totalEl.style.display='none';
+};
 
 window.addVisit=async()=>{
   const phone=document.getElementById('f-phone').value.trim();
@@ -992,7 +1006,7 @@ window.addVisit=async()=>{
   const date=document.getElementById('f-date').value;
   const time=document.getElementById('f-time').value;
   const email=document.getElementById('f-email').value.trim();
-  const selectedSvcs=getSelectedServices();
+  const selectedSvcs=[...document.querySelectorAll('#add-svc-grid input:checked')].map(cb=>cb.value);
   const amtRaw=document.getElementById('f-amount').value;
   const amount=parseFloat(amtRaw);
   const payment=document.getElementById('f-payment').value;
@@ -1000,52 +1014,50 @@ window.addVisit=async()=>{
   const errEl=document.getElementById('add-err');
   document.getElementById('f-phone').classList.remove('err');document.getElementById('f-amount').classList.remove('err');
   if(!phone){errEl.textContent='⚠️ נדרש טלפון';document.getElementById('f-phone').classList.add('err');return;}
-  if(!selectedSvcs.length){errEl.textContent='⚠️ נדרש שירות אחד לפחות';return;}
+  if(!selectedSvcs.length){errEl.textContent='⚠️ נדרש שירות';return;}
   if(amtRaw===''||isNaN(amount)||amount<0){errEl.textContent='⚠️ נדרש סכום';document.getElementById('f-amount').classList.add('err');return;}
   errEl.textContent='';
-  let resolvedName=name;
-  if(!resolvedName){const ex=getCustomers().find(c=>c.phone===phone);if(ex?.name)resolvedName=ex.name;}
-  const btn=document.getElementById('btn-add');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span> שומרת…';
+  let resolvedName=name;if(!resolvedName){const ex=getCustomers().find(c=>c.phone===phone);if(ex?.name)resolvedName=ex.name;}
+  const btn=document.getElementById('btn-add-visit');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
-    await addDoc(collection(db,COL_VISITS),{phone,name:resolvedName,date,time,email,service:selectedSvcs.join(', '),amount,payment,notes,ts:new Date().toISOString()});
-    clearAddForm();showToast('✨ הביקור נוסף!');
+    await addDoc(collection(db,COL_V),{phone,name:resolvedName,date,time,email,service:selectedSvcs.join(', '),amount,payment,notes,ts:new Date().toISOString()});
+    closeModal('mbg-visit');showToast('✨ הביקור נוסף!');
   }catch(e){showToast('❌ שגיאה');console.error(e);}
   btn.disabled=false;btn.innerHTML='＋ הוסף ביקור';
 };
 
-function clearAddForm(){
-  ['f-name','f-phone','f-email','f-notes','f-time'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-payment').value='';document.getElementById('f-amount').value='';
-  document.getElementById('f-date').valueAsDate=new Date();
-  document.getElementById('ac-list').style.display='none';document.getElementById('add-err').textContent='';
-  document.querySelectorAll('#add-svc-grid input:checked').forEach(cb=>{cb.checked=false;cb.closest('.svc-check').classList.remove('selected');});
-  document.getElementById('add-svc-total').style.display='none';
-}
-
 window.deleteVisit=async(id)=>{
-  if(!confirm('למחוק?'))return;
-  try{await deleteDoc(doc(db,COL_VISITS,id));showToast('🗑 נמחק');}
-  catch(e){showToast('❌ שגיאה');}
+  if(!confirm('למחוק ביקור זה?'))return;
+  try{await deleteDoc(doc(db,COL_V,id));showToast('🗑 נמחק');}catch(e){showToast('❌ שגיאה');}
 };
 
+// ── REVENUES ──
+function updateRevSummary(){
+  const total=visits.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const avg=visits.length?total/visits.length:0;
+  document.getElementById('rev-total').textContent='₪'+total.toFixed(0);
+  document.getElementById('rev-count').textContent=visits.length;
+  document.getElementById('rev-avg').textContent='₪'+avg.toFixed(0);
+}
+
 function renderVisits(){
-  const q=document.getElementById('vis-search').value.toLowerCase();
+  const q=(document.getElementById('vis-search')?.value||'').toLowerCase();
   let data=[...visits].sort((a,b)=>b.date.localeCompare(a.date));
   if(q)data=data.filter(e=>(e.name||'').toLowerCase().includes(q)||(e.phone||'').includes(q)||(e.service||'').toLowerCase().includes(q));
   const tbody=document.getElementById('vis-body'),empty=document.getElementById('vis-empty');
+  if(!tbody)return;
   if(!data.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   tbody.innerHTML=data.map((e,i)=>`<tr>
-    <td style="color:var(--muted);font-size:.74rem">${i+1}</td>
+    <td style="color:var(--muted);font-size:.72rem">${i+1}</td>
     <td data-label="שם"><span class="rl" onclick="openCustModal('${esc(e.phone)}')">${esc(e.name||'—')}</span></td>
-    <td data-label="טלפון" dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(e.phone)}</td>
+    <td data-label="טלפון" dir="ltr" style="font-family:monospace;font-size:.79rem">${esc(e.phone)}</td>
     <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}${e.time?' '+e.time:''}</td>
-    <td data-label="שירות" style="max-width:150px;white-space:normal;font-size:.8rem">${esc(e.service)}</td>
+    <td data-label="שירות" style="max-width:140px;white-space:normal;font-size:.79rem">${esc(e.service)}</td>
     <td data-label="סכום" class="amt">₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
     <td data-label="תשלום">${payBadge(e.payment)}</td>
-    <td data-label="פרומו" style="font-size:.76rem;color:var(--gold)">${e.promoCode?`🎟️ ${esc(e.promoCode)}`:''}</td>
-    <td data-label="הערות" style="font-size:.74rem;color:var(--muted);max-width:100px;white-space:normal">${esc(e.notes||'')}</td>
+    <td data-label="פרומו" style="font-size:.74rem;color:var(--gold)">${e.promoCode?`🎟️ ${esc(e.promoCode)}`:''}</td>
+    <td data-label="הערות" style="font-size:.72rem;color:var(--muted);max-width:90px;white-space:normal">${esc(e.notes||'')}</td>
     <td><button class="bd" onclick="deleteVisit('${e.id}')">✕</button></td>
   </tr>`).join('');
 }
@@ -1064,11 +1076,12 @@ function getUniqueCustomers(){
 }
 
 function renderClients(){
-  const q=document.getElementById('cl-search').value.toLowerCase();
+  const q=(document.getElementById('cl-search')?.value||'').toLowerCase();
   let custs=getUniqueCustomers();
   if(q)custs=custs.filter(c=>c.name.toLowerCase().includes(q)||c.phone.includes(q));
   custs.sort((a,b)=>(b.visits.map(v=>v.date).sort().pop()||'').localeCompare(a.visits.map(v=>v.date).sort().pop()||''));
   const tbody=document.getElementById('cl-body'),empty=document.getElementById('cl-empty');
+  if(!tbody)return;
   document.getElementById('cl-count').textContent=custs.length+' לקוחות';
   if(!custs.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
@@ -1079,7 +1092,7 @@ function renderClients(){
     const fav=Object.entries(c.svcs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
     return`<tr>
       <td data-label="שם"><span class="rl" onclick="openCustModal('${esc(c.phone)}')">${esc(c.name||'—')}</span></td>
-      <td data-label="טלפון" dir="ltr" style="text-align:right;font-family:monospace;font-size:.8rem">${esc(c.phone)}</td>
+      <td data-label="טלפון" dir="ltr" style="font-family:monospace;font-size:.79rem">${esc(c.phone)}</td>
       <td data-label="ביקורים"><strong>${c.visits.length}</strong></td>
       <td data-label="סה״כ" class="amt">₪${total.toFixed(0)}</td>
       <td data-label="ממוצע" style="color:var(--muted)">₪${avg.toFixed(0)}</td>
@@ -1107,21 +1120,25 @@ window.openCustModal=(phone)=>{
   document.getElementById('m-fav').textContent=fav.length>14?fav.slice(0,12)+'…':fav;
   document.getElementById('m-vlist').innerHTML=vis.map(v=>`
     <div class="vrow">
-      <div class="vl"><div class="vd">${fmtDate(v.date)}${v.time?' '+v.time:''}</div><div class="vs">${esc(v.service)}</div>${v.notes?`<div class="vn">${esc(v.notes)}</div>`:''}</div>
+      <div class="vl"><div class="vd">${fmtDate(v.date)}${v.time?' '+v.time:''}</div><div class="vs">${esc(v.service)}</div></div>
       <div class="vr-right">${payBadge(v.payment)}<strong style="color:var(--green)">₪${(parseFloat(v.amount)||0).toFixed(0)}</strong></div>
     </div>`).join('');
-  openModal('mbg');
+  openModal('mbg-cust');
 };
 
 // ── MODAL HELPERS ──
 function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';}
 window.closeModal=(id)=>{document.getElementById(id).classList.remove('open');document.body.style.overflow='';}
-window.closeMBg=(e)=>{
-  if(e.target.classList.contains('mbg'))closeModal(e.target.id);
-};
+window.closeMBg=(e)=>{if(e.target.classList.contains('mbg'))closeModal(e.target.id);}
 
 // ── EXPENSES ──
 window.toggleExpCustom=()=>{document.getElementById('exp-custom-wrap').style.display=document.getElementById('exp-cat').value==='custom'?'block':'none';};
+
+function updateExpSummary(){
+  const total=expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  document.getElementById('exp-total-val').textContent='₪'+total.toFixed(0);
+  document.getElementById('exp-count-val').textContent=expenses.length;
+}
 
 window.addExpense=async()=>{
   const date=document.getElementById('exp-date').value;
@@ -1136,22 +1153,24 @@ window.addExpense=async()=>{
   if(!category){errEl.textContent='⚠️ נדרשת קטגוריה';return;}
   if(amtRaw===''||isNaN(amount)||amount<=0){errEl.textContent='⚠️ נדרש סכום';return;}
   errEl.textContent='';
-  const btn=document.getElementById('btn-exp');
-  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  const btn=document.getElementById('btn-exp');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
-    await addDoc(collection(db,COL_EXPENSES),{date,category,amount,desc,ts:new Date().toISOString()});
+    await addDoc(collection(db,COL_E),{date,category,amount,desc,ts:new Date().toISOString()});
     ['exp-amount','exp-desc','exp-custom'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('exp-cat').value='';document.getElementById('exp-custom-wrap').style.display='none';
     document.getElementById('exp-date').valueAsDate=new Date();showToast('💸 הוצאה נוספה!');
   }catch(e){showToast('❌ שגיאה');}
   btn.disabled=false;btn.innerHTML='＋ הוסף הוצאה';
 };
+
 window.deleteExpense=async(id)=>{
   if(!confirm('למחוק?'))return;
-  try{await deleteDoc(doc(db,COL_EXPENSES,id));showToast('🗑 נמחק');}catch(e){showToast('❌ שגיאה');}
+  try{await deleteDoc(doc(db,COL_E,id));showToast('🗑 נמחק');}catch(e){showToast('❌ שגיאה');}
 };
+
 function renderExpenses(){
   const tbody=document.getElementById('exp-body'),empty=document.getElementById('exp-empty');
+  if(!tbody)return;
   if(!expenses.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   tbody.innerHTML=expenses.map(e=>`<tr>
@@ -1169,6 +1188,7 @@ window.setPnlPeriod=(p,btn)=>{
   document.getElementById('pnl-custom').style.display=p==='custom'?'flex':'none';
   if(p!=='custom')renderPnl();
 };
+
 function getPnlRange(){
   const now=new Date();let from=null,to=null;
   if(pnlPeriod==='month'){from=new Date(now.getFullYear(),now.getMonth(),1);}
@@ -1180,31 +1200,33 @@ function getPnlRange(){
   }
   return{from,to};
 }
+
 function filterByRange(data,range){
   return data.filter(e=>{if(!e.date)return true;const d=new Date(e.date);if(range.from&&d<range.from)return false;if(range.to&&d>range.to)return false;return true;});
 }
+
 function renderPnl(){
   const range=getPnlRange();
   const fV=filterByRange(visits,range);
   const fE=filterByRange(expenses,range);
   const totalIncome=fV.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-  const totalExpenses=fE.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-  const profit=totalIncome-totalExpenses;
+  const totalExp=fE.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const profit=totalIncome-totalExp;
   const margin=totalIncome>0?(profit/totalIncome*100):0;
-  // Promo stats
   const promoUsed=fV.filter(e=>e.promoCode).length;
 
   const banner=document.getElementById('pnl-banner');
-  banner.style.cssText=`border-radius:12px;padding:20px;text-align:center;margin-bottom:18px;background:${profit>=0?'linear-gradient(135deg,#e8f5ee,#d4edda)':'linear-gradient(135deg,#fff0f0,#fde8e8)'}`;
-  banner.innerHTML=`<div style="font-size:2rem;font-weight:800;color:${profit>=0?'var(--deep)':'var(--red)'}">${profit>=0?'':'−'}₪${Math.abs(profit).toFixed(0)}</div><div style="font-size:.82rem;color:var(--muted);margin-top:5px">${profit>=0?'רווח נקי':'הפסד נקי'} • מרווח ${margin.toFixed(1)}%</div>`;
+  if(!banner)return;
+  banner.style.cssText=`border-radius:12px;padding:18px;text-align:center;margin-bottom:16px;background:${profit>=0?'linear-gradient(135deg,#e8f5ee,#d4edda)':'linear-gradient(135deg,#fff0f0,#fde8e8)'}`;
+  banner.innerHTML=`<div style="font-size:1.9rem;font-weight:800;color:${profit>=0?'var(--deep)':'var(--red)'}">${profit>=0?'':'−'}₪${Math.abs(profit).toFixed(0)}</div><div style="font-size:.8rem;color:var(--muted);margin-top:4px">${profit>=0?'רווח נקי':'הפסד נקי'} • מרווח ${margin.toFixed(1)}%</div>`;
 
   document.getElementById('pnl-kpi').innerHTML=`
     <div class="kbox acc"><div class="kv">₪${totalIncome.toFixed(0)}</div><div class="kl">הכנסות</div></div>
-    <div class="kbox red"><div class="kv">₪${totalExpenses.toFixed(0)}</div><div class="kl">הוצאות</div></div>
+    <div class="kbox red"><div class="kv">₪${totalExp.toFixed(0)}</div><div class="kl">הוצאות</div></div>
     <div class="kbox ${profit>=0?'gre':'red'}"><div class="kv">${profit>=0?'':'−'}₪${Math.abs(profit).toFixed(0)}</div><div class="kl">רווח נקי</div></div>
     <div class="kbox"><div class="kv">${fV.length}</div><div class="kl">ביקורים</div></div>
     <div class="kbox"><div class="kv">${margin.toFixed(0)}%</div><div class="kl">מרווח</div></div>
-    <div class="kbox"><div class="kv">${promoUsed}</div><div class="kl">שימושי פרומו</div></div>`;
+    <div class="kbox"><div class="kv">${promoUsed}</div><div class="kl">פרומו</div></div>`;
 
   const sMap={};fV.forEach(e=>{if(!e.service)return;e.service.split(', ').forEach(s=>{if(s&&s!=='לא יודעת עדיין'){sMap[s]=(sMap[s]||0)+(parseFloat(e.amount)||0)/Math.max(1,e.service.split(', ').length);}});});
   barChart('pnl-ch-svc',sMap,'₪',true,'income');
@@ -1216,10 +1238,11 @@ function renderPnl(){
   const pMap={};fV.filter(e=>e.promoCode).forEach(e=>{pMap[e.promoCode]=(pMap[e.promoCode]||0)+1;});
   barChart('pnl-ch-promo',pMap,'שימושים',false,'income');
 }
+
 function barChart(id,dataMap,unit,money=false,type='income'){
-  const el=document.getElementById(id);
+  const el=document.getElementById(id);if(!el)return;
   const sorted=Object.entries(dataMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if(!sorted.length){el.innerHTML='<div style="color:var(--muted);font-size:.8rem;text-align:center;padding:16px">אין נתונים</div>';return;}
+  if(!sorted.length){el.innerHTML='<div style="color:var(--muted);font-size:.79rem;text-align:center;padding:14px">אין נתונים</div>';return;}
   const max=sorted[0][1];
   el.innerHTML=sorted.map(([l,v])=>`<div class="chart-row"><div class="chart-lbl" title="${esc(l)}">${esc(l)}</div><div class="chart-track"><div class="chart-fill ${type}" style="width:${(v/max*100).toFixed(1)}%"></div></div><div class="chart-val">${money?'₪'+v.toFixed(0):v+' '+unit}</div></div>`).join('');
 }
@@ -1240,54 +1263,35 @@ function initSettings(){
   if(ejsConfig.tidConfirm)document.getElementById('ejs-tid-confirm').value=ejsConfig.tidConfirm;
 }
 
-window.copyBookingUrl=()=>{navigator.clipboard.writeText(document.getElementById('booking-url').value);showToast('📋 הקישור הועתק!');};
-window.saveWorkDays=async()=>{settings.workDays=[...document.querySelectorAll('.day-tog.on')].map(b=>parseInt(b.dataset.day));await setDoc(doc(db,...DOC_SETTINGS.split('/')),settings,{merge:true});showToast('✅ נשמר');};
+window.copyBookingUrl=()=>{navigator.clipboard.writeText(document.getElementById('booking-url').value);showToast('📋 הועתק!');};
+window.saveWorkDays=async()=>{settings.workDays=[...document.querySelectorAll('.day-tog.on')].map(b=>parseInt(b.dataset.day));await setDoc(doc(db,...DOC_SET.split('/')),settings,{merge:true});showToast('✅ נשמר');};
 window.saveHours=async()=>{
   settings.workStart=document.getElementById('work-start').value;
   settings.workEnd=document.getElementById('work-end').value;
   settings.slotDuration=parseInt(document.getElementById('slot-duration').value)||90;
-  await setDoc(doc(db,...DOC_SETTINGS.split('/')),settings,{merge:true});showToast('✅ נשמר');
+  await setDoc(doc(db,...DOC_SET.split('/')),settings,{merge:true});showToast('✅ נשמר');
 };
 
-// SERVICES
 function renderServicesList(){
   const el=document.getElementById('services-list');
-  if(!services.length){el.innerHTML='<p style="font-size:.82rem;color:var(--muted);margin-bottom:8px">אין שירותים עדיין — הוסיפי למטה</p>';return;}
-  el.innerHTML=services.map((s,i)=>`
-    <div class="promo-row">
-      <span style="font-size:.88rem;font-weight:500">${esc(s.name)}</span>
-      <div style="display:flex;align-items:center;gap:8px">
-        <strong style="color:var(--deep)">₪${s.price||'—'}</strong>
-        <button class="bd" onclick="removeService(${i})">✕</button>
-      </div>
-    </div>`).join('');
+  if(!services.length){el.innerHTML='<p style="font-size:.8rem;color:var(--muted);margin-bottom:7px">אין שירותים — הוסיפי למטה</p>';return;}
+  el.innerHTML=services.map((s,i)=>`<div class="promo-row"><span style="font-size:.86rem;font-weight:500">${esc(s.name)}</span><div style="display:flex;align-items:center;gap:7px"><strong style="color:var(--deep)">₪${s.price||'—'}</strong><button class="bd" onclick="removeService(${i})">✕</button></div></div>`).join('');
 }
 window.addService=()=>{
-  const name=document.getElementById('svc-name').value.trim();
-  const price=document.getElementById('svc-price').value.trim();
-  if(!name)return;
-  services.push({name,price:price||''});
-  document.getElementById('svc-name').value='';document.getElementById('svc-price').value='';
-  renderServicesList();
+  const name=document.getElementById('svc-name').value.trim(),price=document.getElementById('svc-price').value.trim();
+  if(!name)return;services.push({name,price:price||''});
+  document.getElementById('svc-name').value='';document.getElementById('svc-price').value='';renderServicesList();
 };
 window.removeService=(i)=>{services.splice(i,1);renderServicesList();};
-window.saveServices=async()=>{
-  await setDoc(doc(db,...DOC_SERVICES.split('/')),{list:services});
-  showToast('✅ שירותים נשמרו!');
-  renderAddServiceGrid();
-};
+window.saveServices=async()=>{await setDoc(doc(db,...DOC_SVC.split('/')),{list:services});showToast('✅ שירותים נשמרו!');};
 
-// PROMOS
 function renderPromosList(){
   const el=document.getElementById('promos-list');
-  if(!promos.length){el.innerHTML='<p style="font-size:.82rem;color:var(--muted);margin-bottom:8px">אין קודי פרומו עדיין</p>';return;}
+  if(!promos.length){el.innerHTML='<p style="font-size:.8rem;color:var(--muted);margin-bottom:7px">אין קודי פרומו</p>';return;}
   el.innerHTML=promos.map((p,i)=>{
     const expired=p.expiry&&new Date(p.expiry)<new Date();
     return`<div class="promo-row" style="${expired?'opacity:.5':''}">
-      <div>
-        <span style="font-size:.9rem;font-weight:700;color:var(--deep)">${esc(p.code)}</span>
-        <span style="font-size:.8rem;color:var(--muted);margin-right:8px">${p.type==='percent'?p.value+'% הנחה':'₪'+p.value+' הנחה'}${p.expiry?' • עד '+fmtDate(p.expiry):''}${expired?' ⛔ פג תוקף':''}</span>
-      </div>
+      <div><span style="font-size:.88rem;font-weight:700;color:var(--deep)">${esc(p.code)}</span> <span style="font-size:.78rem;color:var(--muted)">${p.type==='percent'?p.value+'% הנחה':'₪'+p.value+' הנחה'}${p.expiry?' • '+fmtDate(p.expiry):''}${expired?' ⛔':''}</span></div>
       <button class="bd" onclick="removePromo(${i})">✕</button>
     </div>`;
   }).join('');
@@ -1300,35 +1304,20 @@ window.addPromo=()=>{
   if(!code||!value)return;
   if(promos.find(p=>p.code===code)){showToast('קוד כבר קיים');return;}
   promos.push({code,type,value,expiry:expiry||''});
-  ['promo-code','promo-value','promo-expiry'].forEach(id=>document.getElementById(id).value='');
-  renderPromosList();
+  ['promo-code','promo-value','promo-expiry'].forEach(id=>document.getElementById(id).value='');renderPromosList();
 };
 window.removePromo=(i)=>{promos.splice(i,1);renderPromosList();};
-window.savePromos=async()=>{
-  await setDoc(doc(db,...DOC_PROMOS.split('/')),{list:promos});
-  showToast('✅ קודי פרומו נשמרו!');
-};
+window.savePromos=async()=>{await setDoc(doc(db,...DOC_PRO.split('/')),{list:promos});showToast('✅ קודים נשמרו!');};
 
 window.saveEmailJs=async()=>{
-  ejsConfig={
-    serviceId:document.getElementById('ejs-sid').value.trim(),
-    publicKey:document.getElementById('ejs-key').value.trim(),
-    tidNotify:document.getElementById('ejs-tid-notify').value.trim(),
-    tidConfirm:document.getElementById('ejs-tid-confirm').value.trim()
-  };
-  const st=document.getElementById('ejs-status');
-  st.textContent='שומרת…';st.style.color='var(--muted)';
+  ejsConfig={serviceId:document.getElementById('ejs-sid').value.trim(),publicKey:document.getElementById('ejs-key').value.trim(),tidNotify:document.getElementById('ejs-tid-notify').value.trim(),tidConfirm:document.getElementById('ejs-tid-confirm').value.trim()};
+  const st=document.getElementById('ejs-status');st.textContent='שומרת…';st.style.color='var(--muted)';
   try{
-    // Save to Firebase — persists across devices and updates
-    await setDoc(doc(db,...DOC_EMAILJS.split('/')),ejsConfig);
-    // Also keep localStorage as fast fallback
+    await setDoc(doc(db,...DOC_EJS.split('/')),ejsConfig);
     localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
     if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
     st.textContent='✅ נשמר בענן!';st.style.color='var(--green)';
-  }catch(e){
-    st.textContent='⚠️ שגיאה — נשמר מקומית בלבד';st.style.color='var(--gold)';
-    localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));
-  }
+  }catch(e){st.textContent='⚠️ נשמר מקומית';st.style.color='var(--gold)';localStorage.setItem('ejs_config',JSON.stringify(ejsConfig));}
 };
 
 // ── CSV ──
@@ -1341,14 +1330,13 @@ window.downloadCSV=()=>{
 };
 
 // ── HELPERS ──
-function renderAll(){renderVisits();renderClients();renderExpenses();renderPnl();renderAppointments();renderAddServiceGrid();}
+function renderAll(){renderAppointments();renderClients();renderVisits();renderExpenses();renderPnl();updateRevSummary();updateExpSummary();}
 function fmtDate(d){if(!d||d==='—')return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
 function fmtDateStr(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
 function payBadge(p){const m={cash:'💵 מזומן',card:'💳 אשראי',bit:'📱 ביט',paybox:'💜 פייבוקס',transfer:'🏦 העברה'};return p&&m[p]?`<span class="badge ${p}">${m[p]}</span>`:'<span style="color:#ccc">—</span>';}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
-document.getElementById('f-date').valueAsDate=new Date();
 document.getElementById('exp-date').valueAsDate=new Date();
 </script>
 </body>
