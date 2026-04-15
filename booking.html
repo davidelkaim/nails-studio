@@ -369,10 +369,13 @@ function renderCal(){
   grid.innerHTML=html;
 }
 
-// Fetch Google Calendar busy slots using stored token
+// Fetch Google Calendar busy slots — uses token_data with expiry check
 async function loadGCalBusySlots(){
-  const token=localStorage.getItem('gcal_token');
-  if(!token)return;
+  const stored=localStorage.getItem('gcal_token_data');
+  if(!stored)return;
+  let token,expiry;
+  try{const d=JSON.parse(stored);token=d.token;expiry=d.expiry||0;}catch(e){return;}
+  if(!token||Date.now()>expiry)return; // expired — skip silently
   try{
     const now=new Date();
     const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
@@ -387,8 +390,7 @@ async function loadGCalBusySlots(){
     const busy=data.calendars?.primary?.busy||[];
     gcalBusySlots={};
     busy.forEach(slot=>{
-      const start=new Date(slot.start);
-      const dateStr=fmtStr(start);
+      const dateStr=slot.start.split('T')[0];
       if(!gcalBusySlots[dateStr])gcalBusySlots[dateStr]=[];
       gcalBusySlots[dateStr].push({start:slot.start,end:slot.end});
     });
