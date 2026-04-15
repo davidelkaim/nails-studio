@@ -247,7 +247,7 @@ const fbApp=initializeApp(FB);
 const db=getFirestore(fbApp);
 
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
-let services=[], promos=[], bookedSlots={};
+let services=[], promos=[], bookedSlots={}, gcalBusySlots={};
 let calDate=new Date();
 let selectedDate=null, selectedTime=null;
 let appliedPromo=null;
@@ -264,6 +264,8 @@ async function init(){
     const sp=await getDoc(doc(db,'config','promos'));
     if(sp.exists())promos=sp.data().list||[];
     await loadBookedSlots();
+    // Load Google Calendar busy slots if token exists
+    await loadGCalBusySlots();
     renderPrices();renderServiceGrid();renderCal();
   }catch(e){console.error(e);}
   document.getElementById('loading-screen').style.display='none';
@@ -367,6 +369,42 @@ function renderCal(){
   grid.innerHTML=html;
 }
 
+// Fetch Google Calendar busy slots using stored token
+async function loadGCalBusySlots(){
+  const token=localStorage.getItem('gcal_token');
+  if(!token)return;
+  try{
+    const now=new Date();
+    const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
+    const timeMax=new Date(now.getFullYear(),now.getMonth()+3,1).toISOString();
+    const resp=await fetch('https://www.googleapis.com/calendar/v3/freeBusy',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
+      body:JSON.stringify({timeMin,timeMax,items:[{id:'primary'}]})
+    });
+    if(!resp.ok)return;
+    const data=await resp.json();
+    const busy=data.calendars?.primary?.busy||[];
+    gcalBusySlots={};
+    busy.forEach(slot=>{
+      const start=new Date(slot.start);
+      const dateStr=fmtStr(start);
+      if(!gcalBusySlots[dateStr])gcalBusySlots[dateStr]=[];
+      gcalBusySlots[dateStr].push({start:slot.start,end:slot.end});
+    });
+  }catch(e){console.warn('GCal freebusy:',e);}
+}
+
+function isGCalBusy(dateStr,timeStr,durationMin){
+  if(!gcalBusySlots[dateStr])return false;
+  const slotStart=new Date(dateStr+'T'+timeStr+':00');
+  const slotEnd=new Date(slotStart.getTime()+durationMin*60000);
+  return gcalBusySlots[dateStr].some(b=>{
+    const bs=new Date(b.start),be=new Date(b.end);
+    return slotStart<be&&slotEnd>bs;
+  });
+}
+
 window.selectDate=async(dateStr)=>{
   selectedDate=dateStr;selectedTime=null;
   renderCal();await loadBookedSlots();renderSlots(dateStr);updateBtn1();
@@ -375,12 +413,16 @@ window.selectDate=async(dateStr)=>{
 function renderSlots(dateStr){
   const wrap=document.getElementById('slots-wrap'),nds=document.getElementById('no-day-selected'),grid=document.getElementById('slots-grid');
   wrap.style.display='block';nds.style.display='none';
-  const slots=generateSlots(settings.workStart||'09:00',settings.workEnd||'19:00',settings.slotDuration||90);
+  const dur=settings.slotDuration||90;
+  const slots=generateSlots(settings.workStart||'09:00',settings.workEnd||'19:00',dur);
   const booked=bookedSlots[dateStr]||[];
   if(!slots.length){grid.innerHTML='<div class="no-slots">אין שעות זמינות</div>';return;}
   grid.innerHTML=slots.map(t=>{
-    const isBooked=booked.includes(t),isSel=t===selectedTime;
-    return`<div class="slot ${isBooked?'booked':''} ${isSel&&!isBooked?'selected':''}" onclick="${isBooked?'':'selectSlot(\''+t+'\')'}">${t}</div>`;
+    const isAppBooked=booked.includes(t);
+    const isGCBusy=isGCalBusy(dateStr,t,dur);
+    const unavailable=isAppBooked||isGCBusy;
+    const isSel=t===selectedTime;
+    return`<div class="slot ${unavailable?'booked':''} ${isSel&&!unavailable?'selected':''}" onclick="${unavailable?'':'selectSlot(\''+t+'\')'}">${t}</div>`;
   }).join('');
 }
 
