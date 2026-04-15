@@ -674,7 +674,6 @@ td.amt.neg{color:var(--red)}
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://apis.google.com/js/api.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1362,28 +1361,31 @@ window.downloadCSV=()=>{
 
 // ── GOOGLE CALENDAR ──
 const GCAL_SCOPE='https://www.googleapis.com/auth/calendar';
-const GCAL_DISCOVERY='https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest';
-let gcalInited=false, gcalClient=null;
+let gcalClient=null;
+// Token expiry tracking
+let gcalTokenExpiry=0;
 
 function initGCal(){
   if(!gcalClientId){updateGCalUI(false);return;}
   document.getElementById('gcal-client-id').value=gcalClientId;
-  // Init GAPI
-  if(window.gapi){
-    gapi.load('client',async()=>{
-      try{
-        await gapi.client.init({discoveryDocs:[GCAL_DISCOVERY]});
-        gcalInited=true;
-        // If we have a stored token, restore it
-        if(gcalToken){
-          gapi.client.setToken({access_token:gcalToken});
-          updateGCalUI(true);
-          fetchBusySlots();
-        }else{
-          updateGCalUI(false,'לא מחובר');
-        }
-      }catch(e){console.warn('GAPI init error:',e);updateGCalUI(false,'שגיאת אתחול');}
-    });
+  const stored=localStorage.getItem('gcal_token_data');
+  if(stored){
+    try{
+      const data=JSON.parse(stored);
+      gcalToken=data.token;
+      gcalTokenExpiry=data.expiry||0;
+      if(Date.now()<gcalTokenExpiry-60000){
+        // Token still valid
+        updateGCalUI(true);
+        fetchBusySlots();
+      }else{
+        // Token expired — try silent refresh
+        gcalToken=null;
+        updateGCalUI(false,'פג תוקף — לחצי "התחברי" לחידוש');
+      }
+    }catch(e){updateGCalUI(false,'לא מחובר');}
+  }else{
+    updateGCalUI(false,'לא מחובר');
   }
 }
 
@@ -1395,7 +1397,7 @@ function updateGCalUI(connected, msg=''){
   if(gcalClientId){
     connectBtn.style.display=connected?'none':'inline-flex';
     disconnectBtn.style.display=connected?'inline-flex':'none';
-    st.textContent=connected?'✅ מחובר לגוגל קלנדר':msg||'';
+    st.textContent=connected?'✅ מחובר לגוגל קלנדר':msg||'לא מחובר';
     st.style.color=connected?'var(--green)':'var(--muted)';
   }else{
     connectBtn.style.display='none';disconnectBtn.style.display='none';
@@ -1413,111 +1415,144 @@ window.saveGCalClientId=async()=>{
     document.getElementById('gcal-connect-btn').style.display='inline-flex';
     document.getElementById('gcal-status').textContent='כעת לחצי "התחברי לגוגל"';
     document.getElementById('gcal-status').style.color='var(--muted)';
-    initGCal();
   }catch(e){showToast('❌ שגיאה בשמירה');}
 };
 
 window.connectGCal=()=>{
   if(!gcalClientId){showToast('⚠️ שמרי Client ID קודם');return;}
-  if(!window.google||!window.google.accounts){showToast('⚠️ טוען את ספריית גוגל…');return;}
+  if(!window.google?.accounts?.oauth2){
+    showToast('⚠️ ספריית גוגל טוענת, נסי שנית');return;
+  }
   gcalClient=google.accounts.oauth2.initTokenClient({
     client_id:gcalClientId,
     scope:GCAL_SCOPE,
     callback:(resp)=>{
-      if(resp.error){showToast('❌ שגיאת התחברות');return;}
+      if(resp.error){showToast('❌ שגיאת התחברות: '+resp.error);return;}
       gcalToken=resp.access_token;
+      // Store token with expiry (3600s - 5min buffer)
+      const expiry=Date.now()+(parseInt(resp.expires_in||3600)-300)*1000;
+      gcalTokenExpiry=expiry;
       localStorage.setItem('gcal_token',gcalToken);
-      if(gcalInited)gapi.client.setToken({access_token:gcalToken});
+      localStorage.setItem('gcal_token_data',JSON.stringify({token:gcalToken,expiry}));
       updateGCalUI(true);
       fetchBusySlots();
       showToast('✅ מחובר לגוגל קלנדר!');
     }
   });
-  gcalClient.requestAccessToken();
+  gcalClient.requestAccessToken({prompt:''});
 };
 
 window.disconnectGCal=()=>{
-  if(gcalToken&&window.google&&window.google.accounts){
+  if(gcalToken&&window.google?.accounts?.oauth2){
     google.accounts.oauth2.revoke(gcalToken,()=>{});
   }
-  gcalToken=null;gcalBusySlots={};
+  gcalToken=null;gcalBusySlots={};gcalTokenExpiry=0;
   localStorage.removeItem('gcal_token');
-  if(gcalInited&&window.gapi)gapi.client.setToken(null);
+  localStorage.removeItem('gcal_token_data');
   updateGCalUI(false,'התנתקת');
   showToast('התנתקת מגוגל קלנדר');
 };
 
-// Fetch busy slots for the current visible month + next month
+// Silently refresh token if expired
+async function ensureGCalToken(){
+  if(!gcalClientId||!window.google?.accounts?.oauth2)return false;
+  if(gcalToken&&Date.now()<gcalTokenExpiry-60000)return true;
+  // Need to refresh
+  return new Promise(resolve=>{
+    try{
+      const client=google.accounts.oauth2.initTokenClient({
+        client_id:gcalClientId,
+        scope:GCAL_SCOPE,
+        prompt:'none', // silent refresh
+        callback:(resp)=>{
+          if(resp.error||!resp.access_token){resolve(false);return;}
+          gcalToken=resp.access_token;
+          const expiry=Date.now()+(parseInt(resp.expires_in||3600)-300)*1000;
+          gcalTokenExpiry=expiry;
+          localStorage.setItem('gcal_token',gcalToken);
+          localStorage.setItem('gcal_token_data',JSON.stringify({token:gcalToken,expiry}));
+          updateGCalUI(true);
+          resolve(true);
+        }
+      });
+      client.requestAccessToken({prompt:'none'});
+    }catch(e){resolve(false);}
+  });
+}
+
+// Fetch busy slots using REST API directly (no GAPI dependency)
 async function fetchBusySlots(){
-  if(!gcalToken||!gcalInited)return;
+  const ok=await ensureGCalToken();
+  if(!ok||!gcalToken)return;
   try{
     const now=new Date();
     const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
     const timeMax=new Date(now.getFullYear(),now.getMonth()+3,1).toISOString();
-    const resp=await gapi.client.calendar.freebusy.query({
-      resource:{
-        timeMin,timeMax,
-        items:[{id:'primary'}]
-      }
+    const resp=await fetch('https://www.googleapis.com/calendar/v3/freeBusy',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+gcalToken,'Content-Type':'application/json'},
+      body:JSON.stringify({timeMin,timeMax,items:[{id:'primary'}]})
     });
-    const busy=resp.result.calendars?.primary?.busy||[];
+    if(resp.status===401){
+      gcalToken=null;localStorage.removeItem('gcal_token');localStorage.removeItem('gcal_token_data');
+      updateGCalUI(false,'פג תוקף — התחברי מחדש');return;
+    }
+    if(!resp.ok){console.warn('GCal freebusy HTTP',resp.status);return;}
+    const data=await resp.json();
+    const busy=data.calendars?.primary?.busy||[];
     gcalBusySlots={};
     busy.forEach(slot=>{
-      const start=new Date(slot.start);
-      const end=new Date(slot.end);
-      // Mark all overlapping slots as busy
-      const dateStr=fmtDateStr(start);
+      const dateStr=slot.start.split('T')[0];
       if(!gcalBusySlots[dateStr])gcalBusySlots[dateStr]=[];
       gcalBusySlots[dateStr].push({start:slot.start,end:slot.end});
     });
     renderCal();
-  }catch(e){
-    if(e.status===401){
-      // Token expired
-      gcalToken=null;localStorage.removeItem('gcal_token');
-      updateGCalUI(false,'פג תוקף החיבור — התחברי מחדש');
-    }
-    console.warn('GCal freebusy error:',e);
-  }
+    console.log('GCal: loaded',busy.length,'busy slots');
+  }catch(e){console.warn('GCal freebusy error:',e);}
 }
 
-// Check if a specific datetime slot is busy in Google Calendar
-function isGCalBusy(dateStr, timeStr, durationMin){
+function isGCalBusy(dateStr,timeStr,durationMin){
   if(!gcalToken||!gcalBusySlots[dateStr])return false;
-  const [h,m]=timeStr.split(':').map(Number);
   const slotStart=new Date(dateStr+'T'+timeStr+':00');
   const slotEnd=new Date(slotStart.getTime()+durationMin*60000);
   return gcalBusySlots[dateStr].some(b=>{
     const bs=new Date(b.start),be=new Date(b.end);
-    return slotStart<be&&slotEnd>bs; // overlap check
+    return slotStart<be&&slotEnd>bs;
   });
 }
 
-// Create Google Calendar event when booking is confirmed
+// Create event using REST API directly
 async function createGCalEvent(booking){
-  if(!gcalToken||!gcalInited)return;
+  const ok=await ensureGCalToken();
+  if(!ok||!gcalToken)return;
   try{
     const svcText=Array.isArray(booking.service)?booking.service.join(', '):booking.service||'טיפול';
-    const dateStr=booking.date; // YYYY-MM-DD
     const timeStr=booking.time||'09:00';
     const dur=settings.slotDuration||90;
-    const [h,m]=timeStr.split(':').map(Number);
-    const startDt=new Date(dateStr+'T'+timeStr+':00');
+    const startDt=new Date(booking.date+'T'+timeStr+':00');
     const endDt=new Date(startDt.getTime()+dur*60000);
-    const pad=n=>String(n).padStart(2,'0');
-    const toLocal=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00`;
     const event={
       summary:`💅 ${booking.clientName||'לקוחה'} — ${svcText}`,
       description:`טלפון: ${booking.clientPhone||'—'}\nשירות: ${svcText}${booking.estimatedTotal?'\nמחיר משוער: ₪'+booking.estimatedTotal:''}`,
       start:{dateTime:startDt.toISOString(),timeZone:'Asia/Jerusalem'},
       end:{dateTime:endDt.toISOString(),timeZone:'Asia/Jerusalem'},
     };
-    await gapi.client.calendar.events.insert({calendarId:'primary',resource:event});
+    const resp=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
+      method:'POST',
+      headers:{'Authorization':'Bearer '+gcalToken,'Content-Type':'application/json'},
+      body:JSON.stringify(event)
+    });
+    if(resp.status===401){
+      gcalToken=null;localStorage.removeItem('gcal_token');localStorage.removeItem('gcal_token_data');
+      updateGCalUI(false,'פג תוקף — התחברי מחדש');return;
+    }
+    if(!resp.ok){console.warn('GCal create event HTTP',resp.status,await resp.text());return;}
+    const created=await resp.json();
+    console.log('GCal event created:',created.id);
     showToast('📆 נוסף לגוגל קלנדר!');
-  }catch(e){
-    if(e.status===401){gcalToken=null;localStorage.removeItem('gcal_token');updateGCalUI(false,'פג תוקף — התחברי מחדש');}
-    console.warn('GCal event create error:',e);
-  }
+    // Refresh busy slots
+    await fetchBusySlots();
+  }catch(e){console.warn('GCal event create error:',e);}
 }
 
 // ── HELPERS ──
