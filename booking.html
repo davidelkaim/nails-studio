@@ -372,28 +372,33 @@ function renderCal(){
 // Fetch Google Calendar busy slots — uses token_data with expiry check
 async function loadGCalBusySlots(){
   const stored=localStorage.getItem('gcal_token_data');
-  if(!stored)return;
+  if(!stored){console.log('GCal booking: no token stored');return;}
   let token,expiry;
   try{const d=JSON.parse(stored);token=d.token;expiry=d.expiry||0;}catch(e){return;}
-  if(!token||Date.now()>expiry)return; // expired — skip silently
+  if(!token||Date.now()>expiry){console.log('GCal booking: token expired');return;}
   try{
     const now=new Date();
     const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
     const timeMax=new Date(now.getFullYear(),now.getMonth()+3,1).toISOString();
+    console.log('GCal booking: fetching freebusy...');
     const resp=await fetch('https://www.googleapis.com/calendar/v3/freeBusy',{
       method:'POST',
       headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
       body:JSON.stringify({timeMin,timeMax,items:[{id:'primary'}]})
     });
-    if(!resp.ok)return;
+    if(!resp.ok){console.warn('GCal booking: HTTP',resp.status);return;}
     const data=await resp.json();
     const busy=data.calendars?.primary?.busy||[];
+    console.log('GCal booking: received',busy.length,'busy slots',busy);
     gcalBusySlots={};
     busy.forEach(slot=>{
       const dateStr=slot.start.split('T')[0];
       if(!gcalBusySlots[dateStr])gcalBusySlots[dateStr]=[];
       gcalBusySlots[dateStr].push({start:slot.start,end:slot.end});
     });
+    console.log('GCal booking: busy by date',gcalBusySlots);
+    // Re-render slots if a date is already selected
+    if(selectedDate)renderSlots(selectedDate);
   }catch(e){console.warn('GCal freebusy:',e);}
 }
 
