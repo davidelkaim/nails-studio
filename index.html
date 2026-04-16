@@ -1360,7 +1360,7 @@ window.downloadCSV=()=>{
 };
 
 // ── GOOGLE CALENDAR ──
-const GCAL_SCOPE='https://www.googleapis.com/auth/calendar';
+const GCAL_SCOPE='https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events';
 let gcalClient=null;
 // Token expiry tracking
 let gcalTokenExpiry=0;
