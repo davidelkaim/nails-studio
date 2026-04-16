@@ -1371,22 +1371,17 @@ function initGCal(){
   const stored=localStorage.getItem('gcal_token_data');
   if(stored){
     try{
-      const data=JSON.parse(stored);
-      gcalToken=data.token;
-      gcalTokenExpiry=data.expiry||0;
-      if(Date.now()<gcalTokenExpiry-60000){
-        // Token still valid
+      const d=JSON.parse(stored);
+      if(d.token&&Date.now()<(d.expiry||0)-60000){
+        gcalToken=d.token;
+        gcalTokenExpiry=d.expiry;
         updateGCalUI(true);
         fetchBusySlots();
-      }else{
-        // Token expired — try silent refresh
-        gcalToken=null;
-        updateGCalUI(false,'פג תוקף — לחצי "התחברי" לחידוש');
+        return;
       }
-    }catch(e){updateGCalUI(false,'לא מחובר');}
-  }else{
-    updateGCalUI(false,'לא מחובר');
+    }catch(e){}
   }
+  updateGCalUI(false,'לא מחובר — לחצי "התחברי לגוגל"');
 }
 
 function updateGCalUI(connected, msg=''){
@@ -1453,61 +1448,60 @@ window.disconnectGCal=()=>{
   showToast('התנתקת מגוגל קלנדר');
 };
 
-// Silently refresh token if expired
+// Check token validity — no silent refresh (causes GSI error), just use stored token
 async function ensureGCalToken(){
-  if(!gcalClientId||!window.google?.accounts?.oauth2)return false;
+  if(!gcalClientId)return false;
   if(gcalToken&&Date.now()<gcalTokenExpiry-60000)return true;
-  // Need to refresh
-  return new Promise(resolve=>{
+  // Try to restore from localStorage
+  const stored=localStorage.getItem('gcal_token_data');
+  if(stored){
     try{
-      const client=google.accounts.oauth2.initTokenClient({
-        client_id:gcalClientId,
-        scope:GCAL_SCOPE,
-        prompt:'none', // silent refresh
-        callback:(resp)=>{
-          if(resp.error||!resp.access_token){resolve(false);return;}
-          gcalToken=resp.access_token;
-          const expiry=Date.now()+(parseInt(resp.expires_in||3600)-300)*1000;
-          gcalTokenExpiry=expiry;
-          localStorage.setItem('gcal_token',gcalToken);
-          localStorage.setItem('gcal_token_data',JSON.stringify({token:gcalToken,expiry}));
-          updateGCalUI(true);
-          resolve(true);
-        }
-      });
-      client.requestAccessToken({prompt:'none'});
-    }catch(e){resolve(false);}
-  });
+      const d=JSON.parse(stored);
+      if(d.token&&Date.now()<(d.expiry||0)-60000){
+        gcalToken=d.token;gcalTokenExpiry=d.expiry;
+        updateGCalUI(true);
+        return true;
+      }
+    }catch(e){}
+  }
+  // Token expired — show message but don't try silent refresh
+  if(gcalToken){
+    gcalToken=null;
+    updateGCalUI(false,'פג תוקף — התחברי מחדש מההגדרות');
+  }
+  return false;
 }
 
-// Fetch busy slots using REST API directly (no GAPI dependency)
+// Fetch busy slots using REST API directly
 async function fetchBusySlots(){
-  const ok=await ensureGCalToken();
-  if(!ok||!gcalToken)return;
+  if(!gcalToken){console.log('GCal: no token, skipping freebusy');return;}
   try{
     const now=new Date();
     const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
     const timeMax=new Date(now.getFullYear(),now.getMonth()+3,1).toISOString();
+    console.log('GCal: fetching freebusy',timeMin,'→',timeMax);
     const resp=await fetch('https://www.googleapis.com/calendar/v3/freeBusy',{
       method:'POST',
       headers:{'Authorization':'Bearer '+gcalToken,'Content-Type':'application/json'},
       body:JSON.stringify({timeMin,timeMax,items:[{id:'primary'}]})
     });
     if(resp.status===401){
+      console.warn('GCal: token expired (401)');
       gcalToken=null;localStorage.removeItem('gcal_token');localStorage.removeItem('gcal_token_data');
       updateGCalUI(false,'פג תוקף — התחברי מחדש');return;
     }
-    if(!resp.ok){console.warn('GCal freebusy HTTP',resp.status);return;}
+    if(!resp.ok){console.warn('GCal freebusy HTTP error:',resp.status);return;}
     const data=await resp.json();
     const busy=data.calendars?.primary?.busy||[];
+    console.log('GCal: received',busy.length,'busy slots',busy);
     gcalBusySlots={};
     busy.forEach(slot=>{
       const dateStr=slot.start.split('T')[0];
       if(!gcalBusySlots[dateStr])gcalBusySlots[dateStr]=[];
       gcalBusySlots[dateStr].push({start:slot.start,end:slot.end});
     });
+    console.log('GCal: busy slots by date',gcalBusySlots);
     renderCal();
-    console.log('GCal: loaded',busy.length,'busy slots');
   }catch(e){console.warn('GCal freebusy error:',e);}
 }
 
@@ -1523,8 +1517,7 @@ function isGCalBusy(dateStr,timeStr,durationMin){
 
 // Create event using REST API directly
 async function createGCalEvent(booking){
-  const ok=await ensureGCalToken();
-  if(!ok||!gcalToken)return;
+  if(!gcalToken){console.log('GCal: no token, skipping event creation');return;}
   try{
     const svcText=Array.isArray(booking.service)?booking.service.join(', '):booking.service||'טיפול';
     const timeStr=booking.time||'09:00';
@@ -1537,6 +1530,7 @@ async function createGCalEvent(booking){
       start:{dateTime:startDt.toISOString(),timeZone:'Asia/Jerusalem'},
       end:{dateTime:endDt.toISOString(),timeZone:'Asia/Jerusalem'},
     };
+    console.log('GCal: creating event',event.summary);
     const resp=await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events',{
       method:'POST',
       headers:{'Authorization':'Bearer '+gcalToken,'Content-Type':'application/json'},
@@ -1548,9 +1542,8 @@ async function createGCalEvent(booking){
     }
     if(!resp.ok){console.warn('GCal create event HTTP',resp.status,await resp.text());return;}
     const created=await resp.json();
-    console.log('GCal event created:',created.id);
+    console.log('GCal: event created',created.id);
     showToast('📆 נוסף לגוגל קלנדר!');
-    // Refresh busy slots
     await fetchBusySlots();
   }catch(e){console.warn('GCal event create error:',e);}
 }
