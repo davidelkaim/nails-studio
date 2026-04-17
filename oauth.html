@@ -16,59 +16,17 @@ h2{color:#6b3050}
 <p id="status">מעבדת את האישור...</p>
 
 <script>
-(async function() {
-  const status = document.getElementById('status');
-  const spin = document.getElementById('spin');
-  
-  const params = new URLSearchParams(window.location.search);
-  const code = params.get('code');
-  const scriptUrl = decodeURIComponent(params.get('state') || '');
-  
-  if (!code) {
-    status.textContent = '❌ לא התקבל קוד אישור';
-    spin.style.display='none';
-    return;
-  }
-  if (!scriptUrl) {
-    status.textContent = '❌ חסר Script URL';
-    spin.style.display='none';
-    return;
-  }
-  
-  try {
-    status.textContent = 'שולחת את הקוד לשרת...';
-    // Use no-cors since Apps Script doesn't send CORS headers
-    // We send the code and just trust it works
-    const url = scriptUrl + '?action=oauth_callback&code=' + encodeURIComponent(code);
-    
-    // Try with regular fetch first
-    let success = false;
-    try {
-      const resp = await fetch(url);
-      const data = await resp.json();
-      if (data.status === 'ok') success = true;
-      else status.textContent = '❌ ' + (data.message || 'שגיאה');
-    } catch(fetchErr) {
-      // If CORS blocks, try no-cors (we can't read response but request goes through)
-      await fetch(url, { mode: 'no-cors' });
-      // Wait 2 seconds then check if connected
-      await new Promise(r => setTimeout(r, 2000));
-      // Check connection status
-      const checkResp = await fetch(scriptUrl + '?action=freebusy');
-      const checkData = await checkResp.json();
-      if (checkData.status === 'ok') success = true;
-    }
-    
-    spin.style.display = 'none';
-    if (success) {
-      document.querySelector('h2').textContent = '✅ מחובר לגוגל קלנדר!';
-      status.textContent = 'ניתן לסגור חלון זה.';
-    }
-  } catch(e) {
-    spin.style.display = 'none';
-    status.textContent = '❌ שגיאה: ' + e.message;
-  }
-})();
+const params = new URLSearchParams(window.location.search);
+const code = params.get('code');
+const scriptUrl = decodeURIComponent(params.get('state') || '');
+
+if (!code || !scriptUrl) {
+  document.getElementById('status').textContent = '❌ פרמטרים חסרים';
+  document.getElementById('spin').style.display = 'none';
+} else {
+  // Redirect to Apps Script with the code — same origin, no CORS issue
+  window.location.href = scriptUrl + '?action=oauth_callback&code=' + encodeURIComponent(code);
+}
 </script>
 </body>
 </html>
