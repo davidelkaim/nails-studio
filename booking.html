@@ -178,10 +178,15 @@ input.err{border-color:var(--red)!important}
   <!-- SECTION 2: DETAILS -->
   <div class="section" id="sec2">
     <div class="card">
-      <h2>💅 בחרי שירותים</h2>
-      <div class="svc-select-grid" id="b-svc-grid"></div>
-      <div class="svc-total-box" id="b-svc-total" style="display:none">
-        <span>סה"כ משוער</span><strong id="b-svc-total-val">₪0</strong>
+      <h2>💅 בחרי שירות</h2>
+      <div class="fg req">
+        <label>שירות</label>
+        <select id="b-service">
+          <option value="">— בחרי שירות —</option>
+        </select>
+      </div>
+      <div id="b-svc-price" style="display:none;margin-top:6px;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:.85rem;display:flex;justify-content:space-between">
+        <span>מחיר משוער</span><strong id="b-svc-price-val" style="color:var(--deep)"></strong>
       </div>
       <!-- Promo code -->
       <div style="margin-top:12px">
@@ -197,10 +202,10 @@ input.err{border-color:var(--red)!important}
       <h2>👤 הפרטים שלך</h2>
       <div class="fg req"><label>שם מלא</label><input type="text" id="b-name" placeholder="שרה כהן"/></div>
       <div class="fg req"><label>טלפון</label><input type="tel" id="b-phone" placeholder="0501234567"/></div>
-      <div class="fg req">
-        <label>אימייל</label>
+      <div class="fg">
+        <label>אימייל (אופציונלי)</label>
         <input type="email" id="b-email" placeholder="sarah@email.com"/>
-        <span class="hint">אישור התור ישלח לכתובת זו</span>
+        <span class="hint">אם תרצי לקבל אישור במייל</span>
       </div>
       <div class="fg"><label>הערות (אופציונלי)</label><textarea id="b-notes" placeholder="בקשות מיוחדות, צבע מועדף…" rows="3"></textarea></div>
       <span id="form-err" style="font-size:.78rem;color:var(--red);font-weight:600;display:block;margin-bottom:10px"></span>
@@ -248,6 +253,7 @@ const db=getFirestore(fbApp);
 
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
 let services=[], promos=[], bookedSlots={}, gcalBusySlots={};
+let gcalScriptUrl='';
 let calDate=new Date();
 let selectedDate=null, selectedTime=null;
 let appliedPromo=null;
@@ -263,10 +269,12 @@ async function init(){
     if(sv.exists())services=sv.data().list||[];
     const sp=await getDoc(doc(db,'config','promos'));
     if(sp.exists())promos=sp.data().list||[];
+    // Load Google Calendar Script URL
+    const sg=await getDoc(doc(db,'config','gcal'));
+    if(sg.exists()&&sg.data().scriptUrl)gcalScriptUrl=sg.data().scriptUrl;
     await loadBookedSlots();
-    // Load Google Calendar busy slots if token exists
     await loadGCalBusySlots();
-    renderPrices();renderServiceGrid();renderCal();
+    renderPrices();renderServiceSelect();renderCal();
   }catch(e){console.error(e);}
   document.getElementById('loading-screen').style.display='none';
   document.getElementById('main').style.display='block';
@@ -291,16 +299,26 @@ function renderPrices(){
   el.innerHTML=services.map(s=>`<div class="price-row"><span class="price-name">${esc(s.name)}</span><span class="price-val">${s.price?'₪'+s.price:'לפי בקשה'}</span></div>`).join('');
 }
 
-function renderServiceGrid(){
-  const grid=document.getElementById('b-svc-grid');
-  const allSvcs=[...services,{name:'לא יודעת עדיין',price:''}];
-  grid.innerHTML=allSvcs.map(s=>`
-    <div class="svc-opt" onclick="toggleBSvc(this)">
-      <input type="checkbox" value="${esc(s.name)}" data-price="${s.price||0}"/>
-      <span class="sn">${esc(s.name)}</span>
-      ${s.price?`<span class="sp">₪${s.price}</span>`:''}
-      <span class="sc"></span>
-    </div>`).join('');
+function renderServiceSelect(){
+  const sel=document.getElementById('b-service');
+  sel.innerHTML='<option value="">— בחרי שירות —</option>'+
+    services.map(s=>`<option value="${esc(s.name)}" data-price="${s.price||0}">${esc(s.name)}${s.price?' — ₪'+s.price:''}</option>`).join('')+
+    '<option value="לא יודעת עדיין" data-price="0">לא יודעת עדיין</option>';
+  sel.onchange=()=>{
+    const opt=sel.options[sel.selectedIndex];
+    const price=parseFloat(opt?.dataset?.price||0);
+    const priceBox=document.getElementById('b-svc-price');
+    const priceVal=document.getElementById('b-svc-price-val');
+    if(price>0){
+      priceBox.style.display='flex';
+      let finalPrice=price;
+      if(appliedPromo){
+        if(appliedPromo.type==='percent')finalPrice=price*(1-parseFloat(appliedPromo.value)/100);
+        else finalPrice=Math.max(0,price-parseFloat(appliedPromo.value));
+      }
+      priceVal.textContent='₪'+Math.round(finalPrice);
+    }else{priceBox.style.display='none';}
+  };
 }
 
 window.toggleBSvc=(el)=>{
@@ -369,37 +387,17 @@ function renderCal(){
   grid.innerHTML=html;
 }
 
-// Fetch Google Calendar busy slots — uses token_data with expiry check
+// Fetch Google Calendar busy slots via Apps Script proxy (permanent token)
 async function loadGCalBusySlots(){
-  const stored=localStorage.getItem('gcal_token_data');
-  if(!stored){console.log('GCal booking: no token stored');return;}
-  let token,expiry;
-  try{const d=JSON.parse(stored);token=d.token;expiry=d.expiry||0;}catch(e){return;}
-  if(!token||Date.now()>expiry){console.log('GCal booking: token expired');return;}
+  if(!gcalScriptUrl)return;
   try{
-    const now=new Date();
-    const timeMin=new Date(now.getFullYear(),now.getMonth(),1).toISOString();
-    const timeMax=new Date(now.getFullYear(),now.getMonth()+3,1).toISOString();
-    console.log('GCal booking: fetching freebusy...');
-    const resp=await fetch('https://www.googleapis.com/calendar/v3/freeBusy',{
-      method:'POST',
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-      body:JSON.stringify({timeMin,timeMax,items:[{id:'primary'}]})
-    });
-    if(!resp.ok){console.warn('GCal booking: HTTP',resp.status);return;}
+    const resp=await fetch(gcalScriptUrl+'?action=freebusy');
     const data=await resp.json();
-    const busy=data.calendars?.primary?.busy||[];
-    console.log('GCal booking: received',busy.length,'busy slots',busy);
-    gcalBusySlots={};
-    busy.forEach(slot=>{
-      const dateStr=slot.start.split('T')[0];
-      if(!gcalBusySlots[dateStr])gcalBusySlots[dateStr]=[];
-      gcalBusySlots[dateStr].push({start:slot.start,end:slot.end});
-    });
-    console.log('GCal booking: busy by date',gcalBusySlots);
-    // Re-render slots if a date is already selected
-    if(selectedDate)renderSlots(selectedDate);
-  }catch(e){console.warn('GCal freebusy:',e);}
+    if(data.status==='ok'&&data.busy){
+      gcalBusySlots=data.busy;
+      console.log('GCal booking: loaded busy slots',Object.keys(gcalBusySlots).length,'days');
+    }
+  }catch(e){console.warn('GCal booking freebusy:',e);}
 }
 
 function isGCalBusy(dateStr,timeStr,durationMin){
@@ -452,38 +450,37 @@ function updateBtn1(){
 window.goToStep1=()=>setSection('sec1',0);
 window.goToStep2=()=>{if(!selectedDate||!selectedTime){setSection('sec1',0);return;}setSection('sec2',1);};
 window.goToStep3=()=>{
-  const svcs=getSelectedServices();
+  const service=document.getElementById('b-service').value;
   const name=document.getElementById('b-name').value.trim();
   const phone=document.getElementById('b-phone').value.trim();
   const email=document.getElementById('b-email').value.trim();
   const errEl=document.getElementById('form-err');
-  if(!svcs.length){errEl.textContent='⚠️ נדרש שירות אחד לפחות';return;}
+  if(!service){errEl.textContent='⚠️ נדרש שירות';return;}
   if(!name){errEl.textContent='⚠️ נדרש שם';return;}
   if(!phone){errEl.textContent='⚠️ נדרש טלפון';return;}
-  if(!email||!email.includes('@')){errEl.textContent='⚠️ נדרשת כתובת מייל תקינה (לקבלת אישור)';return;}
   errEl.textContent='';
 
-  const checked=[...document.querySelectorAll('#b-svc-grid input:checked')];
-  const subtotal=checked.reduce((s,cb)=>s+(parseFloat(cb.dataset.price)||0),0);
-  let finalTotal=subtotal;
+  const opt=document.getElementById('b-service').options[document.getElementById('b-service').selectedIndex];
+  const price=parseFloat(opt?.dataset?.price||0);
+  let finalPrice=price;
   let discountLine='';
-  if(appliedPromo&&subtotal>0){
+  if(appliedPromo&&price>0){
     let disc=0;
-    if(appliedPromo.type==='percent'){disc=subtotal*parseFloat(appliedPromo.value)/100;finalTotal=subtotal-disc;}
-    else{disc=Math.min(subtotal,parseFloat(appliedPromo.value));finalTotal=subtotal-disc;}
+    if(appliedPromo.type==='percent'){disc=price*parseFloat(appliedPromo.value)/100;finalPrice=price-disc;}
+    else{disc=Math.min(price,parseFloat(appliedPromo.value));finalPrice=price-disc;}
     discountLine=`<div class="sum-row discount"><span>🎟️ קוד ${esc(appliedPromo.code)}</span><strong>-₪${Math.round(disc)}</strong></div>`;
   }
 
   document.getElementById('summary').innerHTML=`
     <div class="sum-row"><span>📅 תאריך</span><strong>${fmtDate(selectedDate)}</strong></div>
     <div class="sum-row"><span>⏰ שעה</span><strong>${selectedTime}</strong></div>
-    <div class="sum-row"><span>💅 שירותים</span><strong style="max-width:200px;text-align:left">${esc(svcs.join(', '))}</strong></div>
+    <div class="sum-row"><span>💅 שירות</span><strong>${esc(service)}</strong></div>
     <div class="sum-row"><span>👤 שם</span><strong>${esc(name)}</strong></div>
     <div class="sum-row"><span>📱 טלפון</span><strong dir="ltr">${esc(phone)}</strong></div>
-    <div class="sum-row"><span>📧 מייל</span><strong dir="ltr" style="font-size:.82rem">${esc(email)}</strong></div>
-    ${subtotal>0?`<div class="sum-row"><span>מחיר משוער</span><strong>₪${subtotal}</strong></div>`:''}
+    ${email?`<div class="sum-row"><span>📧 מייל</span><strong dir="ltr" style="font-size:.82rem">${esc(email)}</strong></div>`:''}
+    ${price>0?`<div class="sum-row"><span>מחיר</span><strong>₪${price}</strong></div>`:''}
     ${discountLine}
-    ${subtotal>0?`<div class="sum-row total"><span>סה"כ לתשלום</span><strong>₪${Math.round(finalTotal)}</strong></div>`:''}
+    ${price>0?`<div class="sum-row total"><span>סה"כ</span><strong>₪${Math.round(finalPrice)}</strong></div>`:''}
   `;
   setSection('sec3',2);
 };
@@ -491,25 +488,25 @@ window.goToStep3=()=>{
 window.confirmBooking=async()=>{
   const btn=document.getElementById('btn-confirm');
   btn.disabled=true;btn.innerHTML='<span class="spinner"></span> שולחת…';
-  const svcs=getSelectedServices();
+  const service=document.getElementById('b-service').value;
   const name=document.getElementById('b-name').value.trim();
   const phone=document.getElementById('b-phone').value.trim();
   const email=document.getElementById('b-email').value.trim();
   const notes=document.getElementById('b-notes').value.trim();
-  const checked=[...document.querySelectorAll('#b-svc-grid input:checked')];
-  const subtotal=checked.reduce((s,cb)=>s+(parseFloat(cb.dataset.price)||0),0);
-  let estimatedTotal=subtotal;
+  const opt=document.getElementById('b-service').options[document.getElementById('b-service').selectedIndex];
+  const price=parseFloat(opt?.dataset?.price||0);
+  let estimatedTotal=price;
   let promoDesc='';
-  if(appliedPromo&&subtotal>0){
-    if(appliedPromo.type==='percent'){estimatedTotal=Math.round(subtotal*(1-parseFloat(appliedPromo.value)/100));}
-    else{estimatedTotal=Math.max(0,subtotal-parseFloat(appliedPromo.value));}
+  if(appliedPromo&&price>0){
+    if(appliedPromo.type==='percent'){estimatedTotal=Math.round(price*(1-parseFloat(appliedPromo.value)/100));}
+    else{estimatedTotal=Math.max(0,price-parseFloat(appliedPromo.value));}
     promoDesc=appliedPromo.type==='percent'?`${appliedPromo.value}% הנחה`:`₪${appliedPromo.value} הנחה`;
   }
   try{
     await addDoc(collection(db,'bookings'),{
       clientName:name,clientPhone:phone,clientEmail:email,
       date:selectedDate,time:selectedTime,
-      service:svcs,notes,
+      service:service,notes,
       estimatedTotal:estimatedTotal||null,
       promoCode:appliedPromo?.code||'',promoDesc,
       status:'pending',createdAt:new Date().toISOString()
@@ -520,9 +517,9 @@ window.confirmBooking=async()=>{
       window.emailjs.init({publicKey:ejsCfg.publicKey});
       try{
         await window.emailjs.send(ejsCfg.serviceId,ejsCfg.tidNotify,{
-          client_name:name,client_phone:phone,client_email:email,
+          client_name:name,client_phone:phone,client_email:email||'—',
           date:fmtDate(selectedDate),time:selectedTime,
-          service:svcs.join(', '),notes:notes||'—',
+          service:service,notes:notes||'—',
           promo:appliedPromo?`${appliedPromo.code} (${promoDesc})`:'—',
           estimated_total:estimatedTotal?'₪'+estimatedTotal:'—',
         });
@@ -536,11 +533,11 @@ window.confirmBooking=async()=>{
 window.resetBooking=()=>{
   selectedDate=null;selectedTime=null;appliedPromo=null;
   ['b-name','b-phone','b-email','b-notes','b-promo'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('b-service').value='';
+  document.getElementById('b-svc-price').style.display='none';
   document.getElementById('promo-feedback').style.display='none';
   document.getElementById('slots-wrap').style.display='none';
   document.getElementById('no-day-selected').style.display='block';
-  document.querySelectorAll('#b-svc-grid input:checked').forEach(cb=>{cb.checked=false;const el=cb.closest('.svc-opt');el.classList.remove('selected');el.querySelector('.sc').textContent='';});
-  document.getElementById('b-svc-total').style.display='none';
   updateBtn1();renderCal();setSection('sec1',0);
 };
 
