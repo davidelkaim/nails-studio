@@ -1428,8 +1428,10 @@ window.saveGCalScriptUrl=async()=>{
 window.connectGCal=()=>{
   if(!gcalScriptUrl){showToast('⚠️ שמרי Script URL קודם');return;}
   const clientId='898276215811-7ebiohpch5pqm7o3sastqvqn6m8bds52.apps.googleusercontent.com';
-  const redirectUri=encodeURIComponent(gcalScriptUrl);
+  // Use GitHub Pages callback page as redirect_uri
+  const redirectUri=encodeURIComponent('https://davidelkaim.github.io/nails-studio/oauth.html');
   const scope=encodeURIComponent('https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events');
+  const state=encodeURIComponent(gcalScriptUrl);
   const authUrl='https://accounts.google.com/o/oauth2/v2/auth?'+
     'client_id='+clientId+
     '&redirect_uri='+redirectUri+
@@ -1437,7 +1439,8 @@ window.connectGCal=()=>{
     '&scope='+scope+
     '&access_type=offline'+
     '&prompt=consent'+
-    '&login_hint=linoyelkaim%40gmail.com';
+    '&login_hint=linoyelkaim%40gmail.com'+
+    '&state='+state;
   const popup=window.open(authUrl,'gcal_auth','width=500,height=600,left=200,top=100');
   showToast('ממתינה לאישור…');
   // Poll every 2 seconds to check if connected
@@ -1456,7 +1459,6 @@ window.connectGCal=()=>{
       }
     }catch(e){}
   },2000);
-  // Stop polling after 2 minutes
   setTimeout(()=>clearInterval(poll),120000);
 };
 
