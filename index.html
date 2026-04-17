@@ -1370,10 +1370,6 @@ window.downloadCSV=()=>{
 };
 
 // ── GOOGLE CALENDAR (via Apps Script proxy) ──
-let gcalScriptUrl='';
-let gcalBusyCache={};
-let gcalConnected=false;
-
 function initGCal(){
   if(!gcalScriptUrl){updateGCalUI(false,'הכניסי את ה-Script URL בהגדרות');return;}
   const el=document.getElementById('gcal-script-url');
