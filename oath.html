@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Connecting...</title>
+<style>
+body{font-family:sans-serif;text-align:center;padding:40px;background:#fdf6f0;color:#281820}
+h2{color:#6b3050}
+.spinner{display:inline-block;width:30px;height:30px;border:3px solid rgba(107,48,80,.2);border-top-color:#6b3050;border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<h2>✨ מתחברת לגוגל קלנדר...</h2>
+<div class="spinner"></div>
+<p id="status">מעבדת את האישור...</p>
+
+<script>
+(async function() {
+  const status = document.getElementById('status');
+  
+  // Get code and state from URL
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const scriptUrl = params.get('state'); // We pass scriptUrl as state
+  
+  if (!code) {
+    status.textContent = '❌ לא התקבל קוד אישור';
+    return;
+  }
+  
+  if (!scriptUrl) {
+    status.textContent = '❌ חסר Script URL';
+    return;
+  }
+  
+  try {
+    status.textContent = 'שולחת את הקוד לשרת...';
+    
+    // Send code to Apps Script to exchange for tokens
+    const resp = await fetch(scriptUrl + '?action=oauth_callback&code=' + encodeURIComponent(code));
+    const text = await resp.text();
+    
+    // Check if success
+    if (text.includes('מחובר') || text.includes('connected')) {
+      status.textContent = '✅ מחובר! ניתן לסגור חלון זה.';
+      document.querySelector('h2').textContent = '✅ מחובר לגוגל קלנדר!';
+      document.querySelector('.spinner').style.display = 'none';
+    } else {
+      status.innerHTML = '❌ שגיאה: ' + text.substring(0, 200);
+    }
+  } catch(e) {
+    status.textContent = '❌ שגיאת רשת: ' + e.message;
+  }
+})();
+</script>
+</body>
+</html>
