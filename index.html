@@ -1427,9 +1427,9 @@ window.saveGCalScriptUrl=async()=>{
 
 window.connectGCal=()=>{
   if(!gcalScriptUrl){showToast('⚠️ שמרי Script URL קודם');return;}
-  // Build OAuth URL client-side — avoids Script 403 on ?action=auth
   const clientId='898276215811-7ebiohpch5pqm7o3sastqvqn6m8bds52.apps.googleusercontent.com';
-  const redirectUri=encodeURIComponent(gcalScriptUrl+'?action=oauth_callback');
+  // Use clean /exec URL as redirect_uri — no query params to avoid mismatch
+  const redirectUri=encodeURIComponent(gcalScriptUrl);
   const scope=encodeURIComponent('https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events');
   const authUrl='https://accounts.google.com/o/oauth2/v2/auth?'+
     'client_id='+clientId+
