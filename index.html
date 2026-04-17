@@ -1428,7 +1428,6 @@ window.saveGCalScriptUrl=async()=>{
 window.connectGCal=()=>{
   if(!gcalScriptUrl){showToast('⚠️ שמרי Script URL קודם');return;}
   const clientId='898276215811-7ebiohpch5pqm7o3sastqvqn6m8bds52.apps.googleusercontent.com';
-  // Use clean /exec URL as redirect_uri — no query params to avoid mismatch
   const redirectUri=encodeURIComponent(gcalScriptUrl);
   const scope=encodeURIComponent('https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events');
   const authUrl='https://accounts.google.com/o/oauth2/v2/auth?'+
@@ -1440,15 +1439,25 @@ window.connectGCal=()=>{
     '&prompt=consent'+
     '&login_hint=linoyelkaim%40gmail.com';
   const popup=window.open(authUrl,'gcal_auth','width=500,height=600,left=200,top=100');
-  const handler=(e)=>{
-    if(e.data==='gcal_connected'){
-      window.removeEventListener('message',handler);
-      popup&&popup.close();
-      showToast('✅ מחובר לגוגל קלנדר!');
-      setTimeout(()=>checkGCalConnection(),1500);
-    }
-  };
-  window.addEventListener('message',handler);
+  showToast('ממתינה לאישור…');
+  // Poll every 2 seconds to check if connected
+  const poll=setInterval(async()=>{
+    try{
+      const resp=await fetch(gcalScriptUrl+'?action=freebusy');
+      const data=await resp.json();
+      if(data.status==='ok'){
+        clearInterval(poll);
+        popup&&popup.close();
+        gcalConnected=true;
+        gcalBusyCache=data.busy||{};
+        updateGCalUI(true);
+        renderCal();
+        showToast('✅ מחובר לגוגל קלנדר!');
+      }
+    }catch(e){}
+  },2000);
+  // Stop polling after 2 minutes
+  setTimeout(()=>clearInterval(poll),120000);
 };
 
 window.disconnectGCal=async()=>{
