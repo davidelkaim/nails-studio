@@ -1427,10 +1427,19 @@ window.saveGCalScriptUrl=async()=>{
 
 window.connectGCal=()=>{
   if(!gcalScriptUrl){showToast('⚠️ שמרי Script URL קודם');return;}
-  // Open auth URL from Script in popup window
-  const authUrl=gcalScriptUrl+'?action=auth';
+  // Build OAuth URL client-side — avoids Script 403 on ?action=auth
+  const clientId='898276215811-7ebiohpch5pqm7o3sastqvqn6m8bds52.apps.googleusercontent.com';
+  const redirectUri=encodeURIComponent(gcalScriptUrl+'?action=oauth_callback');
+  const scope=encodeURIComponent('https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events');
+  const authUrl='https://accounts.google.com/o/oauth2/v2/auth?'+
+    'client_id='+clientId+
+    '&redirect_uri='+redirectUri+
+    '&response_type=code'+
+    '&scope='+scope+
+    '&access_type=offline'+
+    '&prompt=consent'+
+    '&login_hint=linoyelkaim%40gmail.com';
   const popup=window.open(authUrl,'gcal_auth','width=500,height=600,left=200,top=100');
-  // Listen for message from popup when connected
   const handler=(e)=>{
     if(e.data==='gcal_connected'){
       window.removeEventListener('message',handler);
