@@ -524,14 +524,14 @@ td.amt.neg{color:var(--red)}
   <div class="card">
     <div class="card-title"><div class="card-title-left">📆 Google Calendar</div></div>
     <div style="background:var(--soft);border-radius:9px;padding:11px 13px;margin-bottom:13px;font-size:.79rem;line-height:1.7;color:var(--muted)">
-      חיבור לגוגל קלנדר מאפשר חסימה אוטומטית של שעות תפוסות וסנכרון תורים מאושרים.
-      קודם צרי <strong style="color:var(--deep)">Client ID</strong> ב-<a href="https://console.cloud.google.com" target="_blank" style="color:var(--deep)">Google Cloud Console</a> (הפעילי Calendar API + OAuth2 עם origin: <code>https://davidelkaim.github.io</code>).
+      הכניסי את כתובת ה-Web App של Google Apps Script (אחרי הפרסום).
+      החיבור הוא <strong style="color:var(--deep)">קבוע</strong> — לא צריך להתחבר מחדש.
     </div>
     <div class="fg-grid">
-      <div class="fg full"><label>Google OAuth Client ID</label><input type="text" id="gcal-client-id" placeholder="123456789-abc.apps.googleusercontent.com"/></div>
+      <div class="fg full"><label>Google Apps Script Web App URL</label><input type="text" id="gcal-script-url" placeholder="https://script.google.com/macros/s/.../exec"/></div>
     </div>
     <div style="margin-top:11px;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <button class="btn btn-primary btn-sm" onclick="saveGCalClientId()">💾 שמור Client ID</button>
+      <button class="btn btn-primary btn-sm" onclick="saveGCalScriptUrl()">💾 שמור URL</button>
       <button class="btn btn-ghost btn-sm" id="gcal-connect-btn" onclick="connectGCal()" style="display:none">📆 התחברי לגוגל</button>
       <button class="btn btn-red btn-sm" id="gcal-disconnect-btn" onclick="disconnectGCal()" style="display:none">✕ התנתקי</button>
       <span id="gcal-status" style="font-size:.77rem;font-weight:600"></span>
@@ -658,9 +658,17 @@ td.amt.neg{color:var(--red)}
         <div class="fg req"><label>שם</label><input type="text" id="ma-name" placeholder="שרה כהן"/></div>
         <div class="fg req"><label>טלפון</label><input type="tel" id="ma-phone" placeholder="0501234567"/></div>
         <div class="fg"><label>אימייל</label><input type="email" id="ma-email" placeholder="sarah@email.com"/></div>
-        <div class="fg req"><label>תאריך</label><input type="date" id="ma-date"/></div>
-        <div class="fg req"><label>שעה</label><input type="time" id="ma-time"/></div>
-        <div class="fg req"><label>שירות</label><select id="ma-service"><option value="">— בחרי —</option></select></div>
+        <div class="fg req">
+          <label>תאריך</label>
+          <input type="date" id="ma-date" onchange="loadManualSlots()"/>
+        </div>
+        <div class="fg req">
+          <label>שעה</label>
+          <div id="ma-slots-wrap">
+            <select id="ma-time"><option value="">— בחרי תאריך קודם —</option></select>
+          </div>
+        </div>
+        <div class="fg req"><label>שירות</label><select id="ma-service"><option value="">— בחרי שירות —</option></select></div>
         <div class="fg full"><label>הערות</label><textarea id="ma-notes" rows="2"></textarea></div>
       </div>
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
@@ -674,7 +682,6 @@ td.amt.neg{color:var(--red)}
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, orderBy, query, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -689,7 +696,7 @@ const DOC_SET='config/settings', DOC_SVC='config/services', DOC_PRO='config/prom
 let visits=[], bookings=[], expenses=[];
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
 let services=[], promos=[], ejsConfig={};
-let gcalClientId='', gcalToken=null, gcalBusySlots={};
+let gcalScriptUrl='', gcalBusyCache={}, gcalConnected=false;
 let pnlPeriod='month', currentBookingId=null;
 let calDate=new Date();
 
@@ -715,11 +722,10 @@ async function loadConfig(){
     if(se.exists())ejsConfig=se.data();
     else ejsConfig=JSON.parse(localStorage.getItem('ejs_config')||'{}');
     if(ejsConfig.publicKey&&window.emailjs)window.emailjs.init({publicKey:ejsConfig.publicKey});
-    // Load Google Calendar config
+    // Load Google Calendar Script URL
     const sg=await getDoc(doc(db,...DOC_GCAL.split('/')));
-    if(sg.exists()&&sg.data().clientId){
-      gcalClientId=sg.data().clientId;
-      gcalToken=localStorage.getItem('gcal_token')||null;
+    if(sg.exists()&&sg.data().scriptUrl){
+      gcalScriptUrl=sg.data().scriptUrl;
     }
     initSettings();
     initGCal();
@@ -968,13 +974,16 @@ window.saveManualAppt=async()=>{
   const btn=document.getElementById('btn-ma');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
     const svcObj=services.find(s=>s.name===service);
-    await addDoc(collection(db,COL_B),{
+    const booking={
       clientName:name,clientPhone:phone,clientEmail:email,date,time,service,notes,
       estimatedTotal:svcObj?.price?parseInt(svcObj.price):null,
       status:'confirmed',createdAt:new Date().toISOString(),manual:true
-    });
+    };
+    await addDoc(collection(db,COL_B),booking);
+    // Create Google Calendar event
+    await createGCalEvent({...booking,clientName:name,clientPhone:phone});
     closeModal('mbg-manual');showToast('📅 התור נוסף!');
-  }catch(e){showToast('❌ שגיאה');}
+  }catch(e){showToast('❌ שגיאה');console.error(e);}
   btn.disabled=false;btn.innerHTML='📅 שמור תור';
 };
 
@@ -1286,6 +1295,7 @@ function initSettings(){
   if(settings.workStart)document.getElementById('work-start').value=settings.workStart;
   if(settings.workEnd)document.getElementById('work-end').value=settings.workEnd;
   if(settings.slotDuration)document.getElementById('slot-duration').value=settings.slotDuration;
+  if(gcalScriptUrl){const el=document.getElementById('gcal-script-url');if(el)el.value=gcalScriptUrl;}
   renderServicesList();renderPromosList();
   if(ejsConfig.serviceId)document.getElementById('ejs-sid').value=ejsConfig.serviceId;
   if(ejsConfig.publicKey)document.getElementById('ejs-key').value=ejsConfig.publicKey;
@@ -1359,11 +1369,180 @@ window.downloadCSV=()=>{
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download=`ניילס_${new Date().toISOString().slice(0,10)}.csv`;a.click();showToast('📥 יורד!');
 };
 
-// ── GOOGLE CALENDAR ──
-const GCAL_SCOPE='https://www.googleapis.com/auth/calendar.readonly https://www.googleapis.com/auth/calendar.events';
-let gcalClient=null;
-// Token expiry tracking
-let gcalTokenExpiry=0;
+// ── GOOGLE CALENDAR (via Apps Script proxy) ──
+let gcalScriptUrl='';
+let gcalBusyCache={};
+let gcalConnected=false;
+
+function initGCal(){
+  if(!gcalScriptUrl){updateGCalUI(false,'הכניסי את ה-Script URL בהגדרות');return;}
+  const el=document.getElementById('gcal-script-url');
+  if(el)el.value=gcalScriptUrl;
+  checkGCalConnection();
+}
+
+async function checkGCalConnection(){
+  if(!gcalScriptUrl)return;
+  try{
+    const resp=await fetch(gcalScriptUrl+'?action=freebusy');
+    const data=await resp.json();
+    if(data.status==='ok'){
+      gcalConnected=true;
+      gcalBusyCache=data.busy||{};
+      updateGCalUI(true);
+      renderCal();
+    }else if(data.status==='not_connected'){
+      gcalConnected=false;
+      updateGCalUI(false,'לא מחובר — לחצי "התחברי לגוגל"');
+    }
+  }catch(e){
+    console.warn('GCal check:',e);
+    updateGCalUI(false,'שגיאת חיבור ל-Script');
+  }
+}
+
+function updateGCalUI(connected,msg=''){
+  const st=document.getElementById('gcal-status');
+  const connectBtn=document.getElementById('gcal-connect-btn');
+  const disconnectBtn=document.getElementById('gcal-disconnect-btn');
+  if(!st)return;
+  gcalConnected=connected;
+  if(gcalScriptUrl){
+    connectBtn.style.display=connected?'none':'inline-flex';
+    disconnectBtn.style.display=connected?'inline-flex':'none';
+    st.textContent=connected?'✅ מחובר — קבוע':msg||'';
+    st.style.color=connected?'var(--green)':'var(--muted)';
+  }else{
+    connectBtn.style.display='none';disconnectBtn.style.display='none';
+    st.textContent='';
+  }
+}
+
+window.saveGCalScriptUrl=async()=>{
+  const url=document.getElementById('gcal-script-url').value.trim();
+  if(!url.startsWith('https://script.google.com')){showToast('⚠️ URL לא תקין');return;}
+  gcalScriptUrl=url;
+  try{
+    await setDoc(doc(db,...DOC_GCAL.split('/')),{scriptUrl:url});
+    showToast('✅ נשמר!');
+    checkGCalConnection();
+  }catch(e){showToast('❌ שגיאה');}
+};
+
+window.connectGCal=()=>{
+  if(!gcalScriptUrl){showToast('⚠️ שמרי Script URL קודם');return;}
+  // Open auth URL from Script in popup window
+  const authUrl=gcalScriptUrl+'?action=auth';
+  const popup=window.open(authUrl,'gcal_auth','width=500,height=600,left=200,top=100');
+  // Listen for message from popup when connected
+  const handler=(e)=>{
+    if(e.data==='gcal_connected'){
+      window.removeEventListener('message',handler);
+      popup&&popup.close();
+      showToast('✅ מחובר לגוגל קלנדר!');
+      setTimeout(()=>checkGCalConnection(),1500);
+    }
+  };
+  window.addEventListener('message',handler);
+};
+
+window.disconnectGCal=async()=>{
+  gcalConnected=false;gcalBusyCache={};
+  updateGCalUI(false,'התנתקת');
+  showToast('התנתקת מגוגל קלנדר');
+};
+
+async function fetchBusySlots(){
+  if(!gcalScriptUrl)return;
+  try{
+    const resp=await fetch(gcalScriptUrl+'?action=freebusy');
+    const data=await resp.json();
+    if(data.status==='ok'){
+      gcalBusyCache=data.busy||{};
+      gcalConnected=true;
+      renderCal();
+    }else if(data.status==='not_connected'){
+      gcalConnected=false;
+      updateGCalUI(false,'לא מחובר — לחצי "התחברי לגוגל"');
+    }
+  }catch(e){console.warn('GCal freebusy:',e);}
+}
+
+function isGCalBusy(dateStr,timeStr,durationMin){
+  if(!gcalBusyCache[dateStr])return false;
+  const slotStart=new Date(dateStr+'T'+timeStr+':00');
+  const slotEnd=new Date(slotStart.getTime()+durationMin*60000);
+  return gcalBusyCache[dateStr].some(b=>{
+    const bs=new Date(b.start),be=new Date(b.end);
+    return slotStart<be&&slotEnd>bs;
+  });
+}
+
+async function createGCalEvent(booking){
+  if(!gcalScriptUrl||!gcalConnected)return;
+  try{
+    const svcText=Array.isArray(booking.service)?booking.service.join(', '):booking.service||'טיפול';
+    const timeStr=booking.time||'09:00';
+    const dur=settings.slotDuration||90;
+    const startDt=new Date(booking.date+'T'+timeStr+':00');
+    const endDt=new Date(startDt.getTime()+dur*60000);
+    const event={
+      summary:`💅 ${booking.clientName||'לקוחה'} — ${svcText}`,
+      description:`טלפון: ${booking.clientPhone||'—'}\nשירות: ${svcText}${booking.estimatedTotal?'\nמחיר: ₪'+booking.estimatedTotal:''}`,
+      start:{dateTime:startDt.toISOString(),timeZone:'Asia/Jerusalem'},
+      end:{dateTime:endDt.toISOString(),timeZone:'Asia/Jerusalem'},
+    };
+    const resp=await fetch(gcalScriptUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'create_event',event})
+    });
+    const data=await resp.json();
+    if(data.status==='ok'){
+      showToast('📆 נוסף לגוגל קלנדר!');
+      await fetchBusySlots();
+    }else if(data.status==='not_connected'){
+      updateGCalUI(false,'פג תוקף — לחצי "התחברי" בהגדרות');
+    }
+  }catch(e){console.warn('GCal create event:',e);}
+}
+
+// Generate available time slots for a date (used in manual appt modal)
+async function getAvailableSlots(dateStr){
+  const dur=settings.slotDuration||90;
+  const allSlots=generateTimeSlots(settings.workStart||'09:00',settings.workEnd||'19:00',dur);
+  const appBooked=(bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled')).map(b=>b.time);
+  return allSlots.filter(t=>{
+    if(appBooked.includes(t))return false;
+    if(gcalConnected&&isGCalBusy(dateStr,t,dur))return false;
+    return true;
+  });
+}
+
+function generateTimeSlots(start,end,dur){
+  const slots=[];let[sh,sm]=start.split(':').map(Number);
+  const[eh,em]=end.split(':').map(Number),endMins=eh*60+em;
+  let cur=sh*60+sm;
+  while(cur+dur<=endMins){slots.push(String(Math.floor(cur/60)).padStart(2,'0')+':'+String(cur%60).padStart(2,'0'));cur+=dur;}
+  return slots;
+}
+
+// Load available slots into manual appt modal
+window.loadManualSlots=async()=>{
+  const dateStr=document.getElementById('ma-date').value;
+  if(!dateStr)return;
+  const sel=document.getElementById('ma-time');
+  sel.innerHTML='<option value="">טוען…</option>';
+  // Refresh gcal busy if connected
+  if(gcalScriptUrl)await fetchBusySlots();
+  const available=await getAvailableSlots(dateStr);
+  if(!available.length){
+    sel.innerHTML='<option value="">אין שעות פנויות</option>';
+    return;
+  }
+  sel.innerHTML='<option value="">— בחרי שעה —</option>'+
+    available.map(t=>`<option value="${t}">${t}</option>`).join('');
+};
 
 function initGCal(){
   if(!gcalClientId){updateGCalUI(false);return;}
