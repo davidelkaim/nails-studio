@@ -701,6 +701,25 @@ td.amt.neg{color:var(--red)}
   </div>
 </div>
 
+<!-- ═══ EDIT BOOKING MODAL ═══ -->
+<div class="mbg" id="mbg-edit" onclick="closeMBg(event)">
+  <div class="modal">
+    <div class="mh"><div><h2>✏️ עריכת תור</h2><div class="sub" id="edit-subtitle"></div></div><button class="mc-btn" onclick="closeModal('mbg-edit')">✕</button></div>
+    <div class="mb">
+      <div class="fg-grid">
+        <div class="fg req"><label>תאריך</label><input type="date" id="edit-date"/></div>
+        <div class="fg req"><label>שעה</label><input type="time" id="edit-time"/></div>
+        <div class="fg req"><label>שירות</label><select id="edit-service"><option value="">— בחרי שירות —</option></select></div>
+        <div class="fg full"><label>הערות</label><textarea id="edit-notes" rows="2"></textarea></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="btn-edit" onclick="saveEditBooking()">💾 שמור שינויים</button>
+        <span id="edit-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
@@ -949,6 +968,7 @@ function rdvCard(b){
       <span class="badge ${b.status}">${statusLabel(b.status)}</span>
       ${b.status==='pending'?`<button class="btn btn-green btn-sm" onclick="confirmBooking('${b.id}')">✓ אשרי</button>`:''}
       ${b.status==='confirmed'?`<button class="btn btn-blue btn-sm" onclick="openCompleteModal('${b.id}')">✅ סיים</button>`:''}
+      ${b.status==='pending'||b.status==='confirmed'?`<button class="btn btn-ghost btn-sm" onclick="openEditModal('${b.id}')">✏️ ערוך</button>`:''}
       ${b.status==='pending'||b.status==='confirmed'?`<button class="btn btn-red btn-sm" onclick="cancelBooking('${b.id}')">✕ בטלי</button>`:''}
       <button class="bd" onclick="deleteBooking('${b.id}')">🗑</button>
     </div>
@@ -994,7 +1014,55 @@ window.deleteBooking=async(id)=>{
   catch(e){showToast('❌ שגיאה');}
 };
 
-// ── COMPLETE TREATMENT ──
+// ── EDIT BOOKING ──
+let currentEditId=null;
+
+window.openEditModal=(id)=>{
+  const b=bookings.find(x=>x.id===id);if(!b)return;
+  currentEditId=id;
+  const svcText=Array.isArray(b.service)?b.service.join(', '):b.service||'—';
+  document.getElementById('edit-subtitle').textContent=`${b.clientName||'לקוחה'} • ${esc(b.clientPhone||'')}`;
+  document.getElementById('edit-date').value=b.date||'';
+  document.getElementById('edit-time').value=b.time||'';
+  document.getElementById('edit-notes').value=b.notes||'';
+  document.getElementById('edit-err').textContent='';
+  // Populate service select
+  const sel=document.getElementById('edit-service');
+  sel.innerHTML='<option value="">— בחרי שירות —</option>'+
+    services.map(s=>`<option value="${esc(s.name)}" ${s.name===b.service?'selected':''}>${esc(s.name)}${s.price?' — ₪'+s.price:''}</option>`).join('')+
+    `<option value="לא יודעת עדיין" ${'לא יודעת עדיין'===b.service?'selected':''}>לא יודעת עדיין</option>`;
+  // Handle array service
+  if(Array.isArray(b.service)&&b.service.length>0){
+    sel.value=b.service[0];
+  }else if(typeof b.service==='string'){
+    sel.value=b.service;
+  }
+  openModal('mbg-edit');
+};
+
+window.saveEditBooking=async()=>{
+  const date=document.getElementById('edit-date').value;
+  const time=document.getElementById('edit-time').value;
+  const service=document.getElementById('edit-service').value;
+  const notes=document.getElementById('edit-notes').value.trim();
+  const errEl=document.getElementById('edit-err');
+  if(!date){errEl.textContent='⚠️ נדרש תאריך';return;}
+  if(!time){errEl.textContent='⚠️ נדרשת שעה';return;}
+  if(!service){errEl.textContent='⚠️ נדרש שירות';return;}
+  errEl.textContent='';
+  const btn=document.getElementById('btn-edit');
+  btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  try{
+    const svcObj=services.find(s=>s.name===service);
+    await setDoc(doc(db,COL_B,currentEditId),{
+      date,time,service,notes,
+      estimatedTotal:svcObj?.price?parseInt(svcObj.price):null
+    },{merge:true});
+    closeModal('mbg-edit');
+    showToast('✅ התור עודכן!');
+  }catch(e){showToast('❌ שגיאה');console.error(e);}
+  btn.disabled=false;btn.innerHTML='💾 שמור שינויים';
+};
 window.openCompleteModal=(id)=>{
   const b=bookings.find(x=>x.id===id);if(!b)return;
   currentBookingId=id;
