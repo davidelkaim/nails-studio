@@ -453,13 +453,14 @@ td.amt.neg{color:var(--red)}
     <div class="summary-box" id="exp-summary">
       <div class="sb-item"><div class="sb-val" id="exp-total-val">₪0</div><div class="sb-lbl">סה"כ הוצאות</div></div>
       <div class="sb-item"><div class="sb-val" id="exp-count-val">0</div><div class="sb-lbl">רשומות</div></div>
+      <div class="sb-item" id="exp-unpaid-box" style="display:none"><div class="sb-val" id="exp-unpaid-val" style="color:var(--gold)">₪0</div><div class="sb-lbl">⏳ ממתין לתשלום</div></div>
     </div>
 
     <div class="card">
       <div class="card-title"><div class="card-title-left">💸 היסטוריית הוצאות</div></div>
       <div class="tw">
         <table>
-          <thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th></th></tr></thead>
+          <thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th>סטטוס</th><th></th></tr></thead>
           <tbody id="exp-body"></tbody>
         </table>
         <div id="exp-empty" class="empty" style="display:none"><div class="ei">💸</div>אין הוצאות</div>
@@ -528,6 +529,26 @@ td.amt.neg{color:var(--red)}
     </div>
     <button class="btn btn-gold btn-sm" style="margin-top:9px" onclick="savePromos()">💾 שמור קודים</button>
   </div>
+  <div class="card">
+    <div class="card-title"><div class="card-title-left">🚫 חסימת ימים ושעות ספציפיים</div></div>
+    <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px">חסמי יום מסוים או שעות מסוימות — מבלי לשנות את לוח הזמנים הכללי</p>
+    <div id="blocked-list"></div>
+    <div style="display:flex;gap:7px;margin-top:11px;flex-wrap:wrap;align-items:flex-end">
+      <div class="fg" style="flex:1;min-width:120px"><label>תאריך</label><input type="date" id="block-date"/></div>
+      <div class="fg" style="flex:1;min-width:90px">
+        <label>חסימה</label>
+        <select id="block-type" onchange="toggleBlockType()">
+          <option value="allDay">כל היום</option>
+          <option value="hours">שעות ספציפיות</option>
+        </select>
+      </div>
+      <div class="fg" id="block-from-wrap" style="display:none;flex:1;min-width:80px"><label>משעה</label><input type="time" id="block-from"/></div>
+      <div class="fg" id="block-to-wrap" style="display:none;flex:1;min-width:80px"><label>עד שעה</label><input type="time" id="block-to"/></div>
+      <button class="btn btn-red btn-sm" onclick="addBlockedSlot()">＋ חסמי</button>
+    </div>
+    <button class="btn btn-gold btn-sm" style="margin-top:9px" onclick="saveBlockedSlots()">💾 שמור</button>
+  </div>
+
   <div class="card">
     <div class="card-title"><div class="card-title-left">📅 ימי עבודה</div></div>
     <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px" id="day-toggles"></div>
@@ -799,12 +820,13 @@ const fbApp=initializeApp(FB);
 const db=getFirestore(fbApp);
 
 const COL_V='appointments', COL_B='bookings', COL_E='expenses';
-const DOC_SET='config/settings', DOC_SVC='config/services', DOC_PRO='config/promos', DOC_EJS='config/emailjs', DOC_GCAL='config/gcal';
+const DOC_SET='config/settings', DOC_SVC='config/services', DOC_PRO='config/promos', DOC_EJS='config/emailjs', DOC_GCAL='config/gcal', DOC_BLOCKED='config/blocked';
 
 let visits=[], bookings=[], expenses=[];
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
 let services=[], promos=[], ejsConfig={};
 let gcalScriptUrl='', gcalBusyCache={}, gcalConnected=false;
+let blockedSlots=[]; // [{date, allDay, from, to}]
 let pnlPeriod='month', currentBookingId=null;
 let calDate=new Date();
 
@@ -835,6 +857,8 @@ async function loadConfig(){
     if(sg.exists()&&sg.data().scriptUrl){
       gcalScriptUrl=sg.data().scriptUrl;
     }
+    const sb=await getDoc(doc(db,...DOC_BLOCKED.split('/')));
+    if(sb.exists()) blockedSlots=sb.data().list||[];
     initSettings();
     initGCal();
   }catch(e){console.error(e);}
@@ -1332,8 +1356,13 @@ window.toggleExpCustom=()=>{document.getElementById('exp-custom-wrap').style.dis
 
 function updateExpSummary(){
   const total=expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const unpaid=expenses.filter(e=>!e.paid).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
   document.getElementById('exp-total-val').textContent='₪'+total.toFixed(0);
   document.getElementById('exp-count-val').textContent=expenses.length;
+  const unpaidEl=document.getElementById('exp-unpaid-val');
+  const unpaidBox=document.getElementById('exp-unpaid-box');
+  if(unpaidEl){unpaidEl.textContent='₪'+unpaid.toFixed(0);}
+  if(unpaidBox){unpaidBox.style.display=unpaid>0?'flex':'none';}
 }
 
 window.addExpense=async()=>{
@@ -1351,12 +1380,19 @@ window.addExpense=async()=>{
   errEl.textContent='';
   const btn=document.getElementById('btn-exp');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
-    await addDoc(collection(db,COL_E),{date,category,amount,desc,ts:new Date().toISOString()});
+    await addDoc(collection(db,COL_E),{date,category,amount,desc,paid:false,ts:new Date().toISOString()});
     ['exp-amount','exp-desc','exp-custom'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('exp-cat').value='';document.getElementById('exp-custom-wrap').style.display='none';
     document.getElementById('exp-date').valueAsDate=new Date();showToast('💸 הוצאה נוספה!');
   }catch(e){showToast('❌ שגיאה');}
   btn.disabled=false;btn.innerHTML='＋ הוסף הוצאה';
+};
+
+window.toggleExpensePaid=async(id,currentPaid)=>{
+  try{
+    await setDoc(doc(db,COL_E,id),{paid:!currentPaid},{merge:true});
+    showToast(!currentPaid?'✅ סומן כשולם':'↩ סומן כלא שולם');
+  }catch(e){showToast('❌ שגיאה');}
 };
 
 window.deleteExpense=async(id)=>{
@@ -1369,13 +1405,22 @@ function renderExpenses(){
   if(!tbody)return;
   if(!expenses.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  tbody.innerHTML=expenses.map(e=>`<tr>
-    <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}</td>
-    <td data-label="קטגוריה"><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
-    <td data-label="תיאור" style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
-    <td data-label="סכום" class="amt neg">-₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
-    <td><button class="bd" onclick="deleteExpense('${e.id}')">✕</button></td>
-  </tr>`).join('');
+  tbody.innerHTML=expenses.map(e=>{
+    const paid=!!e.paid;
+    const rowStyle=paid?'opacity:.5':e.paid===false&&e.amount>200?'':'';
+    return`<tr style="${rowStyle}">
+      <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}</td>
+      <td data-label="קטגוריה"><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
+      <td data-label="תיאור" style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
+      <td data-label="סכום" class="amt neg" style="${paid?'text-decoration:line-through;color:var(--muted)':''}">-₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
+      <td data-label="סטטוס">
+        <button onclick="toggleExpensePaid('${e.id}',${paid})" style="background:${paid?'#d4edda':'#fff3cd'};color:${paid?'#1e6b3a':'#856404'};border:1px solid ${paid?'#b8e0c8':'#ffd97d'};border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Heebo',sans-serif;white-space:nowrap">
+          ${paid?'✅ שולם':'⏳ לא שולם'}
+        </button>
+      </td>
+      <td><button class="bd" onclick="deleteExpense('${e.id}')">✕</button></td>
+    </tr>`;
+  }).join('');
 }
 
 // ── P&L ──
@@ -1443,6 +1488,56 @@ function barChart(id,dataMap,unit,money=false,type='income'){
   el.innerHTML=sorted.map(([l,v])=>`<div class="chart-row"><div class="chart-lbl" title="${esc(l)}">${esc(l)}</div><div class="chart-track"><div class="chart-fill ${type}" style="width:${(v/max*100).toFixed(1)}%"></div></div><div class="chart-val">${money?'₪'+v.toFixed(0):v+' '+unit}</div></div>`).join('');
 }
 
+// ── BLOCKED SLOTS ──
+window.toggleBlockType=()=>{
+  const isHours=document.getElementById('block-type').value==='hours';
+  document.getElementById('block-from-wrap').style.display=isHours?'block':'none';
+  document.getElementById('block-to-wrap').style.display=isHours?'block':'none';
+};
+
+function renderBlockedList(){
+  const el=document.getElementById('blocked-list');
+  if(!el)return;
+  const today=new Date();today.setHours(0,0,0,0);
+  const future=blockedSlots.filter(b=>new Date(b.date)>=today).sort((a,b)=>a.date.localeCompare(b.date));
+  if(!future.length){el.innerHTML='<p style="font-size:.8rem;color:var(--muted);margin-bottom:7px">אין חסימות עתידיות</p>';return;}
+  el.innerHTML=future.map((b,i)=>`
+    <div class="promo-row">
+      <div>
+        <span style="font-size:.88rem;font-weight:600">${fmtDate(b.date)}</span>
+        <span style="font-size:.8rem;color:var(--muted);margin-right:8px">${b.allDay?'🚫 כל היום':`⏰ ${b.from}–${b.to}`}</span>
+      </div>
+      <button class="bd" onclick="removeBlockedSlot('${b.date}','${b.from||''}','${b.to||''}')">✕</button>
+    </div>`).join('');
+}
+
+window.addBlockedSlot=()=>{
+  const date=document.getElementById('block-date').value;
+  const type=document.getElementById('block-type').value;
+  const from=document.getElementById('block-from').value;
+  const to=document.getElementById('block-to').value;
+  if(!date){showToast('⚠️ בחרי תאריך');return;}
+  if(type==='hours'&&(!from||!to)){showToast('⚠️ בחרי שעות');return;}
+  const entry=type==='allDay'?{date,allDay:true}:{date,allDay:false,from,to};
+  // Remove duplicates
+  blockedSlots=blockedSlots.filter(b=>!(b.date===date&&b.allDay===entry.allDay&&b.from===entry.from));
+  blockedSlots.push(entry);
+  document.getElementById('block-date').value='';
+  renderBlockedList();
+};
+
+window.removeBlockedSlot=(date,from,to)=>{
+  blockedSlots=blockedSlots.filter(b=>!(b.date===date&&(b.from||'')===(from||'')));
+  renderBlockedList();
+};
+
+window.saveBlockedSlots=async()=>{
+  try{
+    await setDoc(doc(db,...DOC_BLOCKED.split('/')),{list:blockedSlots});
+    showToast('✅ חסימות נשמרו!');
+  }catch(e){showToast('❌ שגיאה');}
+};
+
 // ── SETTINGS ──
 function initSettings(){
   document.getElementById('booking-url').value=window.location.href.replace('index.html','booking.html').split('?')[0];
@@ -1453,7 +1548,7 @@ function initSettings(){
   if(settings.workEnd)document.getElementById('work-end').value=settings.workEnd;
   if(settings.slotDuration)document.getElementById('slot-duration').value=settings.slotDuration;
   if(gcalScriptUrl){const el=document.getElementById('gcal-script-url');if(el)el.value=gcalScriptUrl;}
-  renderServicesList();renderPromosList();
+  renderServicesList();renderPromosList();renderBlockedList();
   if(ejsConfig.serviceId)document.getElementById('ejs-sid').value=ejsConfig.serviceId;
   if(ejsConfig.publicKey)document.getElementById('ejs-key').value=ejsConfig.publicKey;
   if(ejsConfig.tidNotify)document.getElementById('ejs-tid-notify').value=ejsConfig.tidNotify;
