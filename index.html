@@ -449,18 +449,17 @@ td.amt.neg{color:var(--red)}
       </div>
     </div>
 
-    <!-- Expenses total -->
     <div class="summary-box" id="exp-summary">
       <div class="sb-item"><div class="sb-val" id="exp-total-val">₪0</div><div class="sb-lbl">סה"כ הוצאות</div></div>
-      <div class="sb-item"><div class="sb-val" id="exp-count-val">0</div><div class="sb-lbl">רשומות</div></div>
-      <div class="sb-item" id="exp-unpaid-box" style="display:none"><div class="sb-val" id="exp-unpaid-val" style="color:var(--gold)">₪0</div><div class="sb-lbl">⏳ ממתין לתשלום</div></div>
+      <div class="sb-item"><div class="sb-val" id="exp-paid-val" style="color:var(--green)">₪0</div><div class="sb-lbl">✅ שולם</div></div>
+      <div class="sb-item"><div class="sb-val" id="exp-remaining-val" style="color:var(--gold)">₪0</div><div class="sb-lbl">⏳ נותר לתשלום</div></div>
     </div>
 
     <div class="card">
       <div class="card-title"><div class="card-title-left">💸 היסטוריית הוצאות</div></div>
       <div class="tw">
         <table>
-          <thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th>סטטוס</th><th></th></tr></thead>
+          <thead><tr><th>תאריך</th><th>קטגוריה</th><th>תיאור</th><th>סכום</th><th>שולם</th><th>נותר</th><th></th></tr></thead>
           <tbody id="exp-body"></tbody>
         </table>
         <div id="exp-empty" class="empty" style="display:none"><div class="ei">💸</div>אין הוצאות</div>
@@ -717,6 +716,35 @@ td.amt.neg{color:var(--red)}
       <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-primary" id="btn-ma" onclick="saveManualAppt()">📅 שמור תור</button>
         <span id="ma-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EDIT EXPENSE MODAL ═══ -->
+<div class="mbg" id="mbg-edit-exp" onclick="closeMBg(event)">
+  <div class="modal">
+    <div class="mh"><div><h2>✏️ עריכת הוצאה</h2></div><button class="mc-btn" onclick="closeModal('mbg-edit-exp')">✕</button></div>
+    <div class="mb">
+      <div class="fg-grid">
+        <div class="fg req"><label>תאריך</label><input type="date" id="ee-date"/></div>
+        <div class="fg req">
+          <label>קטגוריה</label>
+          <select id="ee-cat" onchange="toggleEECustom()">
+            <option value="">— בחרי —</option>
+            <option>חומרים ומוצרים</option><option>שכירות</option><option>תחבורה</option>
+            <option>ציוד</option><option>שיווק ופרסום</option><option>הכשרות</option>
+            <option value="custom">אחר (הגדרי)</option>
+          </select>
+        </div>
+        <div class="fg" id="ee-custom-wrap" style="display:none"><label>קטגוריה מותאמת</label><input type="text" id="ee-custom"/></div>
+        <div class="fg req"><label>סכום כולל (₪)</label><input type="number" id="ee-amount" placeholder="0" min="0" step="1"/></div>
+        <div class="fg"><label>שולם עד כה (₪)</label><input type="number" id="ee-paid" placeholder="0" min="0" step="1"/></div>
+        <div class="fg full"><label>תיאור</label><input type="text" id="ee-desc" placeholder="פרטים…"/></div>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-primary" id="btn-ee" onclick="saveEditExpense()">💾 שמור</button>
+        <span id="ee-err" style="font-size:.77rem;color:var(--red);font-weight:600"></span>
       </div>
     </div>
   </div>
@@ -1353,16 +1381,15 @@ window.closeMBg=(e)=>{if(e.target.classList.contains('mbg'))closeModal(e.target.
 
 // ── EXPENSES ──
 window.toggleExpCustom=()=>{document.getElementById('exp-custom-wrap').style.display=document.getElementById('exp-cat').value==='custom'?'block':'none';};
+window.toggleEECustom=()=>{document.getElementById('ee-custom-wrap').style.display=document.getElementById('ee-cat').value==='custom'?'block':'none';};
 
 function updateExpSummary(){
   const total=expenses.reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
-  const unpaid=expenses.filter(e=>!e.paid).reduce((s,e)=>s+(parseFloat(e.amount)||0),0);
+  const paid=expenses.reduce((s,e)=>s+(parseFloat(e.paidAmount)||0),0);
+  const remaining=Math.max(0,total-paid);
   document.getElementById('exp-total-val').textContent='₪'+total.toFixed(0);
-  document.getElementById('exp-count-val').textContent=expenses.length;
-  const unpaidEl=document.getElementById('exp-unpaid-val');
-  const unpaidBox=document.getElementById('exp-unpaid-box');
-  if(unpaidEl){unpaidEl.textContent='₪'+unpaid.toFixed(0);}
-  if(unpaidBox){unpaidBox.style.display=unpaid>0?'flex':'none';}
+  document.getElementById('exp-paid-val').textContent='₪'+paid.toFixed(0);
+  document.getElementById('exp-remaining-val').textContent='₪'+remaining.toFixed(0);
 }
 
 window.addExpense=async()=>{
@@ -1380,7 +1407,7 @@ window.addExpense=async()=>{
   errEl.textContent='';
   const btn=document.getElementById('btn-exp');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
   try{
-    await addDoc(collection(db,COL_E),{date,category,amount,desc,paid:false,ts:new Date().toISOString()});
+    await addDoc(collection(db,COL_E),{date,category,amount,paidAmount:0,desc,ts:new Date().toISOString()});
     ['exp-amount','exp-desc','exp-custom'].forEach(id=>document.getElementById(id).value='');
     document.getElementById('exp-cat').value='';document.getElementById('exp-custom-wrap').style.display='none';
     document.getElementById('exp-date').valueAsDate=new Date();showToast('💸 הוצאה נוספה!');
@@ -1388,16 +1415,50 @@ window.addExpense=async()=>{
   btn.disabled=false;btn.innerHTML='＋ הוסף הוצאה';
 };
 
-window.toggleExpensePaid=async(id,currentPaid)=>{
-  try{
-    await setDoc(doc(db,COL_E,id),{paid:!currentPaid},{merge:true});
-    showToast(!currentPaid?'✅ סומן כשולם':'↩ סומן כלא שולם');
-  }catch(e){showToast('❌ שגיאה');}
-};
-
 window.deleteExpense=async(id)=>{
   if(!confirm('למחוק?'))return;
   try{await deleteDoc(doc(db,COL_E,id));showToast('🗑 נמחק');}catch(e){showToast('❌ שגיאה');}
+};
+
+let currentEditExpId=null;
+window.openEditExpense=(id)=>{
+  const e=expenses.find(x=>x.id===id);if(!e)return;
+  currentEditExpId=id;
+  document.getElementById('ee-date').value=e.date||'';
+  document.getElementById('ee-amount').value=e.amount||'';
+  document.getElementById('ee-paid').value=e.paidAmount||0;
+  document.getElementById('ee-desc').value=e.desc||'';
+  document.getElementById('ee-err').textContent='';
+  const catEl=document.getElementById('ee-cat');
+  const standardCats=['חומרים ומוצרים','שכירות','תחבורה','ציוד','שיווק ופרסום','הכשרות'];
+  if(standardCats.includes(e.category)){
+    catEl.value=e.category;
+    document.getElementById('ee-custom-wrap').style.display='none';
+  }else{
+    catEl.value='custom';
+    document.getElementById('ee-custom-wrap').style.display='block';
+    document.getElementById('ee-custom').value=e.category||'';
+  }
+  openModal('mbg-edit-exp');
+};
+
+window.saveEditExpense=async()=>{
+  const date=document.getElementById('ee-date').value;
+  const catSel=document.getElementById('ee-cat').value;
+  const catCustom=document.getElementById('ee-custom').value.trim();
+  const category=catSel==='custom'?(catCustom||'אחר'):catSel;
+  const amount=parseFloat(document.getElementById('ee-amount').value)||0;
+  const paidAmount=Math.min(parseFloat(document.getElementById('ee-paid').value)||0,amount);
+  const desc=document.getElementById('ee-desc').value.trim();
+  const errEl=document.getElementById('ee-err');
+  if(!date||!category||!amount){errEl.textContent='⚠️ מלאי את כל השדות';return;}
+  errEl.textContent='';
+  const btn=document.getElementById('btn-ee');btn.disabled=true;btn.innerHTML='<span class="spinner"></span>';
+  try{
+    await setDoc(doc(db,COL_E,currentEditExpId),{date,category,amount,paidAmount,desc},{merge:true});
+    closeModal('mbg-edit-exp');showToast('✅ הוצאה עודכנה!');
+  }catch(e){showToast('❌ שגיאה');}
+  btn.disabled=false;btn.innerHTML='💾 שמור';
 };
 
 function renderExpenses(){
@@ -1406,19 +1467,23 @@ function renderExpenses(){
   if(!expenses.length){tbody.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
   tbody.innerHTML=expenses.map(e=>{
-    const paid=!!e.paid;
-    const rowStyle=paid?'opacity:.5':e.paid===false&&e.amount>200?'':'';
-    return`<tr style="${rowStyle}">
+    const amount=parseFloat(e.amount)||0;
+    const paid=parseFloat(e.paidAmount)||0;
+    const remaining=Math.max(0,amount-paid);
+    const isFullyPaid=paid>=amount;
+    const isPartial=paid>0&&!isFullyPaid;
+    let statusBadge;
+    if(isFullyPaid)statusBadge=`<span style="background:#d4edda;color:#1e6b3a;border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:600">✅ שולם</span>`;
+    else if(isPartial)statusBadge=`<span style="background:#fff3cd;color:#856404;border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:600">⏳ חלקי</span>`;
+    else statusBadge=`<span style="background:#fde8e8;color:var(--red);border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:600">🔴 לא שולם</span>`;
+    return`<tr style="${isFullyPaid?'opacity:.55':''}">
       <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}</td>
       <td data-label="קטגוריה"><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
       <td data-label="תיאור" style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
-      <td data-label="סכום" class="amt neg" style="${paid?'text-decoration:line-through;color:var(--muted)':''}">-₪${(parseFloat(e.amount)||0).toFixed(0)}</td>
-      <td data-label="סטטוס">
-        <button onclick="toggleExpensePaid('${e.id}',${paid})" style="background:${paid?'#d4edda':'#fff3cd'};color:${paid?'#1e6b3a':'#856404'};border:1px solid ${paid?'#b8e0c8':'#ffd97d'};border-radius:20px;padding:3px 10px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:'Heebo',sans-serif;white-space:nowrap">
-          ${paid?'✅ שולם':'⏳ לא שולם'}
-        </button>
-      </td>
-      <td><button class="bd" onclick="deleteExpense('${e.id}')">✕</button></td>
+      <td data-label="סכום" class="amt neg" style="${isFullyPaid?'text-decoration:line-through':''}">${amount.toFixed(0)}₪</td>
+      <td data-label="שולם" style="color:var(--green);font-weight:600">${paid>0?paid.toFixed(0)+'₪':'—'}</td>
+      <td data-label="נותר" style="color:${remaining>0?'var(--gold)':'var(--green)'};font-weight:600">${remaining>0?remaining.toFixed(0)+'₪':'✅'}</td>
+      <td><div style="display:flex;gap:4px"><button class="btn btn-ghost btn-sm" onclick="openEditExpense('${e.id}')">✏️</button><button class="bd" onclick="deleteExpense('${e.id}')">✕</button></div></td>
     </tr>`;
   }).join('');
 }
