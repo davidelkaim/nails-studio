@@ -253,7 +253,7 @@ const db=getFirestore(fbApp);
 
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
 let services=[], promos=[], bookedSlots={}, gcalBusySlots={};
-let gcalScriptUrl='';
+let gcalScriptUrl='', blockedSlots=[];
 let calDate=new Date();
 let selectedDate=null, selectedTime=null;
 let appliedPromo=null;
@@ -272,6 +272,8 @@ async function init(){
     // Load Google Calendar Script URL
     const sg=await getDoc(doc(db,'config','gcal'));
     if(sg.exists()&&sg.data().scriptUrl)gcalScriptUrl=sg.data().scriptUrl;
+    const sb=await getDoc(doc(db,'config','blocked'));
+    if(sb.exists())blockedSlots=sb.data().list||[];
     await loadBookedSlots();
     await loadGCalBusySlots();
     renderPrices();renderServiceSelect();renderCal();
@@ -363,9 +365,21 @@ window.applyPromo=()=>{
   updateBTotal();
 };
 
-// CALENDAR
-window.calPrev=()=>{calDate.setMonth(calDate.getMonth()-1);renderCal();};
-window.calNext=()=>{calDate.setMonth(calDate.getMonth()+1);renderCal();};
+// CALENDAR — 2 month window
+window.calPrev=()=>{
+  const now=new Date();
+  const prev=new Date(calDate.getFullYear(),calDate.getMonth()-1,1);
+  // Don't go before current month
+  if(prev.getFullYear()<now.getFullYear()||(prev.getFullYear()===now.getFullYear()&&prev.getMonth()<now.getMonth()))return;
+  calDate.setMonth(calDate.getMonth()-1);renderCal();
+};
+window.calNext=()=>{
+  const now=new Date();
+  const maxDate=new Date(now.getFullYear(),now.getMonth()+1,1); // next month only
+  const next=new Date(calDate.getFullYear(),calDate.getMonth()+1,1);
+  if(next>maxDate)return;
+  calDate.setMonth(calDate.getMonth()+1);renderCal();
+};
 
 function renderCal(){
   const y=calDate.getFullYear(),m=calDate.getMonth();
@@ -374,13 +388,21 @@ function renderCal(){
   let html=HE_DAYS.map(d=>`<div class="cal-dname">${d}</div>`).join('');
   const first=new Date(y,m,1),startDow=first.getDay(),daysInMonth=new Date(y,m+1,0).getDate();
   const today=new Date();today.setHours(0,0,0,0);
+  // Max bookable date: end of next month
+  const now=new Date();
+  const maxDate=new Date(now.getFullYear(),now.getMonth()+2,0); // last day of next month
   for(let i=0;i<startDow;i++)html+=`<div class="cal-d other disabled"></div>`;
   for(let d=1;d<=daysInMonth;d++){
     const date=new Date(y,m,d),isPast=date<today,isToday=date.getTime()===today.getTime();
     const wd=date.getDay(),isWork=(settings.workDays||[0,1,2,3,4]).includes(wd);
     const dateStr=fmtStr(date),isSel=dateStr===selectedDate;
+    // Check if fully blocked
+    const isBlockedDay=blockedSlots.some(b=>b.date===dateStr&&b.allDay);
+    // Check if beyond 2-month window
+    const isBeyondWindow=date>maxDate;
     let cls='cal-d';
-    if(isPast)cls+=' past';else if(!isWork)cls+=' disabled';
+    if(isPast)cls+=' past';
+    else if(!isWork||isBlockedDay||isBeyondWindow)cls+=' disabled';
     if(isToday)cls+=' today';if(isSel)cls+=' selected';
     html+=`<div class="${cls}" onclick="selectDate('${dateStr}')">${d}</div>`;
   }
@@ -395,7 +417,6 @@ async function loadGCalBusySlots(){
     const data=await resp.json();
     if(data.status==='ok'&&data.busy){
       gcalBusySlots=data.busy;
-      console.log('GCal booking: loaded busy slots',Object.keys(gcalBusySlots).length,'days');
     }
   }catch(e){console.warn('GCal booking freebusy:',e);}
 }
@@ -410,6 +431,19 @@ function isGCalBusy(dateStr,timeStr,durationMin){
   });
 }
 
+function isBlockedByAdmin(dateStr,timeStr,durationMin){
+  // Check admin-defined blocked slots for this date
+  const dayBlocks=blockedSlots.filter(b=>b.date===dateStr&&!b.allDay);
+  if(!dayBlocks.length)return false;
+  const slotStart=new Date(dateStr+'T'+timeStr+':00');
+  const slotEnd=new Date(slotStart.getTime()+durationMin*60000);
+  return dayBlocks.some(b=>{
+    const bs=new Date(dateStr+'T'+b.from+':00');
+    const be=new Date(dateStr+'T'+b.to+':00');
+    return slotStart<be&&slotEnd>bs;
+  });
+}
+
 window.selectDate=async(dateStr)=>{
   selectedDate=dateStr;selectedTime=null;
   renderCal();await loadBookedSlots();renderSlots(dateStr);updateBtn1();
@@ -419,16 +453,24 @@ function renderSlots(dateStr){
   const wrap=document.getElementById('slots-wrap'),nds=document.getElementById('no-day-selected'),grid=document.getElementById('slots-grid');
   wrap.style.display='block';nds.style.display='none';
   const dur=settings.slotDuration||90;
-  const slots=generateSlots(settings.workStart||'09:00',settings.workEnd||'19:00',dur);
+  // 30-min intervals
+  const slots=generateSlots(settings.workStart||'09:00',settings.workEnd||'19:00',30);
   const booked=bookedSlots[dateStr]||[];
   if(!slots.length){grid.innerHTML='<div class="no-slots">אין שעות זמינות</div>';return;}
-  grid.innerHTML=slots.map(t=>{
-    const isAppBooked=booked.includes(t);
-    const isGCBusy=isGCalBusy(dateStr,t,dur);
-    const unavailable=isAppBooked||isGCBusy;
+  const available=slots.filter(t=>{
+    if(booked.includes(t))return false;
+    if(isGCalBusy(dateStr,t,dur))return false;
+    if(isBlockedByAdmin(dateStr,t,dur))return false;
+    return true;
+  });
+  if(!available.length){
+    grid.innerHTML='<div class="no-slots">אין שעות פנויות ביום זה 😕</div>';return;
+  }
+  grid.innerHTML=available.map(t=>{
     const isSel=t===selectedTime;
-    return`<div class="slot ${unavailable?'booked':''} ${isSel&&!unavailable?'selected':''}" onclick="${unavailable?'':'selectSlot(\''+t+'\')'}">${t}</div>`;
+    return`<div class="slot ${isSel?'selected':''}" onclick="selectSlot('${t}')">${t}</div>`;
   }).join('');
+}
 }
 
 window.selectSlot=(time)=>{selectedTime=time;renderSlots(selectedDate);updateBtn1();};
