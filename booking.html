@@ -471,7 +471,6 @@ function renderSlots(dateStr){
     return`<div class="slot ${isSel?'selected':''}" onclick="selectSlot('${t}')">${t}</div>`;
   }).join('');
 }
-}
 
 window.selectSlot=(time)=>{selectedTime=time;renderSlots(selectedDate);updateBtn1();};
 
