@@ -865,6 +865,7 @@ function chkLoad(){
     document.getElementById('loading-screen').style.display='none';
     document.getElementById('app').style.display='block';
     setSyncOk(true);renderAll();
+    restorePageFromHash();
   }
 }
 onSnapshot(query(collection(db,COL_V),orderBy('date','desc')),(s)=>{visits=s.docs.map(d=>({id:d.id,...d.data()}));loaded.v=true;chkLoad();renderVisits();renderClients();renderPnl();updateRevSummary();});
@@ -904,10 +905,42 @@ window.showPage=(p,btn)=>{
   document.querySelectorAll('.nb,.mob-nb').forEach(el=>el.classList.remove('active'));
   document.getElementById('page-'+p).classList.add('active');
   if(btn)btn.classList.add('active');
+  // Update URL hash for back button + refresh support
+  history.pushState({page:p},'',window.location.pathname+'#'+p);
   if(p==='appts')renderAppointments();
   if(p==='clients')renderClients();
   if(p==='mgmt'){renderVisits();renderExpenses();renderPnl();updateRevSummary();updateExpSummary();}
 };
+
+// Handle browser back/forward
+window.addEventListener('popstate',(e)=>{
+  const p=e.state?.page||location.hash.replace('#','')||'appts';
+  navigateToPage(p);
+});
+
+function navigateToPage(p){
+  const pages=['appts','clients','mgmt','settings'];
+  if(!pages.includes(p))p='appts';
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nb,.mob-nb').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  // Activate correct nav button
+  document.querySelectorAll('.nb,.mob-nb').forEach(btn=>{
+    if(btn.getAttribute('onclick')&&btn.getAttribute('onclick').includes("'"+p+"'"))btn.classList.add('active');
+  });
+  if(p==='appts')renderAppointments();
+  if(p==='clients')renderClients();
+  if(p==='mgmt'){renderVisits();renderExpenses();renderPnl();updateRevSummary();updateExpSummary();}
+}
+
+// On load, restore page from hash
+function restorePageFromHash(){
+  const hash=location.hash.replace('#','');
+  const pages=['appts','clients','mgmt','settings'];
+  if(hash&&pages.includes(hash)){
+    navigateToPage(hash);
+  }
+}
 
 window.showSubPage=(p,btn)=>{
   document.querySelectorAll('.sub-page').forEach(el=>el.classList.remove('active'));
@@ -1339,6 +1372,7 @@ function renderClients(){
     const last=c.visits.map(v=>v.date).sort().pop()||'';
     const fav=Object.entries(c.svcs).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—';
     return`<tr>
+      <td style="display:none"></td>
       <td data-label="שם"><span class="rl" onclick="openCustModal('${esc(c.phone)}')">${esc(c.name||'—')}</span></td>
       <td data-label="טלפון" dir="ltr" style="font-family:monospace;font-size:.79rem">${esc(c.phone)}</td>
       <td data-label="ביקורים"><strong>${c.visits.length}</strong></td>
@@ -1477,6 +1511,7 @@ function renderExpenses(){
     else if(isPartial)statusBadge=`<span style="background:#fff3cd;color:#856404;border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:600">⏳ חלקי</span>`;
     else statusBadge=`<span style="background:#fde8e8;color:var(--red);border-radius:20px;padding:3px 9px;font-size:.7rem;font-weight:600">🔴 לא שולם</span>`;
     return`<tr style="${isFullyPaid?'opacity:.55':''}">
+      <td style="display:none"></td>
       <td data-label="תאריך" style="white-space:nowrap">${fmtDate(e.date)}</td>
       <td data-label="קטגוריה"><span class="badge" style="background:#fff3cd;color:#856404">${esc(e.category)}</span></td>
       <td data-label="תיאור" style="font-size:.8rem;color:var(--muted)">${esc(e.desc||'')}</td>
