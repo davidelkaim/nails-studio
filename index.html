@@ -1838,6 +1838,7 @@ async function fetchBusySlots(){
 
 function isGCalBusy(dateStr,timeStr,durationMin){
   if(!gcalBusyCache[dateStr])return false;
+  // Use browser local time which matches Israel timezone
   const slotStart=new Date(dateStr+'T'+timeStr+':00');
   const slotEnd=new Date(slotStart.getTime()+durationMin*60000);
   return gcalBusyCache[dateStr].some(b=>{
@@ -1846,39 +1847,11 @@ function isGCalBusy(dateStr,timeStr,durationMin){
   });
 }
 
-async function createGCalEvent(booking){
-  if(!gcalScriptUrl||!gcalConnected)return;
-  try{
-    const svcText=Array.isArray(booking.service)?booking.service.join(', '):booking.service||'טיפול';
-    const timeStr=booking.time||'09:00';
-    const dur=settings.slotDuration||90;
-    const startDt=new Date(booking.date+'T'+timeStr+':00');
-    const endDt=new Date(startDt.getTime()+dur*60000);
-    const event={
-      summary:`💅 ${booking.clientName||'לקוחה'} — ${svcText}`,
-      description:`טלפון: ${booking.clientPhone||'—'}\nשירות: ${svcText}${booking.estimatedTotal?'\nמחיר: ₪'+booking.estimatedTotal:''}`,
-      start:{dateTime:startDt.toISOString(),timeZone:'Asia/Jerusalem'},
-      end:{dateTime:endDt.toISOString(),timeZone:'Asia/Jerusalem'},
-    };
-    const resp=await fetch(gcalScriptUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'create_event',event})
-    });
-    const data=await resp.json();
-    if(data.status==='ok'){
-      showToast('📆 נוסף לגוגל קלנדר!');
-      await fetchBusySlots();
-    }else if(data.status==='not_connected'){
-      updateGCalUI(false,'פג תוקף — לחצי "התחברי" בהגדרות');
-    }
-  }catch(e){console.warn('GCal create event:',e);}
-}
-
 // Generate available time slots for a date (used in manual appt modal)
 async function getAvailableSlots(dateStr){
   const dur=settings.slotDuration||90;
-  const allSlots=generateTimeSlots(settings.workStart||'09:00',settings.workEnd||'19:00',dur);
+  // Use 30-min intervals like booking.html
+  const allSlots=generateTimeSlots(settings.workStart||'09:00',settings.workEnd||'19:00',30);
   const appBooked=(bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled')).map(b=>b.time);
   return allSlots.filter(t=>{
     if(appBooked.includes(t))return false;
@@ -1886,6 +1859,55 @@ async function getAvailableSlots(dateStr){
     return true;
   });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function generateTimeSlots(start,end,dur){
   const slots=[];let[sh,sm]=start.split(':').map(Number);
