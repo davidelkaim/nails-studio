@@ -449,16 +449,25 @@ window.selectDate=async(dateStr)=>{
   renderCal();await loadBookedSlots();renderSlots(dateStr);updateBtn1();
 };
 
+function timeToMins(t){const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m;}
+
 function renderSlots(dateStr){
   const wrap=document.getElementById('slots-wrap'),nds=document.getElementById('no-day-selected'),grid=document.getElementById('slots-grid');
   wrap.style.display='block';nds.style.display='none';
   const dur=settings.slotDuration||90;
-  // 30-min intervals
   const slots=generateSlots(settings.workStart||'09:00',settings.workEnd||'19:00',30);
-  const booked=bookedSlots[dateStr]||[];
+  const bookedTimes=bookedSlots[dateStr]||[];
   if(!slots.length){grid.innerHTML='<div class="no-slots">אין שעות זמינות</div>';return;}
   const available=slots.filter(t=>{
-    if(booked.includes(t))return false;
+    const slotStart=timeToMins(t);
+    const slotEnd=slotStart+dur;
+    // Check overlap with existing bookings considering duration
+    const overlaps=bookedTimes.some(bt=>{
+      const bStart=timeToMins(bt);
+      const bEnd=bStart+dur;
+      return slotStart<bEnd&&slotEnd>bStart;
+    });
+    if(overlaps)return false;
     if(isGCalBusy(dateStr,t,dur))return false;
     if(isBlockedByAdmin(dateStr,t,dur))return false;
     return true;
