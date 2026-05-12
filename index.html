@@ -1852,10 +1852,12 @@ async function getAvailableSlots(dateStr){
   const dur=settings.slotDuration||90;
   const allSlots=generateTimeSlots(settings.workStart||'09:00',settings.workEnd||'19:00',30);
   const dayBookings=bookings.filter(b=>b.date===dateStr&&b.status!=='cancelled');
+  // Admin blocked slots for this date
+  const dayBlocks=blockedSlots.filter(b=>b.date===dateStr&&!b.allDay);
   return allSlots.filter(t=>{
-    // Check overlap with existing bookings considering duration
     const slotStart=timeToMins(t);
     const slotEnd=slotStart+dur;
+    // Check overlap with existing bookings
     const overlapsBooking=dayBookings.some(b=>{
       if(!b.time)return false;
       const bStart=timeToMins(b.time);
@@ -1863,6 +1865,14 @@ async function getAvailableSlots(dateStr){
       return slotStart<bEnd&&slotEnd>bStart;
     });
     if(overlapsBooking)return false;
+    // Check admin blocked hours
+    const overlapsBlock=dayBlocks.some(b=>{
+      const bStart=timeToMins(b.from);
+      const bEnd=timeToMins(b.to);
+      return slotStart<bEnd&&slotEnd>bStart;
+    });
+    if(overlapsBlock)return false;
+    // Check Google Calendar
     if(gcalConnected&&isGCalBusy(dateStr,t,dur))return false;
     return true;
   });
