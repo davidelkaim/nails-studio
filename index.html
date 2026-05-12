@@ -1933,10 +1933,16 @@ function timeToMins(t){
 
 
 function generateTimeSlots(start,end,dur){
+  // dur here is the interval (30 min), slotDuration is the actual appointment length
+  const slotDur=settings.slotDuration||90;
   const slots=[];let[sh,sm]=start.split(':').map(Number);
   const[eh,em]=end.split(':').map(Number),endMins=eh*60+em;
   let cur=sh*60+sm;
-  while(cur+dur<=endMins){slots.push(String(Math.floor(cur/60)).padStart(2,'0')+':'+String(cur%60).padStart(2,'0'));cur+=dur;}
+  // Slot must START early enough that it fits before end of day
+  while(cur+slotDur<=endMins){
+    slots.push(String(Math.floor(cur/60)).padStart(2,'0')+':'+String(cur%60).padStart(2,'0'));
+    cur+=dur;
+  }
   return slots;
 }
 
