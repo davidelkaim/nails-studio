@@ -7,220 +7,214 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --deep:#6b3050;
-  --rose:#e896b0;
-  --blush:#f7e0ea;
-  --cream:#fdf6f0;
-  --ink:#1a0e14;
-  --muted:#9a7088;
-  --border:#e6cfda;
-  --white:#fff;
+  --deep:#6b3050;--rose:#e896b0;--blush:#f7e0ea;
+  --cream:#fdf6f0;--ink:#1a0e14;--muted:#9a7088;
+  --border:#e6cfda;--white:#fff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);direction:rtl;overflow-x:hidden}
 
-/* ── NAV ── */
-.nav{position:sticky;top:0;z-index:100;background:var(--cream);border-bottom:2px solid var(--deep);display:flex;justify-content:space-between;align-items:center;padding:14px 40px}
-.nav-logo{font-size:17px;font-weight:900;color:var(--deep);letter-spacing:-.01em}
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(253,246,240,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:14px 40px}
+.nav-logo{font-size:18px;font-weight:900;color:var(--deep)}
 .nav-logo span{color:var(--rose)}
-.nav-links{display:flex;gap:22px;align-items:center}
-.nav-link{font-size:12px;color:var(--muted);font-weight:500;text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-link{font-size:13px;color:var(--muted);font-weight:500;text-decoration:none;transition:color .2s}
 .nav-link:hover{color:var(--deep)}
-.nav-cta{background:var(--deep);color:var(--blush);padding:9px 20px;font-size:12px;font-weight:700;text-decoration:none;border-radius:2px;transition:background .2s;white-space:nowrap}
+.nav-cta{background:var(--deep);color:var(--blush);padding:10px 22px;font-size:13px;font-weight:700;text-decoration:none;border-radius:50px;transition:background .2s}
 .nav-cta:hover{background:#5a2844}
 .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
-.ham span{display:block;width:22px;height:2px;background:var(--deep);border-radius:1px;transition:all .3s}
-.mob-nav{display:none;position:fixed;inset:0;background:var(--deep);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.ham span{display:block;width:22px;height:2px;background:var(--deep);border-radius:1px}
+.mob-nav{display:none;position:fixed;inset:0;background:var(--deep);z-index:200;flex-direction:column;align-items:center;justify-content:center;gap:28px}
 .mob-nav.open{display:flex}
 .mob-nav a{color:var(--blush);font-size:22px;font-weight:700;text-decoration:none}
-.mob-nav .close{position:absolute;top:20px;left:20px;background:none;border:none;color:var(--blush);font-size:24px;cursor:pointer}
+.mob-close{position:absolute;top:20px;left:20px;background:none;border:none;color:var(--blush);font-size:28px;cursor:pointer;line-height:1}
 
-/* ── HERO ── */
-.hero{display:grid;grid-template-columns:1fr 1fr;min-height:520px}
-.hero-left{background:var(--deep);padding:64px 40px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
-.hero-left::before{content:'';position:absolute;bottom:-60px;left:-60px;width:200px;height:200px;border-radius:50%;background:rgba(232,150,176,.08)}
-.hero-left::after{content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(232,150,176,.06)}
-.hero-tag{font-size:10px;color:var(--rose);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;font-weight:600;position:relative;z-index:1}
-.hero-h1{font-size:48px;color:var(--blush);font-weight:900;line-height:1.0;margin-bottom:10px;letter-spacing:-.03em;position:relative;z-index:1}
+/* HERO */
+.hero{position:relative;min-height:92vh;display:flex;align-items:center;overflow:hidden;background:var(--ink)}
+.hero-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1604654894610-df63bc536371?w=1600&q=80') center/cover no-repeat;opacity:.35}
+.hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(107,48,80,.85) 0%,rgba(26,14,20,.7) 100%)}
+.hero-content{position:relative;z-index:1;padding:80px 60px;max-width:680px}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,150,176,.2);border:1px solid rgba(232,150,176,.4);color:var(--rose);padding:6px 14px;border-radius:50px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px}
+.hero-h1{font-size:60px;font-weight:900;color:var(--white);line-height:1.0;margin-bottom:12px;letter-spacing:-.03em}
 .hero-h1 em{color:var(--rose);font-style:normal;display:block}
-.hero-sub{font-size:14px;color:#c9a8bc;margin-bottom:28px;line-height:1.7;font-weight:300;max-width:300px;position:relative;z-index:1}
-.hero-btn{background:var(--rose);color:var(--white);padding:13px 26px;font-size:13px;font-weight:700;display:inline-block;border-radius:2px;text-decoration:none;font-family:'Heebo',sans-serif;transition:background .2s;position:relative;z-index:1;width:fit-content}
-.hero-btn:hover{background:#d4789a}
-.hero-right{background:var(--blush);display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
-.hero-circle{position:absolute;top:-30px;right:-30px;width:180px;height:180px;border-radius:50%;background:rgba(107,48,80,.1)}
-.hero-circle2{position:absolute;bottom:-20px;left:-20px;width:120px;height:120px;border-radius:50%;background:rgba(107,48,80,.07)}
-.hero-feature{padding:28px 32px;position:relative;z-index:1}
-.hero-feat-badge{font-size:9px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:10px;font-weight:600}
-.hero-feat-name{font-size:22px;font-weight:900;color:var(--deep);margin-bottom:4px}
-.hero-feat-desc{font-size:12px;color:var(--muted);margin-bottom:14px;font-weight:300}
-.hero-feat-price{font-size:38px;font-weight:900;color:var(--deep);line-height:1}
-.hero-photos{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:auto}
-.hero-photo{height:110px;background:var(--border);display:flex;align-items:center;justify-content:center;font-size:28px;position:relative;overflow:hidden}
-.hero-photo-tag{position:absolute;bottom:6px;right:6px;background:var(--deep);color:var(--blush);font-size:8px;padding:2px 7px;font-weight:700;letter-spacing:.06em;border-radius:1px}
+.hero-sub{font-size:16px;color:rgba(247,224,234,.75);margin-bottom:36px;line-height:1.7;font-weight:300;max-width:420px}
+.hero-btns{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.hero-cta{background:var(--rose);color:var(--white);padding:16px 36px;font-size:15px;font-weight:800;text-decoration:none;border-radius:50px;transition:all .2s;font-family:'Heebo',sans-serif;border:none;cursor:pointer}
+.hero-cta:hover{background:#d4789a;transform:translateY(-2px)}
+.hero-wa{display:flex;align-items:center;gap:8px;color:var(--blush);font-size:13px;font-weight:500;text-decoration:none;opacity:.8;transition:opacity .2s}
+.hero-wa:hover{opacity:1}
+.hero-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:rgba(247,224,234,.5);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:6px;animation:bounce 2s infinite}
+.hero-scroll::after{content:'↓';font-size:18px}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(6px)}}
 
-/* ── STATS ── */
-.stats{display:grid;grid-template-columns:1fr 1fr 1fr;border-top:2px solid var(--deep);border-bottom:2px solid var(--deep)}
-.stat{padding:22px 20px;text-align:center;border-left:1px solid var(--border)}
+/* STATS BAR */
+.stats-bar{background:var(--deep);display:grid;grid-template-columns:repeat(3,1fr)}
+.stat{padding:22px 20px;text-align:center;border-left:1px solid rgba(255,255,255,.1)}
 .stat:last-child{border-left:none}
-.stat-lbl{font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px;font-weight:500}
-.stat-val{font-size:26px;font-weight:900;color:var(--deep)}
+.stat-val{font-size:28px;font-weight:900;color:var(--rose);line-height:1}
+.stat-lbl{font-size:10px;color:rgba(247,224,234,.6);letter-spacing:.1em;text-transform:uppercase;margin-top:4px;font-weight:500}
 
-/* ── SECTIONS ── */
-.sec{padding:56px 40px}
-.sec-label{font-size:10px;color:var(--rose);letter-spacing:.2em;text-transform:uppercase;margin-bottom:6px;font-weight:700}
-.sec-title{font-size:28px;font-weight:900;color:var(--deep);letter-spacing:-.02em;margin-bottom:24px}
+/* INSTAGRAM GRID */
+.gram-section{padding:60px 40px}
+.section-tag{font-size:10px;color:var(--rose);letter-spacing:.2em;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.section-title{font-size:32px;font-weight:900;color:var(--deep);letter-spacing:-.02em;margin-bottom:8px}
+.section-sub{font-size:14px;color:var(--muted);font-weight:300;margin-bottom:28px}
+.gram-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.gram-item{aspect-ratio:1;overflow:hidden;position:relative;border-radius:4px;cursor:pointer}
+.gram-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.gram-item:hover img{transform:scale(1.05)}
+.gram-item .gram-overlay{position:absolute;inset:0;background:rgba(107,48,80,.5);opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center}
+.gram-item:hover .gram-overlay{opacity:1}
+.gram-overlay-icon{color:var(--white);font-size:28px}
+.gram-item.big{grid-column:span 2;grid-row:span 2;border-radius:6px}
 
-/* ── SERVICES ── */
-.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--deep)}
-.svc-item{background:var(--cream);padding:22px 24px;display:flex;justify-content:space-between;align-items:flex-end;transition:background .2s}
-.svc-item:hover{background:var(--blush)}
-.svc-name{font-size:15px;font-weight:700;color:var(--deep);margin-bottom:4px}
+/* SERVICES */
+.services-section{background:var(--cream);padding:60px 40px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.svc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.svc-card{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px 24px;display:flex;justify-content:space-between;align-items:center;transition:all .2s;cursor:default}
+.svc-card:hover{border-color:var(--rose);transform:translateY(-2px);box-shadow:0 8px 24px rgba(107,48,80,.1)}
+.svc-name{font-size:15px;font-weight:700;color:var(--deep);margin-bottom:2px}
 .svc-desc{font-size:11px;color:var(--muted);font-weight:300}
-.svc-price{font-size:26px;font-weight:900;color:var(--rose);flex-shrink:0;margin-right:12px}
+.svc-price{font-size:24px;font-weight:900;color:var(--rose);flex-shrink:0;margin-right:12px}
 
-/* ── GALLERY ── */
-.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:2px}
-.gal-item{height:140px;background:var(--blush);display:flex;align-items:center;justify-content:center;font-size:32px;position:relative;overflow:hidden;cursor:pointer}
-.gal-item:hover .gal-overlay{opacity:1}
-.gal-overlay{position:absolute;inset:0;background:rgba(107,48,80,.7);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
-.gal-overlay-text{color:var(--blush);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
-.gal-tag{position:absolute;bottom:6px;right:6px;background:var(--deep);color:var(--blush);font-size:8px;padding:2px 7px;font-weight:700;letter-spacing:.06em;border-radius:1px}
-
-/* ── BOOKING SECTION ── */
-.booking-section{background:var(--blush);border-top:2px solid var(--deep);border-bottom:2px solid var(--deep);padding:56px 40px}
-.booking-inner{max-width:760px;margin:0 auto}
-.booking-steps{display:flex;gap:0;margin-bottom:28px;background:var(--white);border:2px solid var(--deep);border-radius:2px;overflow:hidden}
-.bstep{flex:1;padding:11px 6px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);transition:all .2s;cursor:pointer}
+/* BOOKING */
+.booking-section{padding:60px 40px;background:var(--white)}
+.booking-inner{max-width:720px;margin:0 auto}
+.booking-steps{display:flex;background:var(--cream);border-radius:50px;padding:4px;margin-bottom:32px;gap:2px}
+.bstep{flex:1;padding:10px;text-align:center;font-size:12px;font-weight:600;color:var(--muted);border-radius:50px;transition:all .2s;cursor:default}
 .bstep.active{background:var(--deep);color:var(--blush)}
 
 /* Calendar */
 .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.cal-title{font-size:16px;font-weight:700;color:var(--deep)}
-.cal-nav-btn{background:none;border:2px solid var(--deep);color:var(--deep);width:32px;height:32px;border-radius:2px;cursor:pointer;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
-.cal-nav-btn:hover{background:var(--deep);color:var(--blush)}
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:16px}
-.cal-dname{text-align:center;font-size:10px;font-weight:700;color:var(--muted);padding:4px 0;letter-spacing:.05em}
-.cal-d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;border-radius:2px;cursor:pointer;transition:all .2s;color:var(--ink)}
-.cal-d:hover:not(.disabled):not(.past){background:var(--rose);color:var(--white)}
-.cal-d.today{border:2px solid var(--deep);color:var(--deep);font-weight:700}
+.cal-month{font-size:17px;font-weight:700;color:var(--deep)}
+.cal-btn{background:none;border:1.5px solid var(--border);color:var(--deep);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cal-btn:hover{background:var(--deep);color:var(--blush);border-color:var(--deep)}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:20px}
+.cal-dname{text-align:center;font-size:10px;font-weight:700;color:var(--muted);padding:4px 0}
+.cal-d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;border-radius:50%;cursor:pointer;transition:all .2s}
+.cal-d:hover:not(.disabled):not(.past){background:var(--blush);color:var(--deep)}
+.cal-d.today{border:2px solid var(--deep);font-weight:700;color:var(--deep)}
 .cal-d.selected{background:var(--deep);color:var(--blush);font-weight:700}
 .cal-d.disabled,.cal-d.past{color:var(--border);cursor:default;pointer-events:none}
-.cal-d.other{color:var(--border)}
+.cal-d.other{visibility:hidden}
 
 /* Slots */
-.slots-title{font-size:12px;font-weight:700;color:var(--deep);margin-bottom:10px;letter-spacing:.08em;text-transform:uppercase}
-.slots-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
-.slot{background:var(--white);border:2px solid var(--deep);color:var(--deep);padding:8px 14px;font-size:12px;font-weight:700;border-radius:2px;cursor:pointer;transition:all .2s;font-family:'Heebo',sans-serif}
+.slots-label{font-size:11px;font-weight:700;color:var(--deep);margin-bottom:10px;letter-spacing:.08em;text-transform:uppercase}
+.slots-container{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;min-height:40px}
+.slot{background:var(--cream);border:1.5px solid var(--border);color:var(--deep);padding:9px 16px;font-size:13px;font-weight:600;border-radius:50px;cursor:pointer;transition:all .2s;font-family:'Heebo',sans-serif}
 .slot:hover{background:var(--rose);border-color:var(--rose);color:var(--white)}
 .slot.selected{background:var(--deep);border-color:var(--deep);color:var(--blush)}
-.slot.booked{background:var(--border);border-color:var(--border);color:var(--muted);cursor:not-allowed;text-decoration:line-through}
-.no-slots{font-size:13px;color:var(--muted);padding:16px 0}
+.slot.booked{background:var(--cream);border-color:var(--border);color:var(--border);cursor:not-allowed;text-decoration:line-through}
+.no-slots-msg{font-size:13px;color:var(--muted);padding:8px 0;font-style:italic}
+.no-date-msg{font-size:13px;color:var(--muted);padding:8px 0}
 
 /* Form */
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
-.fg{display:flex;flex-direction:column;gap:5px}
-.fg.full{grid-column:1/-1}
+.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:14px}
 .fg label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--deep)}
-.fg input,.fg select,.fg textarea{font-family:'Heebo',sans-serif;font-size:14px;padding:11px 14px;border:2px solid var(--deep);border-radius:2px;background:var(--white);color:var(--ink);direction:rtl;outline:none;transition:border-color .2s}
-.fg input:focus,.fg select:focus{border-color:var(--rose)}
-.submit-btn{width:100%;background:var(--deep);color:var(--blush);padding:14px;font-size:14px;font-weight:800;border:none;border-radius:2px;cursor:pointer;font-family:'Heebo',sans-serif;transition:background .2s;margin-top:8px;letter-spacing:.02em}
-.submit-btn:hover{background:#5a2844}
-.submit-btn:disabled{opacity:.5;cursor:not-allowed}
-
-/* Summary */
-.summary-box{background:var(--white);border:2px solid var(--deep);padding:16px;margin-bottom:16px;border-radius:2px}
-.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--ink)}
+.fg input,.fg select,.fg textarea{font-family:'Heebo',sans-serif;font-size:14px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;background:var(--cream);color:var(--ink);direction:rtl;outline:none;transition:border-color .2s,background .2s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--rose);background:var(--white)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.step-section{display:none}.step-section.active{display:block}
+.btn-primary{width:100%;background:var(--deep);color:var(--blush);padding:15px;font-size:15px;font-weight:800;border:none;border-radius:50px;cursor:pointer;font-family:'Heebo',sans-serif;transition:background .2s;margin-top:8px}
+.btn-primary:hover{background:#5a2844}
+.btn-primary:disabled{opacity:.45;cursor:not-allowed}
+.btn-ghost{width:100%;background:transparent;color:var(--deep);padding:14px;font-size:14px;font-weight:700;border:1.5px solid var(--border);border-radius:50px;cursor:pointer;font-family:'Heebo',sans-serif;transition:all .2s}
+.btn-ghost:hover{border-color:var(--deep)}
+.btn-row{display:flex;gap:10px}
+.sum-box{background:var(--cream);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:18px}
+.sum-row{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;color:var(--ink)}
 .sum-row strong{font-weight:700;color:var(--deep)}
-.sum-row.total{border-top:1px solid var(--border);margin-top:6px;padding-top:8px;font-weight:700}
+.sum-row.total{border-top:1px solid var(--border);margin-top:8px;padding-top:10px;font-weight:700;font-size:15px}
+.promo-row{display:flex;gap:8px;margin-top:5px}
+.promo-row input{flex:1;border-radius:50px}
+.promo-apply{background:var(--deep);color:var(--blush);border:none;padding:0 20px;border-radius:50px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.promo-fb{font-size:12px;font-weight:600;margin-top:6px;padding:6px 12px;border-radius:8px}
+.promo-fb.ok{background:#d4edda;color:#1e6b3a}
+.promo-fb.err{background:#fde8e8;color:#c0392b}
+.form-err{font-size:12px;color:#c0392b;font-weight:600;margin-bottom:10px;min-height:18px}
+.success-box{text-align:center;padding:48px 20px}
+.success-icon{font-size:56px;margin-bottom:16px}
+.success-h{font-size:26px;font-weight:900;color:var(--deep);margin-bottom:8px}
+.success-p{font-size:14px;color:var(--muted);line-height:1.7}
 
-/* Steps display */
-.step-section{display:none}
-.step-section.active{display:block}
+/* REVIEWS */
+.reviews-section{background:var(--cream);padding:60px 40px;border-top:1px solid var(--border)}
+.reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.rv{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px;position:relative;overflow:hidden}
+.rv::before{content:'"';position:absolute;top:-10px;right:16px;font-size:80px;color:var(--blush);font-family:Georgia,serif;line-height:1}
+.rv-stars{color:var(--rose);font-size:13px;margin-bottom:10px;position:relative}
+.rv-text{font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:12px;font-weight:400;position:relative}
+.rv-name{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.06em}
 
-/* Success */
-.success-box{text-align:center;padding:40px 20px}
-.success-icon{font-size:52px;margin-bottom:14px}
-.success-title{font-size:24px;font-weight:900;color:var(--deep);margin-bottom:8px}
-.success-sub{font-size:14px;color:var(--muted);line-height:1.6}
-
-/* Promo */
-.promo-row{display:flex;gap:8px;align-items:stretch;margin-top:6px}
-.promo-row input{flex:1}
-.promo-btn{background:var(--deep);color:var(--blush);border:none;padding:0 16px;font-family:'Heebo',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border-radius:2px;white-space:nowrap}
-.promo-feedback{font-size:12px;font-weight:600;margin-top:6px;padding:5px 10px;border-radius:2px}
-.promo-feedback.ok{background:#d4edda;color:#1e6b3a}
-.promo-feedback.err{background:#fde8e8;color:#c0392b}
-
-/* ── REVIEWS ── */
-.reviews-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.rv{border:2px solid var(--deep);padding:18px;position:relative}
-.rv-q{font-size:32px;color:var(--rose);line-height:1;margin-bottom:6px;font-weight:900}
-.rv-text{font-size:13px;color:var(--deep);line-height:1.6;margin-bottom:10px;font-weight:400}
-.rv-name{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.rv-stars{color:var(--rose);font-size:12px;margin-bottom:8px}
-
-/* ── CONTACT ── */
-.contact-sec{background:var(--deep);padding:56px 40px;direction:rtl}
-.contact-title{font-size:28px;font-weight:900;color:var(--blush);margin-bottom:6px}
+/* CONTACT */
+.contact-section{background:var(--deep);padding:60px 40px;direction:rtl}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center}
+.contact-title{font-size:32px;font-weight:900;color:var(--blush);margin-bottom:8px}
 .contact-title em{color:var(--rose);font-style:normal}
-.contact-sub{font-size:13px;color:#c9a8bc;margin-bottom:28px;font-weight:300}
-.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.ci{background:rgba(255,255,255,.07);padding:16px 18px;border-right:3px solid var(--rose)}
-.ci-lbl{font-size:9px;color:var(--rose);letter-spacing:.15em;text-transform:uppercase;margin-bottom:5px;font-weight:700}
-.ci-val{font-size:14px;color:var(--blush);font-weight:500}
-.wa-btn{background:var(--rose);color:var(--white);padding:14px 24px;font-size:14px;font-weight:800;text-align:center;border:none;cursor:pointer;font-family:'Heebo',sans-serif;width:100%;border-radius:2px;transition:background .2s;text-decoration:none;display:block}
+.contact-sub{font-size:14px;color:#c9a8bc;font-weight:300;line-height:1.7;margin-bottom:24px}
+.contact-items{display:flex;flex-direction:column;gap:12px}
+.ci{display:flex;align-items:center;gap:12px}
+.ci-icon{width:40px;height:40px;border-radius:50%;background:rgba(232,150,176,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+.ci-text .ci-lbl{font-size:10px;color:var(--rose);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.ci-text .ci-val{font-size:14px;color:var(--blush);font-weight:500}
+.wa-btn{display:block;background:var(--rose);color:var(--white);padding:15px 28px;font-size:15px;font-weight:800;text-align:center;border-radius:50px;text-decoration:none;transition:background .2s;font-family:'Heebo',sans-serif}
 .wa-btn:hover{background:#d4789a}
+.contact-visual{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.cv-img{border-radius:8px;overflow:hidden;aspect-ratio:1}
+.cv-img img{width:100%;height:100%;object-fit:cover}
+.cv-img.tall{grid-row:span 2;aspect-ratio:auto}
 
-/* ── FOOTER ── */
+/* FOOTER */
 .footer{background:var(--ink);padding:18px 40px;display:flex;justify-content:space-between;align-items:center}
-.ft{font-size:10px;color:#555;letter-spacing:.08em;text-transform:uppercase;font-weight:500}
+.ft{font-size:11px;color:#444;letter-spacing:.06em;text-transform:uppercase;font-weight:400}
 
-/* ── SPINNER ── */
+/* FLOATING CTA */
+.float-cta{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--rose);color:var(--white);padding:14px 32px;font-size:14px;font-weight:800;border-radius:50px;text-decoration:none;box-shadow:0 8px 30px rgba(232,150,176,.5);font-family:'Heebo',sans-serif;z-index:50;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap}
+.float-cta.visible{opacity:1;pointer-events:all}
+.float-cta:hover{background:#d4789a}
+
+/* SPINNER */
 .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(247,224,234,.3);border-top-color:var(--blush);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--deep);color:var(--blush);padding:10px 22px;border-radius:2px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;white-space:nowrap}
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--deep);color:var(--blush);padding:10px 22px;border-radius:50px;font-size:13px;font-weight:600;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── RESPONSIVE ── */
+/* RESPONSIVE */
 @media(max-width:768px){
-  .nav{padding:12px 20px}
-  .nav-links{display:none}
-  .ham{display:flex}
-  .hero{grid-template-columns:1fr}
-  .hero-right{display:none}
-  .hero-left{padding:48px 24px}
-  .hero-h1{font-size:36px}
-  .stats{grid-template-columns:1fr 1fr 1fr}
-  .stat{padding:16px 12px}
-  .sec{padding:40px 20px}
+  .nav{padding:12px 20px}.nav-links{display:none}.ham{display:flex}
+  .hero-content{padding:60px 24px}.hero-h1{font-size:38px}
+  .gram-section,.services-section,.booking-section,.reviews-section,.contact-section{padding:48px 20px}
+  .gram-grid{gap:3px}
   .svc-grid{grid-template-columns:1fr}
-  .gallery{grid-template-columns:1fr 1fr}
-  .booking-section{padding:40px 20px}
-  .form-grid{grid-template-columns:1fr}
+  .fg-row{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}.contact-visual{display:none}
   .reviews-grid{grid-template-columns:1fr}
-  .contact-sec{padding:40px 20px}
-  .contact-grid{grid-template-columns:1fr}
-  .footer{padding:14px 20px;flex-direction:column;gap:6px;text-align:center}
+  .footer{flex-direction:column;gap:6px;text-align:center;padding:14px 20px}
+  .stats-bar{grid-template-columns:1fr}
+  .stat{border-left:none;border-bottom:1px solid rgba(255,255,255,.1)}
+  .stat:last-child{border-bottom:none}
 }
 @media(max-width:480px){
-  .hero-h1{font-size:30px}
-  .stats{grid-template-columns:1fr}
-  .stat{border-left:none;border-bottom:1px solid var(--border)}
-  .gallery{grid-template-columns:1fr 1fr}
+  .hero-h1{font-size:32px}.hero-content{padding:48px 20px}
+  .gram-grid{grid-template-columns:1fr 1fr}.gram-item.big{grid-column:span 1;grid-row:span 1}
 }
 </style>
 </head>
 <body>
 
+<!-- FLOATING CTA -->
+<a href="#booking" class="float-cta" id="float-cta">📅 קביעת תור עכשיו</a>
+
 <!-- NAV -->
 <nav class="nav">
   <div class="nav-logo">✨ Nails <span>Studio</span></div>
   <div class="nav-links">
-    <a href="#services" class="nav-link">השירותים שלי</a>
-    <a href="#gallery" class="nav-link">גלריה</a>
+    <a href="#gallery" class="nav-link">הגלריה שלי</a>
+    <a href="#services" class="nav-link">שירותים ומחירים</a>
     <a href="#reviews" class="nav-link">ביקורות</a>
     <a href="#booking" class="nav-cta">📅 קביעת תור</a>
   </div>
@@ -228,125 +222,149 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
 </nav>
 
 <div class="mob-nav" id="mob-nav">
-  <button class="close" onclick="toggleMob()">✕</button>
-  <a href="#services" onclick="toggleMob()">השירותים שלי</a>
-  <a href="#gallery" onclick="toggleMob()">גלריה</a>
+  <button class="mob-close" onclick="toggleMob()">✕</button>
+  <a href="#gallery" onclick="toggleMob()">הגלריה שלי</a>
+  <a href="#services" onclick="toggleMob()">שירותים ומחירים</a>
   <a href="#reviews" onclick="toggleMob()">ביקורות</a>
   <a href="#booking" onclick="toggleMob()" style="color:var(--rose)">📅 קביעת תור</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-left">
-    <div class="hero-tag">בורוכוב 33, רעננה</div>
-    <h1 class="hero-h1">הציפורניים שלך<em>מושלמות</em>מגיעות לך</h1>
-    <p class="hero-sub">כי את מגיעה לעצמך — עיצוב מקצועי, אישי ומפנק.</p>
-    <a href="#booking" class="hero-btn">📅 קביעת תור עכשיו</a>
-  </div>
-  <div class="hero-right">
-    <div class="hero-circle"></div>
-    <div class="hero-circle2"></div>
-    <div class="hero-feature">
-      <div class="hero-feat-badge">מבצע החודש</div>
-      <div class="hero-feat-name" id="hero-feat-name">טוען...</div>
-      <div class="hero-feat-desc" id="hero-feat-desc"></div>
-      <div class="hero-feat-price" id="hero-feat-price"></div>
-    </div>
-    <div class="hero-photos">
-      <div class="hero-photo" style="background:#f0d4e4;font-size:36px">💅<div class="hero-photo-tag">לפני</div></div>
-      <div class="hero-photo" style="background:#e8c8d8;font-size:36px">✨<div class="hero-photo-tag">אחרי</div></div>
+  <div class="hero-bg"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="hero-badge">💅 רעננה • בורוכוב 33</div>
+    <h1 class="hero-h1">הציפורניים שלך<em>מגיעות לזה.</em></h1>
+    <p class="hero-sub">עיצוב מקצועי, אישי ומפנק — כי כל פרט קטן חשוב. תורים זמינים השבוע.</p>
+    <div class="hero-btns">
+      <a href="#booking" class="hero-cta">📅 קביעת תור עכשיו</a>
+      <a href="https://wa.me/972584415288" class="hero-wa" target="_blank">💬 וואטסאפ</a>
     </div>
   </div>
+  <div class="hero-scroll">גלי למטה</div>
 </section>
 
 <!-- STATS -->
-<div class="stats">
-  <div class="stat"><div class="stat-lbl">שנות ניסיון</div><div class="stat-val">5+</div></div>
-  <div class="stat"><div class="stat-lbl">לקוחות מרוצות</div><div class="stat-val">200+</div></div>
-  <div class="stat"><div class="stat-lbl">דירוג ממוצע</div><div class="stat-val">5.0 ★</div></div>
+<div class="stats-bar">
+  <div class="stat"><div class="stat-val">5+</div><div class="stat-lbl">שנות ניסיון</div></div>
+  <div class="stat"><div class="stat-val">200+</div><div class="stat-lbl">לקוחות מרוצות</div></div>
+  <div class="stat"><div class="stat-val">★ 5.0</div><div class="stat-lbl">דירוג ממוצע</div></div>
 </div>
 
-<!-- SERVICES -->
-<section class="sec" id="services">
-  <div class="sec-label">מה אני מציעה</div>
-  <div class="sec-title">השירותים שלי</div>
-  <div class="svc-grid" id="svc-grid">
-    <div class="svc-item"><div><div class="svc-name">טוען...</div></div></div>
+<!-- GALLERY -->
+<section class="gram-section" id="gallery">
+  <div class="section-tag">הגלריה שלי</div>
+  <div class="section-title">העבודות שלי</div>
+  <div class="section-sub">כל ציפורן — יצירת אמנות</div>
+  <div class="gram-grid">
+    <div class="gram-item big">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80" alt="nail art" loading="lazy"/>
+      <div class="gram-overlay"><span class="gram-overlay-icon">💅</span></div>
+    </div>
+    <div class="gram-item">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400" alt="manicure" loading="lazy"/>
+      <div class="gram-overlay"><span class="gram-overlay-icon">✨</span></div>
+    </div>
+    <div class="gram-item">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&sat=-20" alt="gel nails" loading="lazy"/>
+      <div class="gram-overlay"><span class="gram-overlay-icon">💎</span></div>
+    </div>
+    <div class="gram-item">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&bri=10" alt="nail design" loading="lazy"/>
+      <div class="gram-overlay"><span class="gram-overlay-icon">🎨</span></div>
+    </div>
+    <div class="gram-item">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&hue=30" alt="nail art" loading="lazy"/>
+      <div class="gram-overlay"><span class="gram-overlay-icon">💅</span></div>
+    </div>
+    <div class="gram-item">
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&con=10" alt="nails" loading="lazy"/>
+      <div class="gram-overlay"><span class="gram-overlay-icon">✨</span></div>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:24px">
+    <a href="#booking" style="display:inline-block;background:var(--deep);color:var(--blush);padding:13px 30px;border-radius:50px;font-size:14px;font-weight:700;text-decoration:none">📅 רוצה כזה? קביעי תור →</a>
   </div>
 </section>
 
-<!-- GALLERY -->
-<section id="gallery">
-  <div class="gallery">
-    <div class="gal-item" style="background:#f7e0ea;font-size:40px">💅<div class="gal-tag">מניקור ג׳ל</div><div class="gal-overlay"><span class="gal-overlay-text">לפני ואחרי</span></div></div>
-    <div class="gal-item" style="background:#f0d4e4;font-size:40px">✨<div class="gal-tag">נייל ארט</div><div class="gal-overlay"><span class="gal-overlay-text">עיצובים</span></div></div>
-    <div class="gal-item" style="background:#e8c8d8;font-size:40px">🎨<div class="gal-tag">צבעים</div><div class="gal-overlay"><span class="gal-overlay-text">גלריה</span></div></div>
-    <div class="gal-item" style="background:#f7e0ea;font-size:40px">💎<div class="gal-tag">ג׳ל</div><div class="gal-overlay"><span class="gal-overlay-text">תוצאות</span></div></div>
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-tag">מה אני מציעה</div>
+  <div class="section-title">השירותים שלי</div>
+  <div class="section-sub">כל המחירים כוללים ייעוץ אישי חינם</div>
+  <div class="svc-grid" id="svc-grid">
+    <div class="svc-card"><div><div class="svc-name">טוענת שירותים…</div></div></div>
   </div>
 </section>
 
 <!-- BOOKING -->
 <section class="booking-section" id="booking">
   <div class="booking-inner">
-    <div class="sec-label">קביעת תור</div>
-    <div class="sec-title">בחרי תאריך ושעה</div>
+    <div class="section-tag">קביעת תור</div>
+    <div class="section-title">בואי נקבע תור</div>
+    <div class="section-sub">תהליך פשוט ומהיר — 3 צעדים בלבד</div>
 
     <div class="booking-steps">
-      <div class="bstep active" id="step1-btn">① תאריך ושעה</div>
-      <div class="bstep" id="step2-btn">② פרטים ושירות</div>
-      <div class="bstep" id="step3-btn">③ אישור</div>
+      <div class="bstep active" id="step-btn-1">① בחרי תאריך</div>
+      <div class="bstep" id="step-btn-2">② הפרטים שלך</div>
+      <div class="bstep" id="step-btn-3">③ אישור</div>
     </div>
 
-    <!-- STEP 1 -->
+    <!-- STEP 1: Date + Time -->
     <div class="step-section active" id="step1">
       <div class="cal-header">
-        <button class="cal-nav-btn" onclick="calPrev()">›</button>
-        <div class="cal-title" id="cal-title"></div>
-        <button class="cal-nav-btn" onclick="calNext()">‹</button>
+        <button class="cal-btn" onclick="calPrev()">›</button>
+        <div class="cal-month" id="cal-title"></div>
+        <button class="cal-btn" onclick="calNext()">‹</button>
       </div>
       <div class="cal-grid" id="cal-grid"></div>
-      <div id="slots-wrap" style="display:none">
-        <div class="slots-title">⏰ שעות פנויות</div>
-        <div class="slots-grid" id="slots-grid"></div>
+
+      <div id="slots-area">
+        <div class="no-date-msg" id="no-date-msg">בחרי תאריך להצגת שעות פנויות ↑</div>
+        <div id="slots-visible" style="display:none">
+          <div class="slots-label">⏰ שעות פנויות</div>
+          <div class="slots-container" id="slots-container"></div>
+        </div>
       </div>
-      <div id="no-day" style="font-size:13px;color:var(--muted);padding:12px 0">בחרי תאריך להצגת שעות פנויות ↑</div>
-      <button class="submit-btn" id="btn-step1" onclick="goStep(2)" disabled style="opacity:.4">המשך לפרטים ←</button>
+
+      <button class="btn-primary" id="btn-next1" onclick="goStep(2)" disabled>המשך לפרטים ←</button>
     </div>
 
-    <!-- STEP 2 -->
+    <!-- STEP 2: Details -->
     <div class="step-section" id="step2">
-      <div class="form-grid">
-        <div class="fg req"><label>שם מלא *</label><input type="text" id="b-name" placeholder="שרה כהן"/></div>
-        <div class="fg req"><label>טלפון *</label><input type="tel" id="b-phone" placeholder="050-000-0000"/></div>
-        <div class="fg full"><label>אימייל (אופציונלי)</label><input type="email" id="b-email" placeholder="sarah@email.com"/></div>
-        <div class="fg req full">
-          <label>שירות *</label>
-          <select id="b-service"><option value="">— בחרי שירות —</option></select>
-        </div>
-        <div class="fg full">
-          <label>קוד פרומו (אופציונלי)</label>
-          <div class="promo-row">
-            <input type="text" id="b-promo" placeholder="הכניסי קוד…" style="text-transform:uppercase" oninput="this.value=this.value.toUpperCase()"/>
-            <button class="promo-btn" onclick="applyPromo()">החל</button>
-          </div>
-          <div id="promo-feedback" style="display:none" class="promo-feedback"></div>
-        </div>
-        <div class="fg full"><label>הערות</label><textarea id="b-notes" rows="3" placeholder="בקשות מיוחדות, צבע מועדף…"></textarea></div>
+      <div class="fg-row">
+        <div class="fg"><label>שם מלא *</label><input type="text" id="b-name" placeholder="שרה כהן"/></div>
+        <div class="fg"><label>טלפון *</label><input type="tel" id="b-phone" placeholder="050-000-0000"/></div>
       </div>
-      <span id="form-err" style="font-size:12px;color:#c0392b;font-weight:600;display:block;margin-bottom:10px"></span>
-      <div style="display:flex;gap:10px">
-        <button class="submit-btn" onclick="goStep(1)" style="background:transparent;color:var(--deep);border:2px solid var(--deep);flex:1">← חזרה</button>
-        <button class="submit-btn" onclick="goStep(3)" style="flex:2">המשך לאישור ←</button>
+      <div class="fg"><label>אימייל (אופציונלי)</label><input type="email" id="b-email" placeholder="sarah@email.com"/></div>
+      <div class="fg">
+        <label>שירות *</label>
+        <select id="b-service"><option value="">— בחרי שירות —</option></select>
+      </div>
+      <div class="fg">
+        <label>קוד פרומו (אופציונלי)</label>
+        <div class="promo-row">
+          <input type="text" id="b-promo" placeholder="הכניסי קוד…" oninput="this.value=this.value.toUpperCase()"/>
+          <button class="promo-apply" onclick="applyPromo()">החל</button>
+        </div>
+        <div id="promo-fb" style="display:none" class="promo-fb"></div>
+      </div>
+      <div class="fg"><label>הערות</label><textarea id="b-notes" rows="3" placeholder="בקשות מיוחדות, צבע מועדף…"></textarea></div>
+      <div class="form-err" id="form-err"></div>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="goStep(1)" style="flex:1">← חזרה</button>
+        <button class="btn-primary" onclick="goStep(3)" style="flex:2;margin-top:0">המשך לאישור ←</button>
       </div>
     </div>
 
-    <!-- STEP 3 -->
+    <!-- STEP 3: Confirm -->
     <div class="step-section" id="step3">
-      <div class="summary-box" id="summary"></div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:16px;line-height:1.6">התור ממתין לאישור — <strong>נחזור אליך בקרוב</strong> לאשר את התור.</p>
-      <div style="display:flex;gap:10px">
-        <button class="submit-btn" onclick="goStep(2)" style="background:transparent;color:var(--deep);border:2px solid var(--deep);flex:1">← חזרה</button>
-        <button class="submit-btn" id="btn-confirm" onclick="confirmBooking()" style="flex:2">📅 שלחי בקשת תור</button>
+      <div class="sum-box" id="summary"></div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6">התור ממתין לאישורי — <strong>אחזור אליך בהקדם</strong> לאשר את התור. 😊</p>
+      <div class="btn-row">
+        <button class="btn-ghost" onclick="goStep(2)" style="flex:1">← חזרה</button>
+        <button class="btn-primary" id="btn-confirm" onclick="confirmBooking()" style="flex:2;margin-top:0">📅 שלחי בקשת תור</button>
       </div>
     </div>
 
@@ -354,36 +372,46 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
     <div class="step-section" id="step-success">
       <div class="success-box">
         <div class="success-icon">🎉</div>
-        <div class="success-title">הבקשה נשלחה!</div>
-        <p class="success-sub">תורך התקבל ויאושר בקרוב.<br>נחזור אליך להאשרה.<br><br>
-        <span style="font-size:12px">תודה שבחרת ב-Nails Studio 💅</span></p>
-        <button class="submit-btn" onclick="resetBooking()" style="max-width:260px;margin:20px auto 0">קביעת תור נוסף</button>
+        <div class="success-h">הבקשה נשלחה!</div>
+        <p class="success-p">תורך התקבל ויאושר בקרוב.<br>אחזור אליך להאשרה.<br><br>
+        <span style="font-size:12px;color:var(--muted)">תודה שבחרת ב-Nails Studio 💅</span></p>
+        <button class="btn-primary" onclick="resetBooking()" style="max-width:240px;margin:20px auto 0">קביעת תור נוסף</button>
       </div>
     </div>
   </div>
 </section>
 
 <!-- REVIEWS -->
-<section class="sec" id="reviews">
-  <div class="sec-label">לקוחות מספרות</div>
-  <div class="sec-title">הן כבר ניסו</div>
+<section class="reviews-section" id="reviews">
+  <div class="section-tag">לקוחות מספרות</div>
+  <div class="section-title">הן כבר ניסו</div>
+  <div class="section-sub" style="margin-bottom:28px">כל ביקורת — מהלב</div>
   <div class="reviews-grid">
-    <div class="rv"><div class="rv-stars">★★★★★</div><div class="rv-q">"</div><div class="rv-text">התוצאה מושלמת, אחזור בהחלט! הציפורניים שלי נראות כמו חלום.</div><div class="rv-name">מיכל ל. — רעננה</div></div>
-    <div class="rv"><div class="rv-stars">★★★★★</div><div class="rv-q">"</div><div class="rv-text">הכי מקצועית שהייתי אצלה. שירות אישי ותוצאות מדהימות.</div><div class="rv-name">נועה ש. — כפר סבא</div></div>
-    <div class="rv"><div class="rv-stars">★★★★★</div><div class="rv-q">"</div><div class="rv-text">אווירה נהדרת, מחירים הוגנים, ממליצה בחום לכולן!</div><div class="rv-name">שירה ב. — הרצליה</div></div>
-    <div class="rv"><div class="rv-stars">★★★★★</div><div class="rv-q">"</div><div class="rv-text">הנייל ארט שלה פשוט יצירות אמנות. מאוהבת בתוצאה!</div><div class="rv-name">ליאת מ. — רעננה</div></div>
+    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">התוצאה מושלמת, אחזור בהחלט! הציפורניים שלי נראות כמו חלום. ממליצה לכל חברה!</p><div class="rv-name">מיכל ל. — רעננה</div></div>
+    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">הכי מקצועית שהייתי אצלה. שירות אישי, תשומת לב לפרטים ותוצאות מדהימות.</p><div class="rv-name">נועה ש. — כפר סבא</div></div>
+    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">אווירה נהדרת, מחירים הוגנים, ממליצה בחום לכולן! אחזור בהחלט כל חודש.</p><div class="rv-name">שירה ב. — הרצליה</div></div>
+    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">הנייל ארט שלה פשוט יצירות אמנות. מאוהבת בתוצאה, כולן שואלות אותי איפה עשיתי!</p><div class="rv-name">ליאת מ. — רעננה</div></div>
   </div>
 </section>
 
 <!-- CONTACT -->
-<section class="contact-sec">
-  <div class="contact-title">בואי <em>נדבר</em></div>
-  <p class="contact-sub">שלחי הודעה ואחזור אליך בהקדם לתיאום התור</p>
+<section class="contact-section" id="contact">
   <div class="contact-grid">
-    <div class="ci"><div class="ci-lbl">כתובת</div><div class="ci-val">בורוכוב 33, רעננה</div></div>
-    <div class="ci"><div class="ci-lbl">וואטסאפ</div><div class="ci-val">058-441-5288</div></div>
+    <div>
+      <div class="contact-title">בואי <em>נדבר</em></div>
+      <p class="contact-sub">שלחי הודעה ואחזור אליך בהקדם לתיאום התור. זמינה בוואטסאפ!</p>
+      <div class="contact-items" style="margin-bottom:24px">
+        <div class="ci"><div class="ci-icon">📍</div><div class="ci-text"><div class="ci-lbl">כתובת</div><div class="ci-val">בורוכוב 33, רעננה</div></div></div>
+        <div class="ci"><div class="ci-icon">💬</div><div class="ci-text"><div class="ci-lbl">וואטסאפ</div><div class="ci-val">058-441-5288</div></div></div>
+      </div>
+      <a href="https://wa.me/972584415288" class="wa-btn" target="_blank">💬 שלחי הודעה בוואטסאפ</a>
+    </div>
+    <div class="contact-visual">
+      <div class="cv-img tall"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&h=500&q=80&fit=crop" alt="nails"/></div>
+      <div class="cv-img"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&h=240&q=80&fit=crop&sat=20" alt="nail art"/></div>
+      <div class="cv-img"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&h=240&q=80&fit=crop&bri=-10" alt="manicure"/></div>
+    </div>
   </div>
-  <a href="https://wa.me/972584415288" class="wa-btn" target="_blank">💬 שלחי הודעה בוואטסאפ ←</a>
 </section>
 
 <!-- FOOTER -->
@@ -396,12 +424,11 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
 
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import{getFirestore,collection,addDoc,getDocs,doc,getDoc}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const FB={apiKey:"AIzaSyAWkVT_GereCz0yRV15zbpGKUzQFEJmpck",authDomain:"nails-studio-9085d.firebaseapp.com",projectId:"nails-studio-9085d",storageBucket:"nails-studio-9085d.firebasestorage.app",messagingSenderId:"742223896533",appId:"1:742223896533:web:0e39da166545e51979e75c"};
-const fbApp=initializeApp(FB);
-const db=getFirestore(fbApp);
+const db=getFirestore(initializeApp(FB));
 
 let settings={workDays:[0,1,2,3,4],workStart:'09:00',workEnd:'19:00',slotDuration:90};
 let services=[],promos=[],bookedSlots={},gcalBusySlots={},blockedSlots=[];
@@ -413,35 +440,28 @@ const HE_MONTHS=['ינואר','פברואר','מרץ','אפריל','מאי','י�
 
 async function init(){
   try{
-    const ss=await getDoc(doc(db,'config','settings'));if(ss.exists())settings={...settings,...ss.data()};
-    const sv=await getDoc(doc(db,'config','services'));if(sv.exists())services=sv.data().list||[];
-    const sp=await getDoc(doc(db,'config','promos'));if(sp.exists())promos=sp.data().list||[];
-    const sg=await getDoc(doc(db,'config','gcal'));if(sg.exists()&&sg.data().scriptUrl)gcalScriptUrl=sg.data().scriptUrl;
-    const sb=await getDoc(doc(db,'config','blocked'));if(sb.exists())blockedSlots=sb.data().list||[];
-    const se=await getDoc(doc(db,'config','emailjs'));if(se.exists())ejsConfig=se.data();
+    const[ss,sv,sp,sg,sb,se]=await Promise.all([
+      getDoc(doc(db,'config','settings')),getDoc(doc(db,'config','services')),
+      getDoc(doc(db,'config','promos')),getDoc(doc(db,'config','gcal')),
+      getDoc(doc(db,'config','blocked')),getDoc(doc(db,'config','emailjs'))
+    ]);
+    if(ss.exists())settings={...settings,...ss.data()};
+    if(sv.exists())services=sv.data().list||[];
+    if(sp.exists())promos=sp.data().list||[];
+    if(sg.exists()&&sg.data().scriptUrl)gcalScriptUrl=sg.data().scriptUrl;
+    if(sb.exists())blockedSlots=sb.data().list||[];
+    if(se.exists())ejsConfig=se.data();
     await loadBookedSlots();
     if(gcalScriptUrl)await loadGCalBusySlots();
-    renderServices();populateServiceSelect();renderCal();renderHeroFeature();
+    renderServices();populateServiceSelect();renderCal();
   }catch(e){console.error(e);}
 }
 init();
 
-function renderHeroFeature(){
-  if(!services.length)return;
-  const s=services[0];
-  document.getElementById('hero-feat-name').textContent=s.name;
-  document.getElementById('hero-feat-desc').textContent='';
-  document.getElementById('hero-feat-price').textContent=s.price?'₪'+s.price:'';
-}
-
 function renderServices(){
   const grid=document.getElementById('svc-grid');
-  if(!services.length){grid.innerHTML='<div class="svc-item"><div class="svc-name" style="color:var(--muted)">טוען שירותים...</div></div>';return;}
-  grid.innerHTML=services.map(s=>`
-    <div class="svc-item">
-      <div><div class="svc-name">${esc(s.name)}</div></div>
-      <div class="svc-price">${s.price?'₪'+s.price:''}</div>
-    </div>`).join('');
+  if(!services.length){grid.innerHTML='<div class="svc-card"><div class="svc-name" style="color:var(--muted)">אין שירותים עדיין</div></div>';return;}
+  grid.innerHTML=services.map(s=>`<div class="svc-card"><div><div class="svc-name">${esc(s.name)}</div></div><div class="svc-price">${s.price?'₪'+s.price:''}</div></div>`).join('');
 }
 
 function populateServiceSelect(){
@@ -458,40 +478,29 @@ async function loadBookedSlots(){
 }
 
 async function loadGCalBusySlots(){
-  if(!gcalScriptUrl)return;
-  try{
-    const resp=await fetch(gcalScriptUrl+'?action=freebusy');
-    const data=await resp.json();
-    if(data.status==='ok'&&data.busy)gcalBusySlots=data.busy;
-  }catch(e){console.warn('GCal:',e);}
+  try{const r=await fetch(gcalScriptUrl+'?action=freebusy');const d=await r.json();if(d.status==='ok'&&d.busy)gcalBusySlots=d.busy;}catch(e){}
 }
 
 function timeToMins(t){const[h,m]=(t||'0:0').split(':').map(Number);return h*60+m;}
-
-function isGCalBusy(dateStr,timeStr,dur){
-  if(!gcalBusySlots[dateStr])return false;
-  const s=new Date(dateStr+'T'+timeStr+':00');
-  const e=new Date(s.getTime()+dur*60000);
-  return gcalBusySlots[dateStr].some(b=>{const bs=new Date(b.start),be=new Date(b.end);return s<be&&e>bs;});
+function isGCalBusy(ds,ts,dur){
+  if(!gcalBusySlots[ds])return false;
+  const s=new Date(ds+'T'+ts+':00'),e=new Date(s.getTime()+dur*60000);
+  return gcalBusySlots[ds].some(b=>{const bs=new Date(b.start),be=new Date(b.end);return s<be&&e>bs;});
 }
-
-function isBlockedByAdmin(dateStr,timeStr,dur){
-  const blocks=blockedSlots.filter(b=>b.date===dateStr&&!b.allDay);
-  if(!blocks.length)return false;
-  const sm=timeToMins(timeStr),em=sm+dur;
+function isBlockedByAdmin(ds,ts,dur){
+  const blocks=blockedSlots.filter(b=>b.date===ds&&!b.allDay);if(!blocks.length)return false;
+  const sm=timeToMins(ts),em=sm+dur;
   return blocks.some(b=>{const bs=timeToMins(b.from),be=timeToMins(b.to);return sm<be&&em>bs;});
 }
 
 // CALENDAR
 window.calPrev=()=>{
-  const now=new Date();
-  const prev=new Date(calDate.getFullYear(),calDate.getMonth()-1,1);
+  const now=new Date(),prev=new Date(calDate.getFullYear(),calDate.getMonth()-1,1);
   if(prev<new Date(now.getFullYear(),now.getMonth(),1))return;
   calDate.setMonth(calDate.getMonth()-1);renderCal();
 };
 window.calNext=()=>{
-  const now=new Date();
-  const maxDate=new Date(now.getFullYear(),now.getMonth()+1,1);
+  const now=new Date(),maxDate=new Date(now.getFullYear(),now.getMonth()+1,1);
   const next=new Date(calDate.getFullYear(),calDate.getMonth()+1,1);
   if(next>maxDate)return;
   calDate.setMonth(calDate.getMonth()+1);renderCal();
@@ -504,50 +513,58 @@ function renderCal(){
   let html=HE_DAYS.map(d=>`<div class="cal-dname">${d}</div>`).join('');
   const first=new Date(y,m,1),startDow=first.getDay(),daysInMonth=new Date(y,m+1,0).getDate();
   const today=new Date();today.setHours(0,0,0,0);
-  const now=new Date();
-  const maxDate=new Date(now.getFullYear(),now.getMonth()+2,0);
+  const now=new Date(),maxDate=new Date(now.getFullYear(),now.getMonth()+2,0);
   for(let i=0;i<startDow;i++)html+=`<div class="cal-d other"></div>`;
   for(let d=1;d<=daysInMonth;d++){
     const date=new Date(y,m,d),isPast=date<today,isToday=date.getTime()===today.getTime();
     const wd=date.getDay(),isWork=(settings.workDays||[0,1,2,3,4]).includes(wd);
-    const dateStr=fmtStr(date);
-    const isBlockedDay=blockedSlots.some(b=>b.date===dateStr&&b.allDay);
+    const ds=fmtStr(date);
+    const isBlockedDay=blockedSlots.some(b=>b.date===ds&&b.allDay);
     const isBeyond=date>maxDate;
     let cls='cal-d';
     if(isPast)cls+=' past';else if(!isWork||isBlockedDay||isBeyond)cls+=' disabled';
-    if(isToday)cls+=' today';if(dateStr===selectedDate)cls+=' selected';
-    html+=`<div class="${cls}" onclick="selectDate('${dateStr}')">${d}</div>`;
+    if(isToday)cls+=' today';if(ds===selectedDate)cls+=' selected';
+    html+=`<div class="${cls}" onclick="selectDate('${ds}')">${d}</div>`;
   }
   grid.innerHTML=html;
 }
 
-window.selectDate=async(dateStr)=>{
-  selectedDate=dateStr;selectedTime=null;
+window.selectDate=async(ds)=>{
+  selectedDate=ds;selectedTime=null;
   renderCal();
   await loadBookedSlots();
-  renderSlots(dateStr);
-  updateStep1Btn();
+  showSlotsForDate(ds);
+  updateNextBtn();
 };
 
-function renderSlots(dateStr){
-  const wrap=document.getElementById('slots-wrap'),nod=document.getElementById('no-day'),grid=document.getElementById('slots-grid');
-  wrap.style.display='block';nod.style.display='none';
+function showSlotsForDate(ds){
+  document.getElementById('no-date-msg').style.display='none';
+  document.getElementById('slots-visible').style.display='block';
+  const container=document.getElementById('slots-container');
   const dur=settings.slotDuration||90;
-  const slotDur=dur;
-  const all=genSlots(settings.workStart||'09:00',settings.workEnd||'19:00',30,slotDur);
-  const booked=bookedSlots[dateStr]||[];
+  const all=genSlots(settings.workStart||'09:00',settings.workEnd||'19:00',30,dur);
+  const booked=bookedSlots[ds]||[];
   const available=all.filter(t=>{
-    const sm=timeToMins(t),em=sm+slotDur;
-    const overlapsBooking=booked.some(bt=>{const bs=timeToMins(bt),be=bs+slotDur;return sm<be&&em>bs;});
-    if(overlapsBooking)return false;
-    if(isGCalBusy(dateStr,t,slotDur))return false;
-    if(isBlockedByAdmin(dateStr,t,slotDur))return false;
+    const sm=timeToMins(t),em=sm+dur;
+    const overlaps=booked.some(bt=>{const bs=timeToMins(bt),be=bs+dur;return sm<be&&em>bs;});
+    if(overlaps)return false;
+    if(isGCalBusy(ds,t,dur))return false;
+    if(isBlockedByAdmin(ds,t,dur))return false;
     return true;
   });
-  if(!available.length){grid.innerHTML='';wrap.innerHTML='<p class="no-slots">אין שעות פנויות ביום זה 😕</p>';return;}
-  grid.innerHTML=available.map(t=>`<div class="slot ${t===selectedTime?'selected':''}" onclick="selectSlot('${t}')">${t}</div>`).join('');
-  // Rebuild wrap
-  document.getElementById('slots-wrap').style.display='block';
+  if(!available.length){
+    container.innerHTML='<span class="no-slots-msg">אין שעות פנויות ביום זה 😕</span>';
+    return;
+  }
+  container.innerHTML=available.map(t=>`<button class="slot ${t===selectedTime?'selected':''}" onclick="selectSlot('${t}')">${t}</button>`).join('');
+}
+
+window.selectSlot=(t)=>{selectedTime=t;showSlotsForDate(selectedDate);updateNextBtn();};
+
+function updateNextBtn(){
+  const btn=document.getElementById('btn-next1');
+  const ok=selectedDate&&selectedTime;
+  btn.disabled=!ok;btn.style.opacity=ok?'1':'0.45';
 }
 
 function genSlots(start,end,interval,slotDur){
@@ -558,33 +575,21 @@ function genSlots(start,end,interval,slotDur){
   return slots;
 }
 
-window.selectSlot=(t)=>{selectedTime=t;renderSlots(selectedDate);updateStep1Btn();};
-
-function updateStep1Btn(){
-  const btn=document.getElementById('btn-step1');
-  const ok=selectedDate&&selectedTime;
-  btn.disabled=!ok;btn.style.opacity=ok?'1':'0.4';
-}
-
 // PROMO
 window.applyPromo=()=>{
   const code=document.getElementById('b-promo').value.trim().toUpperCase();
-  const fb=document.getElementById('promo-feedback');
+  const fb=document.getElementById('promo-fb');
   fb.style.display='block';
-  if(!code){fb.className='promo-feedback err';fb.textContent='הכניסי קוד';return;}
   const promo=promos.find(p=>p.code===code);
-  if(!promo){fb.className='promo-feedback err';fb.textContent='קוד לא תקין';appliedPromo=null;return;}
-  if(promo.expiry&&new Date(promo.expiry)<new Date()){fb.className='promo-feedback err';fb.textContent='הקוד פג תוקף';appliedPromo=null;return;}
+  if(!promo){fb.className='promo-fb err';fb.textContent='קוד לא תקין';appliedPromo=null;return;}
+  if(promo.expiry&&new Date(promo.expiry)<new Date()){fb.className='promo-fb err';fb.textContent='הקוד פג תוקף';appliedPromo=null;return;}
   appliedPromo=promo;
   const desc=promo.type==='percent'?`${promo.value}% הנחה`:`₪${promo.value} הנחה`;
-  fb.className='promo-feedback ok';fb.textContent=`✅ קוד הופעל: ${desc}`;
+  fb.className='promo-fb ok';fb.textContent=`✅ קוד הופעל: ${desc}`;
 };
 
 // STEPS
 window.goStep=(n)=>{
-  if(n===2){
-    if(!selectedDate||!selectedTime){goStep(1);return;}
-  }
   if(n===3){
     const name=document.getElementById('b-name').value.trim();
     const phone=document.getElementById('b-phone').value.trim();
@@ -594,7 +599,6 @@ window.goStep=(n)=>{
     if(!phone){errEl.textContent='⚠️ נדרש טלפון';return;}
     if(!service){errEl.textContent='⚠️ נדרש שירות';return;}
     errEl.textContent='';
-    // Build summary
     const opt=document.getElementById('b-service').options[document.getElementById('b-service').selectedIndex];
     const price=parseFloat(opt?.dataset?.price||0);
     let finalPrice=price,discLine='';
@@ -615,9 +619,10 @@ window.goStep=(n)=>{
       ${price>0?`<div class="sum-row total"><span>סה"כ</span><strong>₪${Math.round(finalPrice)}</strong></div>`:''}`;
   }
   ['step1','step2','step3','step-success'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
-  ['step1-btn','step2-btn','step3-btn'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.remove('active');});
-  document.getElementById('step'+n).classList.add('active');
-  if(n<=3)document.getElementById('step'+n+'-btn').classList.add('active');
+  [1,2,3].forEach(i=>{const el=document.getElementById('step-btn-'+i);if(el)el.classList.remove('active');});
+  const stepId=n<=3?'step'+n:'step-success';
+  document.getElementById(stepId).classList.add('active');
+  if(n<=3){const btn=document.getElementById('step-btn-'+n);if(btn)btn.classList.add('active');}
   window.scrollTo({top:document.getElementById('booking').offsetTop-70,behavior:'smooth'});
 };
 
@@ -645,7 +650,6 @@ window.confirmBooking=async()=>{
       promoCode:appliedPromo?.code||'',promoDesc,
       status:'pending',createdAt:new Date().toISOString()
     });
-    // EmailJS
     if(ejsConfig.serviceId&&ejsConfig.publicKey&&ejsConfig.tidNotify&&window.emailjs){
       window.emailjs.init({publicKey:ejsConfig.publicKey});
       try{await window.emailjs.send(ejsConfig.serviceId,ejsConfig.tidNotify,{
@@ -655,9 +659,7 @@ window.confirmBooking=async()=>{
         estimated_total:estimatedTotal?'₪'+estimatedTotal:'—',
       });}catch(e){console.warn('Email:',e);}
     }
-    ['step1','step2','step3'].forEach(id=>document.getElementById(id).classList.remove('active'));
-    document.getElementById('step-success').classList.add('active');
-    ['step1-btn','step2-btn','step3-btn'].forEach(id=>document.getElementById(id).classList.remove('active'));
+    goStep(4);
   }catch(e){showToast('❌ שגיאה, נסי שוב');console.error(e);}
   btn.disabled=false;btn.innerHTML='📅 שלחי בקשת תור';
 };
@@ -666,13 +668,13 @@ window.resetBooking=()=>{
   selectedDate=null;selectedTime=null;appliedPromo=null;
   ['b-name','b-phone','b-email','b-notes','b-promo'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('b-service').value='';
-  document.getElementById('promo-feedback').style.display='none';
-  document.getElementById('slots-wrap').style.display='none';
-  document.getElementById('no-day').style.display='block';
+  document.getElementById('promo-fb').style.display='none';
+  document.getElementById('no-date-msg').style.display='block';
+  document.getElementById('slots-visible').style.display='none';
   renderCal();goStep(1);
 };
 
-function fmtStr(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+function fmtStr(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function fmtDate(d){if(!d)return'—';const[y,m,day]=d.split('-');return`${day}/${m}/${y}`;}
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
@@ -684,6 +686,17 @@ function toggleMob(){
   nav.classList.toggle('open');
   document.body.style.overflow=nav.classList.contains('open')?'hidden':'';
 }
+
+// Floating CTA — show after scrolling past hero
+window.addEventListener('scroll',()=>{
+  const cta=document.getElementById('float-cta');
+  const booking=document.getElementById('booking');
+  if(window.scrollY>400&&window.scrollY<booking.offsetTop-200){
+    cta.classList.add('visible');
+  }else{
+    cta.classList.remove('visible');
+  }
+});
 </script>
 </body>
 </html>
