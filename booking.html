@@ -483,11 +483,16 @@ function renderSlots(dateStr){
 
 window.selectSlot=(time)=>{selectedTime=time;renderSlots(selectedDate);updateBtn1();};
 
-function generateSlots(start,end,dur){
+function generateSlots(start,end,interval){
+  // interval is 30 min, but slot must fit within end of day based on slotDuration
+  const slotDur=settings.slotDuration||90;
   const slots=[];let[sh,sm]=start.split(':').map(Number);
   const[eh,em]=end.split(':').map(Number),endMins=eh*60+em;
   let cur=sh*60+sm;
-  while(cur+dur<=endMins){slots.push(String(Math.floor(cur/60)).padStart(2,'0')+':'+String(cur%60).padStart(2,'0'));cur+=dur;}
+  while(cur+slotDur<=endMins){
+    slots.push(String(Math.floor(cur/60)).padStart(2,'0')+':'+String(cur%60).padStart(2,'0'));
+    cur+=interval;
+  }
   return slots;
 }
 
