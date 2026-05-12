@@ -142,11 +142,14 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
 /* REVIEWS */
 .reviews-section{background:var(--cream);padding:60px 40px;border-top:1px solid var(--border)}
 .reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.rv{background:var(--white);border:1px solid var(--border);border-radius:12px;padding:22px;position:relative;overflow:hidden}
-.rv::before{content:'"';position:absolute;top:-10px;right:16px;font-size:80px;color:var(--blush);font-family:Georgia,serif;line-height:1}
-.rv-stars{color:var(--rose);font-size:13px;margin-bottom:10px;position:relative}
-.rv-text{font-size:13px;color:var(--ink);line-height:1.6;margin-bottom:12px;font-weight:400;position:relative}
-.rv-name{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.06em}
+.rv{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:22px;transition:transform .2s,box-shadow .2s}
+.rv:hover{transform:translateY(-3px);box-shadow:0 8px 28px rgba(107,48,80,.1)}
+.rv-header{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.rv-avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;flex-shrink:0}
+.rv-name{font-size:14px;font-weight:700;color:var(--deep)}
+.rv-loc{font-size:11px;color:var(--muted);font-weight:400}
+.rv-stars{color:var(--rose);font-size:13px;margin-right:auto;flex-shrink:0;letter-spacing:1px}
+.rv-text{font-size:13px;color:var(--ink);line-height:1.6;font-weight:400}
 
 /* CONTACT */
 .contact-section{background:var(--deep);padding:60px 40px;direction:rtl}
@@ -234,12 +237,15 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
   <div class="hero-bg"></div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <div class="hero-badge">💅 רעננה • בורוכוב 33</div>
-    <h1 class="hero-h1">הציפורניים שלך<em>מגיעות לזה.</em></h1>
-    <p class="hero-sub">עיצוב מקצועי, אישי ומפנק — כי כל פרט קטן חשוב. תורים זמינים השבוע.</p>
+    <div class="hero-badge">💅 רעננה</div>
+    <h1 class="hero-h1">מקצועי.<em>אישי. מפנק.</em></h1>
+    <p class="hero-sub">כי את מגיעה לשירות שמתחשב בפרטים — תורים זמינים השבוע ברעננה.</p>
     <div class="hero-btns">
       <a href="#booking" class="hero-cta">📅 קביעת תור עכשיו</a>
-      <a href="https://wa.me/972584415288" class="hero-wa" target="_blank">💬 וואטסאפ</a>
+      <a href="https://wa.me/972584415288" class="hero-wa" target="_blank" style="display:flex;align-items:center;gap:8px;color:var(--blush);font-size:13px;font-weight:600;text-decoration:none;opacity:.85;transition:opacity .2s">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--rose)"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        WhatsApp
+      </a>
     </div>
   </div>
   <div class="hero-scroll">גלי למטה</div>
@@ -247,9 +253,9 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
 
 <!-- STATS -->
 <div class="stats-bar">
-  <div class="stat"><div class="stat-val">5+</div><div class="stat-lbl">שנות ניסיון</div></div>
-  <div class="stat"><div class="stat-val">200+</div><div class="stat-lbl">לקוחות מרוצות</div></div>
+  <div class="stat"><div class="stat-val">100%</div><div class="stat-lbl">לקוחות חוזרות</div></div>
   <div class="stat"><div class="stat-val">★ 5.0</div><div class="stat-lbl">דירוג ממוצע</div></div>
+  <div class="stat"><div class="stat-val">זמינה</div><div class="stat-lbl">השבוע • רעננה</div></div>
 </div>
 
 <!-- GALLERY -->
@@ -259,27 +265,27 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
   <div class="section-sub">כל ציפורן — יצירת אמנות</div>
   <div class="gram-grid">
     <div class="gram-item big">
-      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=600&q=80" alt="nail art" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=700&h=700&q=85&fit=crop" alt="nail art" loading="lazy"/>
       <div class="gram-overlay"><span class="gram-overlay-icon">💅</span></div>
     </div>
     <div class="gram-item">
-      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400" alt="manicure" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&q=85&fit=crop&fp-x=0.3&fp-y=0.5&fp-z=1.5" alt="manicure" loading="lazy"/>
       <div class="gram-overlay"><span class="gram-overlay-icon">✨</span></div>
     </div>
     <div class="gram-item">
-      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&sat=-20" alt="gel nails" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1604902396830-aca29e19b067?w=400&h=400&q=85&fit=crop" alt="gel nails" loading="lazy"/>
       <div class="gram-overlay"><span class="gram-overlay-icon">💎</span></div>
     </div>
     <div class="gram-item">
-      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&bri=10" alt="nail design" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1604902396830-aca29e19b067?w=400&h=400&q=85&fit=crop&fp-x=0.7&fp-y=0.3" alt="nail design" loading="lazy"/>
       <div class="gram-overlay"><span class="gram-overlay-icon">🎨</span></div>
     </div>
     <div class="gram-item">
-      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&hue=30" alt="nail art" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&q=85&fit=crop&fp-x=0.6&fp-y=0.6&fp-z=2" alt="nail art" loading="lazy"/>
       <div class="gram-overlay"><span class="gram-overlay-icon">💅</span></div>
     </div>
     <div class="gram-item">
-      <img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&q=80&crop=entropy&cs=tinysrgb&fit=crop&h=400&w=400&con=10" alt="nails" loading="lazy"/>
+      <img src="https://images.unsplash.com/photo-1604902396830-aca29e19b067?w=400&h=400&q=85&fit=crop&fp-x=0.4&fp-y=0.7&fp-z=1.3" alt="nails" loading="lazy"/>
       <div class="gram-overlay"><span class="gram-overlay-icon">✨</span></div>
     </div>
   </div>
@@ -385,12 +391,40 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
 <section class="reviews-section" id="reviews">
   <div class="section-tag">לקוחות מספרות</div>
   <div class="section-title">הן כבר ניסו</div>
-  <div class="section-sub" style="margin-bottom:28px">כל ביקורת — מהלב</div>
+  <div class="section-sub" style="margin-bottom:32px">כל ביקורת — מהלב</div>
   <div class="reviews-grid">
-    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">התוצאה מושלמת, אחזור בהחלט! הציפורניים שלי נראות כמו חלום. ממליצה לכל חברה!</p><div class="rv-name">מיכל ל. — רעננה</div></div>
-    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">הכי מקצועית שהייתי אצלה. שירות אישי, תשומת לב לפרטים ותוצאות מדהימות.</p><div class="rv-name">נועה ש. — כפר סבא</div></div>
-    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">אווירה נהדרת, מחירים הוגנים, ממליצה בחום לכולן! אחזור בהחלט כל חודש.</p><div class="rv-name">שירה ב. — הרצליה</div></div>
-    <div class="rv"><div class="rv-stars">★★★★★</div><p class="rv-text">הנייל ארט שלה פשוט יצירות אמנות. מאוהבת בתוצאה, כולן שואלות אותי איפה עשיתי!</p><div class="rv-name">ליאת מ. — רעננה</div></div>
+    <div class="rv">
+      <div class="rv-header">
+        <div class="rv-avatar" style="background:#f7e0ea;color:#6b3050">מ</div>
+        <div><div class="rv-name">מיכל ל.</div><div class="rv-loc">רעננה</div></div>
+        <div class="rv-stars">★★★★★</div>
+      </div>
+      <p class="rv-text">התוצאה מושלמת, אחזור בהחלט! הציפורניים שלי נראות כמו חלום. ממליצה לכל חברה!</p>
+    </div>
+    <div class="rv">
+      <div class="rv-header">
+        <div class="rv-avatar" style="background:#fde8f4;color:#9b4a72">נ</div>
+        <div><div class="rv-name">נועה ש.</div><div class="rv-loc">כפר סבא</div></div>
+        <div class="rv-stars">★★★★★</div>
+      </div>
+      <p class="rv-text">הכי מקצועית שהייתי אצלה. שירות אישי, תשומת לב לפרטים ותוצאות מדהימות.</p>
+    </div>
+    <div class="rv">
+      <div class="rv-header">
+        <div class="rv-avatar" style="background:#f0e8ff;color:#6b3050">ש</div>
+        <div><div class="rv-name">שירה ב.</div><div class="rv-loc">הרצליה</div></div>
+        <div class="rv-stars">★★★★★</div>
+      </div>
+      <p class="rv-text">אווירה נהדרת, מחירים הוגנים, ממליצה בחום לכולן! אחזור כל חודש.</p>
+    </div>
+    <div class="rv">
+      <div class="rv-header">
+        <div class="rv-avatar" style="background:#fff0e8;color:#c9906a">ל</div>
+        <div><div class="rv-name">ליאת מ.</div><div class="rv-loc">רעננה</div></div>
+        <div class="rv-stars">★★★★★</div>
+      </div>
+      <p class="rv-text">הנייל ארט שלה פשוט יצירות אמנות. כולן שואלות אותי איפה עשיתי!</p>
+    </div>
   </div>
 </section>
 
@@ -404,7 +438,10 @@ body{font-family:'Heebo',sans-serif;background:var(--white);color:var(--ink);dir
         <div class="ci"><div class="ci-icon">📍</div><div class="ci-text"><div class="ci-lbl">כתובת</div><div class="ci-val">בורוכוב 33, רעננה</div></div></div>
         <div class="ci"><div class="ci-icon">💬</div><div class="ci-text"><div class="ci-lbl">וואטסאפ</div><div class="ci-val">058-441-5288</div></div></div>
       </div>
-      <a href="https://wa.me/972584415288" class="wa-btn" target="_blank">💬 שלחי הודעה בוואטסאפ</a>
+      <a href="https://wa.me/972584415288" class="wa-btn" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:10px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Contact me on WhatsApp
+      </a>
     </div>
     <div class="contact-visual">
       <div class="cv-img tall"><img src="https://images.unsplash.com/photo-1604654894610-df63bc536371?w=300&h=500&q=80&fit=crop" alt="nails"/></div>
